@@ -33,4 +33,14 @@ class EnergyViewModel (
             repository.saveEnergy(today, energy)
         }
     }
+
+    fun decreaseEnergy(){
+        viewModelScope.launch {
+            if (energy <= 0) return@launch
+
+            energy--
+            val today = System.currentTimeMillis().toString()
+            repository.saveEnergy(today, energy)
+        }
+    }
 }
