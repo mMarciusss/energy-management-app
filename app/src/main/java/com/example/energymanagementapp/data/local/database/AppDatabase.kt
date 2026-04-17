@@ -2,13 +2,16 @@ package com.example.energymanagementapp.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.energymanagementapp.data.local.dao.ActivityDao
 import com.example.energymanagementapp.data.local.dao.PlanDao
+import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.data.local.entities.PlanEntity
 
 @Database(
-    entities = [PlanEntity::class],
+    entities = [PlanEntity::class, ActivityEntity::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
+    abstract fun activityDao(): ActivityDao
 }

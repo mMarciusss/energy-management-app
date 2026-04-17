@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity("activities")
 class ActivityEntity (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
     val energyCost: Int
