@@ -7,8 +7,7 @@ class ActivityRepository (
     private val activityDao: ActivityDao
 ){
     suspend fun saveActivity(name: String, energyCost: Int){
-        var activity = ActivityEntity(
-            id = 0,
+        val activity = ActivityEntity(
             name = name,
             energyCost = energyCost
         )
@@ -17,9 +16,5 @@ class ActivityRepository (
 
     suspend fun getActivityList(): List<ActivityEntity>{
         return activityDao.getActivities()
-    }
-
-    suspend fun selectActivity(name: String): ActivityEntity?{
-        return activityDao.getActivityByName(name)
     }
 }

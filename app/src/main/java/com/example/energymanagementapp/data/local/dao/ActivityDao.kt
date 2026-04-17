@@ -13,7 +13,4 @@ interface ActivityDao {
 
     @Query("SELECT * FROM activities")
     suspend fun getActivities(): List<ActivityEntity>
-
-    @Query("SELECT * FROM activities WHERE name = :name LIMIT 1")
-    suspend fun getActivityByName(name: String): ActivityEntity?
 }
