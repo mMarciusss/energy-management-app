@@ -11,37 +11,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.room.Room
+import com.example.energymanagementapp.data.local.database.AppDatabase
+import com.example.energymanagementapp.data.repository.PlanRepository
+import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.theme.EnergyManagementAppTheme
+import com.example.energymanagementapp.viewmodel.EnergyViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "energyManagement.db"
+        ).build()
+
+        val repository = PlanRepository(db.planDao())
+        val viewModel = EnergyViewModel(repository)
+
         setContent {
-            EnergyManagementAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            EnergyScreen(
+                energy = viewModel.energy,
+                onIncrease = {viewModel.increaseEnergy()},
+                onDecrease = {viewModel.decreaseEnergy()}
+            )
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EnergyManagementAppTheme {
-        Greeting("Android")
     }
 }
