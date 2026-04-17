@@ -32,7 +32,11 @@ class MainActivity : ComponentActivity() {
         val viewModel = EnergyViewModel(repository)
 
         setContent {
-            EnergyScreen(viewModel)
+            EnergyScreen(
+                energy = viewModel.energy,
+                onIncrease = {viewModel.increaseEnergy()},
+                onDecrease = {viewModel.decreaseEnergy()}
+            )
         }
     }
 }

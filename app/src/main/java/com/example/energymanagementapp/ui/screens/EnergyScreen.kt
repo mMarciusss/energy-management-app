@@ -12,12 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.energymanagementapp.viewmodel.EnergyViewModel
 
 @Composable
 fun EnergyScreen(
-    viewModel: EnergyViewModel
+    energy: Int,
+    onIncrease: () -> Unit,
+    onDecrease: () -> Unit
 ){
     Row (
         modifier = Modifier.fillMaxSize(),
@@ -25,16 +27,26 @@ fun EnergyScreen(
         horizontalArrangement = Arrangement.Center
     ){
 
-        Button(onClick = {viewModel.decreaseEnergy()}) {
+        Button(onClick = onDecrease) {
             Text("-")
         }
 
         Spacer(Modifier.width(16.dp))
-        Text(text = "Energy: ${viewModel.energy}")
+        Text(text = "Energy: $energy")
 
         Spacer(Modifier.width(16.dp))
-        Button(onClick = {viewModel.increaseEnergy()}) {
+        Button(onClick = onIncrease) {
             Text(text = "+")
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EnergyScreenPreview() {
+    EnergyScreen(
+        energy = 5,
+        onIncrease = {},
+        onDecrease = {}
+    )
 }
