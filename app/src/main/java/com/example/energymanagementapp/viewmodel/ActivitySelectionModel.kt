@@ -10,6 +10,9 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ActivitySelectionModel (
     private val activityRepository: ActivityRepository,
@@ -65,7 +68,7 @@ class ActivitySelectionModel (
 
     fun savePlanActivities(){
         viewModelScope.launch {
-            val today = System.currentTimeMillis().toString()
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
             selectedActivities.forEach { id ->
                 planActivityRepository.savePlanActivity(

@@ -18,6 +18,6 @@ class PlanRepository (
 
     suspend fun getEnergy(date: String): Int {
         val plan = planDao.getPlanByDate(date)
-        return plan?.energyLevel ?: 0
+        return plan?.energyLevel ?: 5
     }
 }
