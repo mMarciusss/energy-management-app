@@ -32,7 +32,7 @@ class EnergyViewModel (
     fun increaseEnergy(){
         viewModelScope.launch {
             energy++
-            val today = System.currentTimeMillis().toString()
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             repository.saveEnergy(today, energy)
         }
     }
@@ -42,7 +42,7 @@ class EnergyViewModel (
             if (energy <= 0) return@launch
 
             energy--
-            val today = System.currentTimeMillis().toString()
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             repository.saveEnergy(today, energy)
         }
     }
