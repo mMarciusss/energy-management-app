@@ -26,7 +26,9 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java,
             "energyManagement.db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration(false)
+        .build()
 
         val repository = PlanRepository(db.planDao())
         val viewModel = EnergyViewModel(repository)
