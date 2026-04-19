@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.energymanagementapp.data.repository.PlanRepository
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class EnergyViewModel (
     private val repository: PlanRepository
@@ -21,7 +24,7 @@ class EnergyViewModel (
 
     private fun loadTodayEnergy(){
         viewModelScope.launch {
-            val today = System.currentTimeMillis().toString()
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             energy = repository.getEnergy(today)
         }
     }
