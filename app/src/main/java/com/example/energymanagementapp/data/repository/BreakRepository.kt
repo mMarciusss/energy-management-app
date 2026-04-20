@@ -9,18 +9,18 @@ import java.util.Locale
 class BreakRepository (
     private val breakDao: BreakDao
 ) {
-    suspend fun saveBreak(planActivityId: Int, durationMinutes: Int, isCompleted: Boolean, starTime: String, endTime: String){
+    suspend fun saveBreak(planActivityId: Int, durationMinutes: Int, isCompleted: Boolean, startTime: String, endTime: String){
         val activityBreak = BreakEntity(
             planActivityId = planActivityId,
             durationMinutes = durationMinutes,
             isCompleted = isCompleted,
-            startTime = starTime,
+            startTime = startTime,
             endTime = endTime
         )
         breakDao.insertOrUpdateBreak(activityBreak)
     }
 
-    suspend fun getBreakList(planActivityId: Int) : List<BreakEntity>{
+    suspend fun getBreakList(planActivityId: Int): List<BreakEntity>{
         return breakDao.getBreaksByPlanActivity(planActivityId)
     }
 
