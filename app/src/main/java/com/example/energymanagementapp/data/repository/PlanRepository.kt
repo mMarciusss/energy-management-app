@@ -16,8 +16,7 @@ class PlanRepository (
         planDao.insertOrUpdatePlan(plan)
     }
 
-    suspend fun getEnergy(date: String): Int {
-        val plan = planDao.getPlanByDate(date)
-        return plan?.energyLevel ?: 5
+    suspend fun getPlan(date: String): PlanEntity? {
+        return planDao.getPlanByDate(date)
     }
 }
