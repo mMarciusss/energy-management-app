@@ -1,6 +1,5 @@
 package com.example.energymanagementapp.ui.screens
 
-import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,24 +18,35 @@ import androidx.compose.ui.unit.dp
 fun EnergyScreen(
     energy: Int,
     onIncrease: () -> Unit,
-    onDecrease: () -> Unit
+    onDecrease: () -> Unit,
+    onConfirm: () -> Unit
 ){
-    Row (
+    Column(
         modifier = Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ){
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
 
-        Button(onClick = onDecrease) {
-            Text("-")
+            Button(onClick = onDecrease) {
+                Text("-")
+            }
+
+            Spacer(Modifier.width(16.dp))
+            Text(text = "Energy: $energy")
+
+            Spacer(Modifier.width(16.dp))
+            Button(onClick = onIncrease) {
+                Text(text = "+")
+            }
         }
-
         Spacer(Modifier.width(16.dp))
-        Text(text = "Energy: $energy")
 
-        Spacer(Modifier.width(16.dp))
-        Button(onClick = onIncrease) {
-            Text(text = "+")
+        Button(onClick = onConfirm) {
+            Text("Confirm energy level")
         }
     }
 }
@@ -47,6 +57,7 @@ fun EnergyScreenPreview() {
     EnergyScreen(
         energy = 5,
         onIncrease = {},
-        onDecrease = {}
+        onDecrease = {},
+        onConfirm = {}
     )
 }

@@ -30,18 +30,19 @@ class EnergyViewModel (
     }
 
     fun increaseEnergy(){
-        viewModelScope.launch {
-            energy++
-            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            repository.saveEnergy(today, energy)
+        if (energy < 20){
+           energy++
         }
     }
 
     fun decreaseEnergy(){
-        viewModelScope.launch {
-            if (energy <= 0) return@launch
-
+        if (energy > 0){
             energy--
+        }
+    }
+
+    fun saveEnergy(){
+        viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             repository.saveEnergy(today, energy)
         }
