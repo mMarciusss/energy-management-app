@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
 
         val repository = PlanRepository(db.planDao())
         val energyViewModel = EnergyViewModel(repository)
-        var isEnergySet by mutableStateOf(false)
 
         setContent {
             val navController = rememberNavController()
@@ -53,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 composable("plan_creation_home") {
                     PlanCreationHomeScreen(
                         energy = energyViewModel.energy,
-                        isEnergySet = isEnergySet,
+                        isEnergySet = energyViewModel.isEnergySet,
                         onGoToEnergyScreen = {
                             navController.navigate("energy")
                         }
@@ -67,7 +66,6 @@ class MainActivity : ComponentActivity() {
                         onDecrease = {energyViewModel.decreaseEnergy()},
                         onConfirm = {
                             energyViewModel.saveEnergy()
-                            isEnergySet = true
                             navController.popBackStack()
                         }
                     )
