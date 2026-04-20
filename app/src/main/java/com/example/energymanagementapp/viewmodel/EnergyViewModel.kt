@@ -18,6 +18,9 @@ class EnergyViewModel (
     var energy by mutableStateOf(5)
         private set
 
+    var isEnergySet by mutableStateOf(false)
+        private set
+
     init{
         loadTodayEnergy()
     }
@@ -25,7 +28,13 @@ class EnergyViewModel (
     private fun loadTodayEnergy(){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            energy = repository.getEnergy(today)
+
+            val plan = repository.getPlan(today)
+
+            if(plan != null){
+                energy = plan.energyLevel
+                isEnergySet = true
+            }
         }
     }
 
@@ -45,6 +54,7 @@ class EnergyViewModel (
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             repository.saveEnergy(today, energy)
+            isEnergySet = true
         }
     }
 }
