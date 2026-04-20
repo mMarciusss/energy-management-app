@@ -7,7 +7,7 @@ import java.sql.Date
 class PlanActivityRepository (
     val planActivityDao: PlanActivityDao
 ) {
-    suspend fun savePlanActivity(planDate: String, activityId: Int, isCompleted: Boolean, completionTime: String){
+    suspend fun savePlanActivity(planDate: String, activityId: Int, isCompleted: Boolean, completionTime: String?){
         val planActivity = PlanActivityEntity(
             planDate = planDate,
             activityId = activityId,

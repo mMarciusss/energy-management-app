@@ -75,7 +75,7 @@ class ActivitySelectionModel (
                     planDate = today,
                     activityId = id,
                     isCompleted = false,
-                    completionTime = ""
+                    completionTime = null
                 )
             }
         }

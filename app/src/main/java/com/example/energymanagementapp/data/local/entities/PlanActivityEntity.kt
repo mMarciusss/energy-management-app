@@ -14,5 +14,5 @@ data class PlanActivityEntity (
     val activityId: Int,
 
     val isCompleted: Boolean = false,
-    val completionTime: String = ""
+    val completionTime: String? = null
 )
