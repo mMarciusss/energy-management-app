@@ -1,8 +1,6 @@
 package com.example.energymanagementapp.data.local.entities
 
-import androidx.annotation.Nullable
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity("plan_activities")

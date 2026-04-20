@@ -5,10 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.energymanagementapp.data.local.entities.ActivityEntity
-import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
-import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.BreakRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import kotlinx.coroutines.launch

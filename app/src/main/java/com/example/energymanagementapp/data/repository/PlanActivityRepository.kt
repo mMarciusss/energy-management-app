@@ -3,7 +3,6 @@ package com.example.energymanagementapp.data.repository
 import com.example.energymanagementapp.data.local.dao.PlanActivityDao
 import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
-import java.sql.Date
 
 class PlanActivityRepository (
     val planActivityDao: PlanActivityDao
