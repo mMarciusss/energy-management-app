@@ -2,6 +2,7 @@ package com.example.energymanagementapp.data.repository
 
 import com.example.energymanagementapp.data.local.dao.PlanActivityDao
 import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
+import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 import java.sql.Date
 
 class PlanActivityRepository (
@@ -19,5 +20,9 @@ class PlanActivityRepository (
 
     suspend fun getPlanActivities(planDate: String): List<PlanActivityEntity>{
         return planActivityDao.getPlanActivitiesByDate(planDate)
+    }
+
+    suspend fun getPlanActivitiesWithDetails(planDate: String): List<PlanActivityWithDetails> {
+        return planActivityDao.getPlanActivitiesWithDetails(planDate)
     }
 }
