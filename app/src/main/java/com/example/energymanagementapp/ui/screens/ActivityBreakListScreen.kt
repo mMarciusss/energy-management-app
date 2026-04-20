@@ -18,7 +18,7 @@ import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
 fun ActivityBreakListScreen(
     planActivities: List<PlanActivityEntity>,
     activities: List<ActivityEntity>,
-    onActivityClick: (Int) -> Unit
+    onActivityClick: (Int, String) -> Unit
 ) {
     val activityMap = activities.associateBy { it.id }
 
@@ -35,7 +35,7 @@ fun ActivityBreakListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onActivityClick(planActivity.id)
+                        onActivityClick(planActivity.id, activityName)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -63,6 +63,6 @@ fun ActivityBreakListScreenPreview() {
     ActivityBreakListScreen(
         planActivities = fakePlanActivities,
         activities = fakeActivities,
-        onActivityClick = {}
+        onActivityClick = {_, _ ->}
     )
 }
