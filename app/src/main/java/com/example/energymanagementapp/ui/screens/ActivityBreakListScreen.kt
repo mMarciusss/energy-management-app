@@ -12,11 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 
 @Composable
 fun ActivityBreakListScreen(
-    planActivities: List<PlanActivityWithDetails>,
+    planActivities: List<PlanActivityWithBreak>,
     onActivityClick: (Int, String) -> Unit
 ) {
 
@@ -35,6 +36,10 @@ fun ActivityBreakListScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(planActivity.activityName)
+
+                    if(planActivity.breakDuration != null){
+                        Text(" /Break: ${planActivity.breakDuration} min")
+                    }
                 }
             }
         }
@@ -46,23 +51,17 @@ fun ActivityBreakListScreen(
 fun ActivityBreakListScreenPreview() {
 
     val fakePlanActivities = listOf(
-        PlanActivityWithDetails(
+        PlanActivityWithBreak(
             id = 1,
-            planDate = "2026-01-01",
-            activityId = 1,
-            isCompleted = false,
-            completionTime = null,
             activityName = "Gym",
-            energyCost = 2
+            energyCost = 2,
+            breakDuration = 45
         ),
-        PlanActivityWithDetails(
+        PlanActivityWithBreak(
             id = 2,
-            planDate = "2026-01-01",
-            activityId = 2,
-            isCompleted = false,
-            completionTime = null,
             activityName = "Study",
-            energyCost = 1
+            energyCost = 1,
+            breakDuration = null
         )
     )
 

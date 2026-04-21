@@ -2,6 +2,7 @@ package com.example.energymanagementapp.data.repository
 
 import com.example.energymanagementapp.data.local.dao.PlanActivityDao
 import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
+import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 
 class PlanActivityRepository (
@@ -33,7 +34,7 @@ class PlanActivityRepository (
         planActivityDao.deletePlanActivityByDateAndActivityId(date, activityId)
     }
 
-    suspend fun getPlanActivitiesWithBreaks(planDate: String){
-        planActivityDao.getPlanActivitiesWithBreaks(planDate)
+    suspend fun getPlanActivitiesWithBreaks(planDate: String): List<PlanActivityWithBreak>{
+        return planActivityDao.getPlanActivitiesWithBreaks(planDate)
     }
 }
