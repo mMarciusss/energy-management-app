@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
         val activityRepository = ActivityRepository(db.activityDao())
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
-        val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository, energyViewModel.energy)
+        val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
 
         setContent {
             val navController = rememberNavController()
@@ -75,6 +75,9 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("activity_selection") {
+
+                    activitySelectionModel.setInitialEnergy(energyViewModel.energy)
+
                     ActivitySelectionScreen(
                         activities = activitySelectionModel.activities,
                         selectedActivities = activitySelectionModel.selectedActivities,

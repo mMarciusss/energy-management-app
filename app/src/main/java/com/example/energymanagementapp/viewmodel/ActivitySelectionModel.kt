@@ -17,8 +17,7 @@ import java.util.Locale
 
 class ActivitySelectionModel (
     private val activityRepository: ActivityRepository,
-    private val planActivityRepository: PlanActivityRepository,
-    initialEnergy: Int
+    private val planActivityRepository: PlanActivityRepository
 ) : ViewModel() {
 
     var activities by mutableStateOf<List<ActivityEntity>>(emptyList())
@@ -29,9 +28,11 @@ class ActivitySelectionModel (
     var remainingEnergy by mutableIntStateOf(0)
         private set
 
+    var isIntialized by mutableStateOf(false)
+        private set
+
     init {
         loadActivities()
-        remainingEnergy = initialEnergy
     }
 
     private fun loadActivities() {
@@ -61,6 +62,13 @@ class ActivitySelectionModel (
                 name = it.first,
                 energyCost = it.second
             )
+        }
+    }
+
+    fun setInitialEnergy(energy: Int){
+        if(!isIntialized) {
+            remainingEnergy = energy
+            isIntialized = true
         }
     }
 
