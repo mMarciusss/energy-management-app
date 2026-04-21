@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
         val activityRepository = ActivityRepository(db.activityDao())
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
-        val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
+        val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository, energyViewModel.energy)
 
         setContent {
             val navController = rememberNavController()
@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 composable("plan_creation_home") {
-                    val selectedActivities: List<PlanActivityWithDetails>
                     PlanCreationHomeScreen(
                         energy = energyViewModel.energy,
                         isEnergySet = energyViewModel.isEnergySet,
@@ -78,9 +77,13 @@ class MainActivity : ComponentActivity() {
                 composable("activity_selection") {
                     ActivitySelectionScreen(
                         activities = activitySelectionModel.activities,
-                        selectedActivities =activitySelectionModel.selectedActivities,
-                        onToggle = {},
-                        onConfirm = {}
+                        selectedActivities = activitySelectionModel.selectedActivities,
+                        remainingEnergy = activitySelectionModel.remainingEnergy,
+                        onToggle = {activitySelectionModel.toggleActivity(it)},
+                        onConfirm = {
+                            activitySelectionModel.savePlanActivities()
+                            navController.popBackStack()
+                        }
                     )
                 }
             }
