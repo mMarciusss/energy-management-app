@@ -8,9 +8,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.energymanagementapp.data.local.database.AppDatabase
+import com.example.energymanagementapp.data.model.PlanActivityWithDetails
+import com.example.energymanagementapp.data.repository.ActivityRepository
+import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import com.example.energymanagementapp.data.repository.PlanRepository
+import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
+import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
 
 class MainActivity : ComponentActivity() {
@@ -25,8 +30,12 @@ class MainActivity : ComponentActivity() {
         .fallbackToDestructiveMigration(false)
         .build()
 
-        val repository = PlanRepository(db.planDao())
-        val energyViewModel = EnergyViewModel(repository)
+        val planRepository = PlanRepository(db.planDao())
+        val energyViewModel = EnergyViewModel(planRepository)
+
+        val activityRepository = ActivityRepository(db.activityDao())
+        val planActivityRepository = PlanActivityRepository(db.planActivityDao())
+        val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
 
         setContent {
             val navController = rememberNavController()
@@ -37,12 +46,20 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 composable("plan_creation_home") {
+                    val selectedActivities: List<PlanActivityWithDetails>
                     PlanCreationHomeScreen(
                         energy = energyViewModel.energy,
                         isEnergySet = energyViewModel.isEnergySet,
                         onGoToEnergyScreen = {
                             navController.navigate("energy")
-                        }
+                        },
+                        onGoToActivitySelection = {
+                            navController.navigate("activity_selection")
+                        },
+                        onGoToBreakScreen = {
+                            navController.navigate("break_setup")
+                        },
+                        selectedActivities = emptyList()
                     )
                 }
 
@@ -55,6 +72,15 @@ class MainActivity : ComponentActivity() {
                             energyViewModel.saveEnergy()
                             navController.popBackStack()
                         }
+                    )
+                }
+
+                composable("activity_selection") {
+                    ActivitySelectionScreen(
+                        activities = activitySelectionModel.activities,
+                        selectedActivities =activitySelectionModel.selectedActivities,
+                        onToggle = {},
+                        onConfirm = {}
                     )
                 }
             }
