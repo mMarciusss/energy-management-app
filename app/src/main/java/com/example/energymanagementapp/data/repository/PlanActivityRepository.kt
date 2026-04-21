@@ -28,4 +28,8 @@ class PlanActivityRepository (
     suspend fun deletePlanActivitiesByDate(date: String){
         planActivityDao.deleteByDate(date)
     }
+
+    suspend fun deletePlanActivityByDateAndActivityId(date: String, activityId: Int){
+        planActivityDao.deletePlanActivityByDateAndActivityId(date, activityId)
+    }
 }

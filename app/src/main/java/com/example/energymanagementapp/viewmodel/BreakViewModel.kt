@@ -1,6 +1,7 @@
 package com.example.energymanagementapp.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -20,7 +21,7 @@ class BreakViewModel (
 
     var planActivities by mutableStateOf<List<PlanActivityWithDetails>>(emptyList())
 
-    var breakDuration by mutableStateOf<Int>(30)
+    var breakDuration by mutableIntStateOf(30)
         private set
 
     init {
@@ -28,6 +29,13 @@ class BreakViewModel (
     }
 
     private fun loadPlanActivities() {
+        viewModelScope.launch {
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            planActivities = planActivityRepository.getPlanActivitiesWithDetails(today)
+        }
+    }
+
+    fun reloadPlanActivities() {
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             planActivities = planActivityRepository.getPlanActivitiesWithDetails(today)

@@ -25,6 +25,9 @@ class ActivitySelectionModel (
 
     var selectedActivities = mutableStateListOf<Int>()
 
+    var initialEnergy by mutableIntStateOf(0)
+        private set
+
     var remainingEnergy by mutableIntStateOf(0)
         private set
 
@@ -65,10 +68,12 @@ class ActivitySelectionModel (
         }
     }
 
-    fun setInitialEnergy(energy: Int){
+    fun initEnergy(energy: Int){
         if(!isIntialized) {
-            remainingEnergy = energy
+            initialEnergy = energy
             isIntialized = true
+
+            loadSelectedActivitiesForToday()
         }
     }
 
@@ -84,11 +89,20 @@ class ActivitySelectionModel (
         }
     }
 
-    fun savePlanActivities(){
+    fun savePlanActivities(onDone: () -> Unit){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-            selectedActivities.forEach { id ->
+            val existing = planActivityRepository.getPlanActivities(today).map { it.activityId }
+
+            val toAdd = selectedActivities - existing
+            val toRemove = existing - selectedActivities
+
+            toRemove.forEach { id ->
+                planActivityRepository.deletePlanActivityByDateAndActivityId(today, id)
+            }
+
+            toAdd.forEach { id ->
                 planActivityRepository.savePlanActivity(
                     planDate = today,
                     activityId = id,
@@ -96,7 +110,21 @@ class ActivitySelectionModel (
                     completionTime = null
                 )
             }
+            onDone()
         }
     }
+    fun loadSelectedActivitiesForToday(){
+        viewModelScope.launch {
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val existing = planActivityRepository.getPlanActivities(today)
 
+            selectedActivities.clear()
+            selectedActivities.addAll(existing.map {it.activityId})
+
+            val selected = activities.filter {selectedActivities.contains(it.id)}
+            val usedEnergy = selected.sumOf {it.energyCost}
+
+            remainingEnergy = initialEnergy - usedEnergy
+        }
+    }
 }

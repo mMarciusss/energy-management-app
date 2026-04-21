@@ -33,4 +33,10 @@ interface PlanActivityDao {
 
     @Query("DELETE FROM plan_activities WHERE planDate = :date")
     suspend fun deleteByDate(date: String)
+
+    @Query("""
+        DELETE FROM plan_activities 
+        WHERE planDate = :date AND activityId = :activityId
+    """)
+    suspend fun deletePlanActivityByDateAndActivityId(date: String, activityId: Int)
 }
