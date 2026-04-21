@@ -13,7 +13,9 @@ import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.BreakRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import com.example.energymanagementapp.data.repository.PlanRepository
+import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
+import com.example.energymanagementapp.ui.screens.BreakSetupScreen
 import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
                             navController.navigate("activity_selection")
                         },
                         onGoToBreakScreen = {
-                            navController.navigate("break_setup")
+                            navController.navigate("assign_break")
                         },
                         selectedActivities = breakViewModel.planActivities
                     )
@@ -93,6 +95,32 @@ class MainActivity : ComponentActivity() {
                                 breakViewModel.reloadPlanActivities()
                                 navController.popBackStack()
                             }
+                        }
+                    )
+                }
+
+                composable("assign_break"){
+                    ActivityBreakListScreen(
+                        planActivities = breakViewModel.planActivities,
+                        onActivityClick = { planActivityId, planActivityName ->
+                            navController.navigate("break_setup/$planActivityId/$planActivityName")
+                        }
+                    )
+                }
+
+                composable("break_setup/{planActivityId}/{planActivityName}") { backStackEntry ->
+
+                    val planActivityId = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
+                    val planActivityName = backStackEntry.arguments?.getString("planActivityName") ?: ""
+
+                    BreakSetupScreen(
+                        activityName = planActivityName,
+                        breakDuration = breakViewModel.breakDuration,
+                        onIncrease = {breakViewModel.increaseBreakDuration()},
+                        onDecrease = {breakViewModel.decreaseBreakDuration()},
+                        onConfirm = {
+                            breakViewModel.saveBreak(planActivityId)
+                            navController.popBackStack()
                         }
                     )
                 }

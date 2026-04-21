@@ -6,9 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
@@ -23,18 +24,18 @@ fun ActivityBreakListScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
-        planActivities.forEach { planActivity ->
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        onActivityClick(planActivity.id, planActivity.activityName)
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(planActivity.activityName)
+        LazyColumn {
+            items(planActivities) { planActivity ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onActivityClick(planActivity.id, planActivity.activityName)
+                        },
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(planActivity.activityName)
+                }
             }
         }
     }
