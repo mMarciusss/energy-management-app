@@ -32,4 +32,8 @@ class PlanActivityRepository (
     suspend fun deletePlanActivityByDateAndActivityId(date: String, activityId: Int){
         planActivityDao.deletePlanActivityByDateAndActivityId(date, activityId)
     }
+
+    suspend fun getPlanActivitiesWithBreaks(planDate: String){
+        planActivityDao.getPlanActivitiesWithBreaks(planDate)
+    }
 }
