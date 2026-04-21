@@ -30,4 +30,7 @@ interface PlanActivityDao {
         WHERE pa.planDate = :planDate
     """)
     suspend fun getPlanActivitiesWithDetails(planDate: String): List<PlanActivityWithDetails>
+
+    @Query("DELETE FROM plan_activities WHERE planDate = :date")
+    suspend fun deleteByDate(date: String)
 }

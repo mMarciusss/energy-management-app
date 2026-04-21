@@ -24,4 +24,8 @@ class PlanActivityRepository (
     suspend fun getPlanActivitiesWithDetails(planDate: String): List<PlanActivityWithDetails> {
         return planActivityDao.getPlanActivitiesWithDetails(planDate)
     }
+
+    suspend fun deletePlanActivitiesByDate(date: String){
+        planActivityDao.deleteByDate(date)
+    }
 }
