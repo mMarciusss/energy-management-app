@@ -4,13 +4,20 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.energymanagementapp.data.local.entities.BreakEntity
 
 @Dao
 interface BreakDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdateBreak(activityBreak: BreakEntity)
+    @Insert
+    suspend fun insertBreak(activityBreak: BreakEntity)
+
+    @Update
+    suspend fun updateBreak(activityBreak: BreakEntity)
 
     @Query("SELECT * FROM breaks WHERE planActivityId = :planActivityId")
     suspend fun getBreaksByPlanActivity(planActivityId: Int): List<BreakEntity>
+
+    @Query("SELECT * FROM breaks WHERE planActivityId = :id LIMIT 1")
+    suspend fun getBreakByPlanActivity(id: Int): BreakEntity?
 }

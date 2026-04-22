@@ -1,6 +1,7 @@
 package com.example.energymanagementapp.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,6 +24,15 @@ class ActivitySelectionModel (
         private set
 
     var selectedActivities = mutableStateListOf<Int>()
+
+    var initialEnergy by mutableIntStateOf(0)
+        private set
+
+    var remainingEnergy by mutableIntStateOf(0)
+        private set
+
+    var isIntialized by mutableStateOf(false)
+        private set
 
     init {
         loadActivities()
@@ -58,19 +68,41 @@ class ActivitySelectionModel (
         }
     }
 
-    fun toggleActivity(activityId: Int){
-        if(selectedActivities.contains(activityId)){
-            selectedActivities.remove(activityId)
-        } else {
-            selectedActivities.add(activityId)
+    fun initEnergy(energy: Int){
+        if(!isIntialized) {
+            initialEnergy = energy
+            isIntialized = true
+
+            loadSelectedActivitiesForToday()
         }
     }
 
-    fun savePlanActivities(){
+    fun toggleActivity(activity: ActivityEntity){
+        if(selectedActivities.contains(activity.id)){
+            selectedActivities.remove(activity.id)
+            remainingEnergy += activity.energyCost
+        } else {
+            if(remainingEnergy >= activity.energyCost) {
+                selectedActivities.add(activity.id)
+                remainingEnergy -= activity.energyCost
+            }
+        }
+    }
+
+    fun savePlanActivities(onDone: () -> Unit){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-            selectedActivities.forEach { id ->
+            val existing = planActivityRepository.getPlanActivities(today).map { it.activityId }
+
+            val toAdd = selectedActivities - existing
+            val toRemove = existing - selectedActivities
+
+            toRemove.forEach { id ->
+                planActivityRepository.deletePlanActivityByDateAndActivityId(today, id)
+            }
+
+            toAdd.forEach { id ->
                 planActivityRepository.savePlanActivity(
                     planDate = today,
                     activityId = id,
@@ -78,7 +110,21 @@ class ActivitySelectionModel (
                     completionTime = null
                 )
             }
+            onDone()
         }
     }
+    fun loadSelectedActivitiesForToday(){
+        viewModelScope.launch {
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val existing = planActivityRepository.getPlanActivities(today)
 
+            selectedActivities.clear()
+            selectedActivities.addAll(existing.map {it.activityId})
+
+            val selected = activities.filter {selectedActivities.contains(it.id)}
+            val usedEnergy = selected.sumOf {it.energyCost}
+
+            remainingEnergy = initialEnergy - usedEnergy
+        }
+    }
 }
