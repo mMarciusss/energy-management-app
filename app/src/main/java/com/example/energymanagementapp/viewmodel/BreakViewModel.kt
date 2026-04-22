@@ -25,6 +25,12 @@ class BreakViewModel (
     var breakDuration by mutableIntStateOf(30)
         private set
 
+    var remainingEnergy by mutableStateOf(0)
+        private set
+
+    var totalEnergy by mutableStateOf(0)
+        private set
+
     init {
         loadPlanActivities()
     }
@@ -39,8 +45,22 @@ class BreakViewModel (
     fun reloadPlanActivities() {
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val list = planActivityRepository.getPlanActivitiesWithBreaks(today)
+
+            planActivities = list
+
+            val usedEnergy = list
+                .filter { it.isCompleted}
+                .sumOf { it.energyCost }
+
+            remainingEnergy = totalEnergy - usedEnergy
+
             planActivities = planActivityRepository.getPlanActivitiesWithBreaks(today)
         }
+    }
+
+    fun setEnergy(energy: Int){
+        totalEnergy = energy
     }
 
     fun increaseBreakDuration(){

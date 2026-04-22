@@ -20,8 +20,13 @@ fun PlanExecutionScreen(
 
         LazyColumn {
             items(activities) {activity ->
+
                 Row{
                     Text(activity.activityName)
+
+                    if(activity.breakDuration != null){
+                        Text(" /Break: ${activity.breakDuration} min")
+                    }
 
                     Checkbox(
                         checked = activity.isCompleted,

@@ -120,8 +120,6 @@ class MainActivity : ComponentActivity() {
                     val planActivityId = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
                     val planActivityName = backStackEntry.arguments?.getString("planActivityName") ?: ""
 
-
-
                     BreakSetupScreen(
                         activityName = planActivityName,
                         breakDuration = breakViewModel.breakDuration,
@@ -136,8 +134,11 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("plan_execution") {
+                    breakViewModel.setEnergy(energyViewModel.energy)
+                    breakViewModel.reloadPlanActivities()
+
                     PlanExecutionScreen(
-                        energy = energyViewModel.energy,
+                        energy = breakViewModel.remainingEnergy,
                         activities = breakViewModel.planActivities,
                         onToggleComplete = { id ->
                             breakViewModel.toggleComplete(id)
