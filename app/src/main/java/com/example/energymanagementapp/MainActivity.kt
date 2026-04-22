@@ -65,7 +65,9 @@ class MainActivity : ComponentActivity() {
                         onGoToBreakScreen = {
                             navController.navigate("assign_break")
                         },
-                        onConfirmPlan = {},
+                        onConfirmPlan = {
+                            navController.navigate("plan_execution")
+                        },
                         selectedActivities = breakViewModel.planActivities
                     )
                 }
@@ -131,6 +133,8 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
+
+
             }
         }
     }
