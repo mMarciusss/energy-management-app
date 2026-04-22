@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.room.migration.Migration
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 
@@ -27,6 +28,7 @@ fun PlanCreationHomeScreen(
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
+    onConfirmPlan: () -> Unit,
     selectedActivities: List<PlanActivityWithBreak>
 ) {
     Column(
@@ -78,6 +80,13 @@ fun PlanCreationHomeScreen(
             Button(onClick = onGoToBreakScreen) {
                 Text("Nustatyti pertraukas")
             }
+
+            if(isEnergySet && selectedActivities.isNotEmpty()){
+                Spacer(Modifier.height(30.dp))
+                Button(onClick = onConfirmPlan) {
+                    Text("Confirm plan")
+                }
+            }
         }
     }
 }
@@ -91,6 +100,7 @@ fun PlanCreationHomeScreenPreview(){
         onGoToEnergyScreen = {},
         onGoToActivitySelection = {},
         onGoToBreakScreen = {},
+        onConfirmPlan = {},
         selectedActivities = listOf(
             PlanActivityWithBreak(1,"Gym",2,45),
             PlanActivityWithBreak(2,"Study",1,null)

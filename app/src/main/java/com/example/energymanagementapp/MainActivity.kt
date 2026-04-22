@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
                         onGoToBreakScreen = {
                             navController.navigate("assign_break")
                         },
+                        onConfirmPlan = {},
                         selectedActivities = breakViewModel.planActivities
                     )
                 }
