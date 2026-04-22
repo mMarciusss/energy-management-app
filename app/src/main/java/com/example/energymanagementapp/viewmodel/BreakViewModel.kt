@@ -47,15 +47,13 @@ class BreakViewModel (
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             val list = planActivityRepository.getPlanActivitiesWithBreaks(today)
 
-            planActivities = list
-
             val usedEnergy = list
                 .filter { it.isCompleted}
                 .sumOf { it.energyCost }
 
             remainingEnergy = totalEnergy - usedEnergy
 
-            planActivities = planActivityRepository.getPlanActivitiesWithBreaks(today)
+            planActivities = list
         }
     }
 
