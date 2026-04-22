@@ -13,4 +13,7 @@ interface BreakDao {
 
     @Query("SELECT * FROM breaks WHERE planActivityId = :planActivityId")
     suspend fun getBreaksByPlanActivity(planActivityId: Int): List<BreakEntity>
+
+    @Query("SELECT * FROM breaks WHERE planActivityId = :id LIMIT 1")
+    suspend fun getBreakByPlanActivity(id: Int): BreakEntity?
 }

@@ -24,6 +24,10 @@ class BreakRepository (
         return breakDao.getBreaksByPlanActivity(planActivityId)
     }
 
+    suspend fun getBreak(planActivityId: Int): BreakEntity?{
+        return breakDao.getBreakByPlanActivity(planActivityId)
+    }
+
     suspend fun startBreak(planActivityId: Int) {
         val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
