@@ -18,6 +18,7 @@ import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
 import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
+import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.BreakViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
@@ -134,7 +135,13 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-
+                composable("plan_execution") {
+                    PlanExecutionScreen(
+                        energy = energyViewModel.energy,
+                        activities = breakViewModel.planActivities,
+                        onToggleComplete = {}
+                    )
+                }
             }
         }
     }
