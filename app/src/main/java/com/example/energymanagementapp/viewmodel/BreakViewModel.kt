@@ -58,10 +58,14 @@ class BreakViewModel (
             breakRepository.saveBreak(
                 planActivityId = planActivityId,
                 durationMinutes = breakDuration,
-                isCompleted = false,
-                startTime = "",
-                endTime = ""
             )
+        }
+    }
+
+    fun loadBreak(planActivityId: Int){
+        viewModelScope.launch {
+            val existing = breakRepository.getBreak(planActivityId)
+            breakDuration = existing?.durationMinutes ?: 30
         }
     }
 }

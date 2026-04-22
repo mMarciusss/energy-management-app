@@ -100,9 +100,12 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("assign_break"){
+                    breakViewModel.reloadPlanActivities()
+
                     ActivityBreakListScreen(
                         planActivities = breakViewModel.planActivities,
                         onActivityClick = { planActivityId, planActivityName ->
+                            breakViewModel.loadBreak(planActivityId)
                             navController.navigate("break_setup/$planActivityId/$planActivityName")
                         }
                     )
@@ -113,6 +116,8 @@ class MainActivity : ComponentActivity() {
                     val planActivityId = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
                     val planActivityName = backStackEntry.arguments?.getString("planActivityName") ?: ""
 
+
+
                     BreakSetupScreen(
                         activityName = planActivityName,
                         breakDuration = breakViewModel.breakDuration,
@@ -120,6 +125,7 @@ class MainActivity : ComponentActivity() {
                         onDecrease = {breakViewModel.decreaseBreakDuration()},
                         onConfirm = {
                             breakViewModel.saveBreak(planActivityId)
+                            breakViewModel.reloadPlanActivities()
                             navController.popBackStack()
                         }
                     )
