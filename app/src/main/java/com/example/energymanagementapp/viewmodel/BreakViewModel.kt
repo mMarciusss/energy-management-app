@@ -97,4 +97,24 @@ class BreakViewModel (
             }
         }
     }
+
+    fun completeActivities(ids: List<Int>, onDone: (Int?) -> Unit) {
+        viewModelScope.launch {
+            var firstBreakActivityId: Int? = null
+
+            ids.forEach { id ->
+                val activity = planActivities.find {it.id == id}
+
+                if(activity != null) {
+                    planActivityRepository.toggleComplete(id, true)
+
+                    if(activity.breakDuration != null && firstBreakActivityId == null) {
+                        firstBreakActivityId = id
+                    }
+                }
+            }
+            reloadPlanActivities()
+            onDone(firstBreakActivityId)
+        }
+    }
 }

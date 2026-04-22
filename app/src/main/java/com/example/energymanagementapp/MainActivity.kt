@@ -16,6 +16,7 @@ import com.example.energymanagementapp.data.repository.PlanRepository
 import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
+import com.example.energymanagementapp.ui.screens.BreakTimerScreen
 import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
 import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
@@ -140,8 +141,26 @@ class MainActivity : ComponentActivity() {
                     PlanExecutionScreen(
                         energy = breakViewModel.remainingEnergy,
                         activities = breakViewModel.planActivities,
-                        onToggleComplete = { id ->
-                            breakViewModel.toggleComplete(id)
+                        onConfirmComplete = { ids ->
+                            breakViewModel.completeActivities(ids) { breakActivityId ->
+
+                                if(breakActivityId != null) {
+                                    navController.navigate("timer/$breakActivityId")
+                                }
+                            }
+                        }
+                    )
+                }
+
+                composable("timer/{planActivityId}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
+
+                    val activity = breakViewModel.planActivities.find {it.id == id}
+
+                    BreakTimerScreen(
+                        duration = activity?.breakDuration ?: 0,
+                        onFinish = {
+                            navController.popBackStack()
                         }
                     )
                 }
