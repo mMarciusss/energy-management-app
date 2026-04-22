@@ -44,6 +44,10 @@ interface PlanActivityDao {
     @Query("""
         SELECT
             pa.id,
+            pa.planDate,
+            pa.activityId,
+            pa.isCompleted,
+            pa.completionTime,
             a.name as activityName,
             a.energyCost,
             b.durationMinutes as breakDuration
