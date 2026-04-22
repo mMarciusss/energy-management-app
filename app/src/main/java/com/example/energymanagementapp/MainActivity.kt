@@ -139,7 +139,9 @@ class MainActivity : ComponentActivity() {
                     PlanExecutionScreen(
                         energy = energyViewModel.energy,
                         activities = breakViewModel.planActivities,
-                        onToggleComplete = {}
+                        onToggleComplete = { id ->
+                            breakViewModel.toggleComplete(id)
+                        }
                     )
                 }
             }

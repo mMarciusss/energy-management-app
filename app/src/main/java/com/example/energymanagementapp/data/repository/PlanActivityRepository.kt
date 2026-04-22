@@ -37,4 +37,8 @@ class PlanActivityRepository (
     suspend fun getPlanActivitiesWithBreaks(planDate: String): List<PlanActivityWithBreak>{
         return planActivityDao.getPlanActivitiesWithBreaks(planDate)
     }
+
+    suspend fun toggleComplete(id: Int, isCompleted: Boolean){
+        planActivityDao.updateCompletion(id, isCompleted)
+    }
 }

@@ -68,4 +68,15 @@ class BreakViewModel (
             breakDuration = existing?.durationMinutes ?: 30
         }
     }
+
+    fun toggleComplete(id: Int){
+        viewModelScope.launch {
+            val current = planActivities.find {it.id == id}
+
+            if(current != null){
+                planActivityRepository.toggleComplete(id, !current.isCompleted)
+                reloadPlanActivities()
+            }
+        }
+    }
 }

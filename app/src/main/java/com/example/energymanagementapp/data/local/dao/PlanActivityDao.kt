@@ -57,4 +57,11 @@ interface PlanActivityDao {
         WHERE pa.planDate = :planDate
     """)
     suspend fun getPlanActivitiesWithBreaks(planDate: String): List<PlanActivityWithBreak>
+
+    @Query("""
+        UPDATE plan_activities
+        SET isCompleted = :isCompleted
+        WHERE id = :id
+    """)
+    suspend fun updateCompletion(id: Int, isCompleted: Boolean)
 }
