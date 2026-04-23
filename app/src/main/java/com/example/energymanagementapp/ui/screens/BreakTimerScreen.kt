@@ -18,9 +18,10 @@ fun BreakTimerScreen (
     onFinish: () -> Unit
 ) {
     var currentTime by remember { mutableStateOf(System.currentTimeMillis())}
+    var isRunning by remember { mutableStateOf(true)}
 
     LaunchedEffect(Unit) {
-        while (true){
+        while (isRunning){
             delay(1000)
             currentTime = System.currentTimeMillis()
         }
@@ -28,12 +29,13 @@ fun BreakTimerScreen (
 
     val timeLeft = ((endTime - currentTime) / 1000).toInt()
 
-    if(timeLeft <= 0) {
+    if(timeLeft <= 0 && isRunning) {
+        isRunning = false
         onFinish()
     }
 
-    val minutes = timeLeft / 60
-    val seconds = timeLeft % 60
+    val minutes = (timeLeft.coerceAtLeast(0)) / 60
+    val seconds = (timeLeft.coerceAtLeast(0)) % 60
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -41,7 +43,10 @@ fun BreakTimerScreen (
             text = String.format("%02d:%02d", minutes, seconds)
         )
 
-        Button(onClick = onFinish) {
+        Button(onClick = {
+            isRunning = false
+            onFinish()
+        }) {
             Text("Skip")
         }
     }

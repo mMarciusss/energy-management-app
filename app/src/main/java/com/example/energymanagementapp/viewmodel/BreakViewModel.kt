@@ -139,10 +139,38 @@ class BreakViewModel (
         }
     }
 
-    fun completeAfterBreak(planActivityId: Int){
+    fun getRunningBreakActivityId(): Int?{
+        val now = System.currentTimeMillis()
+
+        return planActivities
+            .firstOrNull{ activity ->
+                val hasBreakStarted = (activity.startTime ?: 0L) > 0L
+                val breakNotfinished = (activity.endTime ?: 0L) > now
+                hasBreakStarted && breakNotfinished && !activity.isCompleted
+            }
+            ?.id
+    }
+
+    fun finishBreak(planActivityId: Int){
+        viewModelScope.launch {
+            val existing = breakRepository.getBreak(planActivityId)
+
+            if(existing != null) {
+                breakRepository.saveBreak(
+                    planActivityId = existing.planActivityId,
+                    durationMinutes = existing.durationMinutes,
+                    startTime = existing.startTime,
+                    endTime = System.currentTimeMillis()
+                )
+            }
+        }
+    }
+
+    fun completeAfterBreak(planActivityId: Int, onDone: () -> Unit){
         viewModelScope.launch {
             planActivityRepository.toggleComplete(planActivityId, true)
             reloadPlanActivities()
+            onDone()
         }
     }
 }

@@ -25,7 +25,18 @@ fun PlanExecutionScreen(
         Text("Remaining energy: $energy")
 
         LazyColumn {
-            items(activities.filter { !it.isCompleted }) {activity ->
+
+            val now = System.currentTimeMillis()
+
+            val pendingActivities = activities.filter { activity ->
+                val breakRunning =
+                    (activity.startTime ?: 0L) > 0L &&
+                    (activity.endTime ?: 0L) > now
+
+                !activity.isCompleted && !breakRunning
+            }
+
+            items(pendingActivities) {activity ->
 
                 Row{
                     Text(activity.activityName)

@@ -3,6 +3,7 @@ package com.example.energymanagementapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -138,20 +139,29 @@ class MainActivity : ComponentActivity() {
                     breakViewModel.setEnergy(energyViewModel.energy)
                     breakViewModel.reloadPlanActivities()
 
-                    PlanExecutionScreen(
-                        energy = breakViewModel.remainingEnergy,
-                        activities = breakViewModel.planActivities,
-                        onConfirmComplete = { ids ->
-                            breakViewModel.completeActivities(ids) { breakActivityId ->
+                    val runningBreakId = breakViewModel.getRunningBreakActivityId()
 
-                                if(breakActivityId != null) {
-                                    breakViewModel.startBreakTimer(breakActivityId) {
-                                        navController.navigate("timer/$breakActivityId")
+                    LaunchedEffect(runningBreakId) {
+                        if (runningBreakId != null) {
+                            navController.navigate("timer/$runningBreakId")
+                        }
+                    }
+                    if (runningBreakId == null) {
+                        PlanExecutionScreen(
+                            energy = breakViewModel.remainingEnergy,
+                            activities = breakViewModel.planActivities,
+                            onConfirmComplete = { ids ->
+                                breakViewModel.completeActivities(ids) { breakActivityId ->
+
+                                    if (breakActivityId != null) {
+                                        breakViewModel.startBreakTimer(breakActivityId) {
+                                            navController.navigate("timer/$breakActivityId")
+                                        }
                                     }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
 
                 composable("timer/{planActivityId}") { backStackEntry ->
@@ -162,8 +172,10 @@ class MainActivity : ComponentActivity() {
                     BreakTimerScreen(
                         endTime = activity?.endTime ?: 0L,
                         onFinish = {
-                            breakViewModel.completeAfterBreak(id)
-                            navController.popBackStack()
+                            breakViewModel.finishBreak(id)
+                            breakViewModel.completeAfterBreak(id) {
+                                navController.popBackStack()
+                            }
                         }
                     )
                 }
