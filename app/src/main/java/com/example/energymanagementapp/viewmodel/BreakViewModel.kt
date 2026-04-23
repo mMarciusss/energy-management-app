@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.performInTransactionSuspending
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 import com.example.energymanagementapp.data.repository.BreakRepository
@@ -30,6 +31,7 @@ class BreakViewModel (
 
     var totalEnergy by mutableStateOf(0)
         private set
+
 
     init {
         loadPlanActivities()
@@ -76,6 +78,8 @@ class BreakViewModel (
             breakRepository.saveBreak(
                 planActivityId = planActivityId,
                 durationMinutes = breakDuration,
+                startTime = 0L,
+                endTime = 0L
             )
         }
     }
@@ -98,23 +102,47 @@ class BreakViewModel (
         }
     }
 
-    fun completeActivities(ids: List<Int>, onDone: (Int?) -> Unit) {
+    fun completeActivities(ids: List<Int>, onBreakNeeded: (Int?) -> Unit) {
         viewModelScope.launch {
-            var firstBreakActivityId: Int? = null
+            val firstWithBreak = planActivities
+                .filter { ids.contains(it.id) }
+                .firstOrNull {it.breakDuration != null}
 
-            ids.forEach { id ->
-                val activity = planActivities.find {it.id == id}
-
-                if(activity != null) {
-                    planActivityRepository.toggleComplete(id, true)
-
-                    if(activity.breakDuration != null && firstBreakActivityId == null) {
-                        firstBreakActivityId = id
-                    }
+            if (firstWithBreak != null) {
+                onBreakNeeded(firstWithBreak.id)
+            } else {
+                ids.forEach {
+                    planActivityRepository.toggleComplete(it, true)
                 }
+                reloadPlanActivities()
             }
+        }
+    }
+
+    fun startBreakTimer(planActivityId: Int, onDone: () -> Unit){
+        viewModelScope.launch {
+            val existing = breakRepository.getBreak(planActivityId)
+
+            if(existing != null){
+                val now = System.currentTimeMillis()
+                val end = now + existing.durationMinutes * 60 * 1000L
+
+                breakRepository.saveBreak(
+                    planActivityId = existing.planActivityId,
+                    durationMinutes = existing.durationMinutes,
+                    startTime = now,
+                    endTime = end
+                )
+            }
+
+            onDone()
+        }
+    }
+
+    fun completeAfterBreak(planActivityId: Int){
+        viewModelScope.launch {
+            planActivityRepository.toggleComplete(planActivityId, true)
             reloadPlanActivities()
-            onDone(firstBreakActivityId)
         }
     }
 }

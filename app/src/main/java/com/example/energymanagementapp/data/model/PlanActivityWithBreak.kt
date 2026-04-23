@@ -8,5 +8,7 @@ data class PlanActivityWithBreak (
     val completionTime: String?,
     val activityName: String,
     val energyCost: Int,
-    val breakDuration: Int?
+    val breakDuration: Int?,
+    val startTime: Long?,
+    val endTime: Long?
 )

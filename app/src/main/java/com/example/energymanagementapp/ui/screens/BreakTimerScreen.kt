@@ -14,16 +14,21 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun BreakTimerScreen (
-    duration: Int,
+    endTime: Long,
     onFinish: () -> Unit
 ) {
-    var timeLeft by remember { mutableStateOf(duration * 60) }
+    var currentTime by remember { mutableStateOf(System.currentTimeMillis())}
 
     LaunchedEffect(Unit) {
-        while (timeLeft > 0) {
+        while (true){
             delay(1000)
-            timeLeft--
+            currentTime = System.currentTimeMillis()
         }
+    }
+
+    val timeLeft = ((endTime - currentTime) / 1000).toInt()
+
+    if(timeLeft <= 0) {
         onFinish()
     }
 

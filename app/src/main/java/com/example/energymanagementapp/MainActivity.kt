@@ -145,7 +145,9 @@ class MainActivity : ComponentActivity() {
                             breakViewModel.completeActivities(ids) { breakActivityId ->
 
                                 if(breakActivityId != null) {
-                                    navController.navigate("timer/$breakActivityId")
+                                    breakViewModel.startBreakTimer(breakActivityId) {
+                                        navController.navigate("timer/$breakActivityId")
+                                    }
                                 }
                             }
                         }
@@ -153,13 +155,14 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("timer/{planActivityId}") { backStackEntry ->
-                    val id = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
+                    val id = backStackEntry.arguments?.getString("planActivityId")?.toIntOrNull() ?: 0
 
                     val activity = breakViewModel.planActivities.find {it.id == id}
 
                     BreakTimerScreen(
-                        duration = activity?.breakDuration ?: 0,
+                        endTime = activity?.endTime ?: 0L,
                         onFinish = {
+                            breakViewModel.completeAfterBreak(id)
                             navController.popBackStack()
                         }
                     )

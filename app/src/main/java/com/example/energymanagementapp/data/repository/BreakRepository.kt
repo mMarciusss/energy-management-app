@@ -9,7 +9,7 @@ import java.util.Locale
 class BreakRepository (
     private val breakDao: BreakDao
 ) {
-    suspend fun saveBreak(planActivityId: Int, durationMinutes: Int){
+    suspend fun saveBreak(planActivityId: Int, durationMinutes: Int, startTime: Long, endTime: Long){
         val existing = breakDao.getBreakByPlanActivity(planActivityId)
 
         if(existing == null){
@@ -18,13 +18,17 @@ class BreakRepository (
                     planActivityId = planActivityId,
                     durationMinutes = durationMinutes,
                     isCompleted = false,
-                    startTime = "",
-                    endTime = ""
+                    startTime = startTime,
+                    endTime = endTime
                 )
             )
         } else {
             breakDao.updateBreak(
-                existing.copy(durationMinutes = durationMinutes)
+                existing.copy(
+                    durationMinutes = durationMinutes,
+                    startTime = startTime,
+                    endTime = endTime
+                )
             )
         }
     }
@@ -35,23 +39,5 @@ class BreakRepository (
 
     suspend fun getBreak(planActivityId: Int): BreakEntity?{
         return breakDao.getBreakByPlanActivity(planActivityId)
-    }
-
-    suspend fun startBreak(planActivityId: Int) {
-        val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-
-        val activityBreak = BreakEntity(
-            planActivityId = planActivityId,
-            startTime = now
-        )
-    }
-
-    suspend fun endBreak(activityBreak: BreakEntity) {
-        val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-
-        val updated = activityBreak.copy(
-            endTime = now,
-            isCompleted = true
-        )
     }
 }
