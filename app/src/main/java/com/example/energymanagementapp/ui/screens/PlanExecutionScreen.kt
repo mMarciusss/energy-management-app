@@ -38,6 +38,19 @@ fun PlanExecutionScreen(
 
             items(pendingActivities) {activity ->
 
+                val alreadySelectedWithBreak = activities.any {
+                    checkedIds.contains(it.id) && it.breakDuration != null
+                }
+
+                val isThisWithBreak = activity.breakDuration != null
+
+                val canSelect =
+                    if (isThisWithBreak) {
+                        !alreadySelectedWithBreak || checkedIds.contains(activity.id)
+                    } else {
+                        true
+                    }
+
                 Row{
                     Text(activity.activityName)
 
@@ -47,6 +60,7 @@ fun PlanExecutionScreen(
 
                     Checkbox(
                         checked = checkedIds.contains(activity.id),
+                        enabled = canSelect,
                         onCheckedChange = {
                             if (checkedIds.contains(activity.id)) {
                                 checkedIds.remove(activity.id)

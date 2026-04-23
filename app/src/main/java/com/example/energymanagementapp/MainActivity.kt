@@ -172,7 +172,6 @@ class MainActivity : ComponentActivity() {
                     BreakTimerScreen(
                         endTime = activity?.endTime ?: 0L,
                         onFinish = {
-                            breakViewModel.finishBreak(id)
                             breakViewModel.completeAfterBreak(id) {
                                 navController.popBackStack()
                             }
