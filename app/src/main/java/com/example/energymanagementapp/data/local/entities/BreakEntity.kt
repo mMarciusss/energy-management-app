@@ -12,6 +12,6 @@ data class BreakEntity (
 
     val durationMinutes: Int = 0,
     val isCompleted: Boolean = false,
-    val startTime: String = "",
-    val endTime: String = ""
+    val startTime: Long = 0L,
+    val endTime: Long = 0L
 )

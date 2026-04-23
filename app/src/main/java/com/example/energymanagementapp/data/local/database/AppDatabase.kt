@@ -13,7 +13,7 @@ import com.example.energymanagementapp.data.local.entities.PlanEntity
 
 @Database(
     entities = [PlanEntity::class, ActivityEntity::class, PlanActivityEntity::class, BreakEntity::class],
-    version = 5
+    version = 6
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
