@@ -69,9 +69,9 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-                val confirmed = planRepository.isPlanConfirmed(today)
+                val planConfirmed = planRepository.isPlanConfirmed(today)
 
-                startDestination = if (confirmed) {
+                startDestination = if (planConfirmed) {
                     "plan_execution"
                 } else {
                     "plan_creation_home"
@@ -181,6 +181,15 @@ class MainActivity : ComponentActivity() {
                         breakViewModel.reloadPlanActivities()
 
                         val runningBreakId = breakViewModel.getRunningBreakActivityId()
+                        val allCompleted = breakViewModel.areAllActivitiesCompleted()
+
+                        LaunchedEffect(allCompleted) {
+                            if(allCompleted) {
+                                navController.navigate("day_summary") {
+                                    popUpTo("plan_execution") {inclusive = true}
+                                }
+                            }
+                        }
 
                         LaunchedEffect(runningBreakId) {
                             if (runningBreakId != null) {

@@ -103,10 +103,20 @@ class BreakViewModel (
                 planActivityRepository.toggleComplete(it.id, true)
             }
 
-            reloadPlanActivities()
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val updatedList = planActivityRepository.getPlanActivitiesWithBreaks(today)
+
+            val usedEnergy = updatedList
+                .filter { it.isCompleted }
+                .sumOf { it.energyCost }
+
+            remainingEnergy = totalEnergy - usedEnergy
+            planActivities = updatedList
 
             if (withBreak.isNotEmpty()) {
                 onBreakNeeded(withBreak.first().id)
+            } else {
+                onBreakNeeded(null)
             }
         }
     }
@@ -158,7 +168,17 @@ class BreakViewModel (
             }
 
             planActivityRepository.toggleComplete(planActivityId, true)
-            reloadPlanActivities()
+
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val updatedList = planActivityRepository.getPlanActivitiesWithBreaks(today)
+
+            val usedEnergy = updatedList
+                .filter {it.isCompleted}
+                .sumOf {it.energyCost}
+
+            remainingEnergy = totalEnergy - usedEnergy
+            planActivities = updatedList
+
             onDone()
         }
     }
