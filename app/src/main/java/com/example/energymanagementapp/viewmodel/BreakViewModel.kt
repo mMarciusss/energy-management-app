@@ -162,4 +162,8 @@ class BreakViewModel (
             onDone()
         }
     }
+
+    fun areAllActivitiesCompleted(): Boolean {
+        return planActivities.isNotEmpty() && planActivities.all {it.isCompleted}
+    }
 }

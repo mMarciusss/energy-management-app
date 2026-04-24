@@ -198,6 +198,10 @@ class MainActivity : ComponentActivity() {
                                             breakViewModel.startBreakTimer(breakActivityId) {
                                                 navController.navigate("timer/$breakActivityId")
                                             }
+                                        } else {
+                                            if (breakViewModel.areAllActivitiesCompleted()) {
+                                                navController.navigate("day_summary")
+                                            }
                                         }
                                     }
                                 }
@@ -214,7 +218,11 @@ class MainActivity : ComponentActivity() {
                             endTime = activity?.endTime ?: 0L,
                             onFinish = {
                                 breakViewModel.completeAfterBreak(id) {
-                                    navController.popBackStack()
+                                    if(breakViewModel.areAllActivitiesCompleted()) {
+                                        navController.navigate("day_summary")
+                                    } else {
+                                        navController.popBackStack()
+                                    }
                                 }
                             }
                         )
