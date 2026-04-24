@@ -9,5 +9,5 @@ data class PlanEntity(
     val date: String,
     val energyLevel: Int,
     val isConfirmed: Boolean = false,
-    val endTime: String = "22:00"
+    val endTime: String = "20:00"
 )

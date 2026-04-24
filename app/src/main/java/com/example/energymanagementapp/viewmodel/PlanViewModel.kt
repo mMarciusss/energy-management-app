@@ -43,8 +43,7 @@ class PlanViewModel (
         viewModelScope.launch {
             val today = getToday()
             planRepository.confirmPlan(today)
-
-            loadPlan()
+            isConfirmed = true
             onDone()
         }
     }
