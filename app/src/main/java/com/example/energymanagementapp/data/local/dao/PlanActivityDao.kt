@@ -63,8 +63,9 @@ interface PlanActivityDao {
 
     @Query("""
         UPDATE plan_activities
-        SET isCompleted = :isCompleted
+        SET isCompleted = :isCompleted,
+            completionTime = :completionTime
         WHERE id = :id
     """)
-    suspend fun updateCompletion(id: Int, isCompleted: Boolean)
+    suspend fun updateCompletion(id: Int, isCompleted: Boolean, completionTime: String)
 }

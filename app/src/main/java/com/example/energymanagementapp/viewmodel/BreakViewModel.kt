@@ -98,9 +98,10 @@ class BreakViewModel (
             val selected = planActivities.filter { ids.contains(it.id) }
             val withBreak = selected.filter { it.breakDuration != null }
             val withoutBreak = selected.filter { it.breakDuration == null }
+            val completionTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
             withoutBreak.forEach {
-                planActivityRepository.toggleComplete(it.id, true)
+                planActivityRepository.completeActivity(it.id, completionTime)
             }
 
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -167,7 +168,9 @@ class BreakViewModel (
                 )
             }
 
-            planActivityRepository.toggleComplete(planActivityId, true)
+            val completionTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
+            planActivityRepository.completeActivity(planActivityId, completionTime)
 
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             val updatedList = planActivityRepository.getPlanActivitiesWithBreaks(today)
