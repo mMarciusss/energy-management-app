@@ -144,6 +144,9 @@ class MainActivity : ComponentActivity() {
                             onActivityClick = { planActivityId, planActivityName ->
                                 breakViewModel.loadBreak(planActivityId)
                                 navController.navigate("break_setup/$planActivityId/$planActivityName")
+                            },
+                            onBackToHome = {
+                                navController.popBackStack("plan_creation_home", false)
                             }
                         )
                     }
