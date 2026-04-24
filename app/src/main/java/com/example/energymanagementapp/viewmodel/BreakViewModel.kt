@@ -73,7 +73,7 @@ class BreakViewModel (
             breakDuration -= 5
     }
 
-    fun saveBreak(planActivityId: Int){
+    fun createBreak(planActivityId: Int){
         viewModelScope.launch {
             breakRepository.saveBreak(
                 planActivityId = planActivityId,
@@ -88,17 +88,6 @@ class BreakViewModel (
         viewModelScope.launch {
             val existing = breakRepository.getBreak(planActivityId)
             breakDuration = existing?.durationMinutes ?: 30
-        }
-    }
-
-    fun toggleComplete(id: Int){
-        viewModelScope.launch {
-            val current = planActivities.find {it.id == id}
-
-            if(current != null){
-                planActivityRepository.toggleComplete(id, !current.isCompleted)
-                reloadPlanActivities()
-            }
         }
     }
 
@@ -151,21 +140,6 @@ class BreakViewModel (
                 hasBreakStarted && breakNotfinished && !activity.isCompleted
             }
             ?.id
-    }
-
-    fun finishBreak(planActivityId: Int){
-        viewModelScope.launch {
-            val existing = breakRepository.getBreak(planActivityId)
-
-            if(existing != null) {
-                breakRepository.saveBreak(
-                    planActivityId = existing.planActivityId,
-                    durationMinutes = existing.durationMinutes,
-                    startTime = existing.startTime,
-                    endTime = System.currentTimeMillis()
-                )
-            }
-        }
     }
 
     fun completeAfterBreak(planActivityId: Int, onDone: () -> Unit){

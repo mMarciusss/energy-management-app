@@ -128,7 +128,7 @@ class MainActivity : ComponentActivity() {
                         onIncrease = {breakViewModel.increaseBreakDuration()},
                         onDecrease = {breakViewModel.decreaseBreakDuration()},
                         onConfirm = {
-                            breakViewModel.saveBreak(planActivityId)
+                            breakViewModel.createBreak(planActivityId)
                             breakViewModel.reloadPlanActivities()
                             navController.popBackStack()
                         }
