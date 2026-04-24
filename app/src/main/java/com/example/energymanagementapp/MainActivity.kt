@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +28,12 @@ import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.BreakViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,133 +60,155 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            NavHost(
-                navController = navController,
-                startDestination = "plan_creation_home"
-            ) {
+            var startDestination by remember { mutableStateOf<String?>(null) }
 
-                composable("plan_creation_home") {
-                    PlanCreationHomeScreen(
-                        energy = energyViewModel.energy,
-                        isEnergySet = energyViewModel.isEnergySet,
-                        onGoToEnergyScreen = {
-                            navController.navigate("energy")
-                        },
-                        onGoToActivitySelection = {
-                            navController.navigate("activity_selection")
-                        },
-                        onGoToBreakScreen = {
-                            navController.navigate("assign_break")
-                        },
-                        onConfirmPlan = {
-                            navController.navigate("plan_execution")
-                        },
-                        selectedActivities = breakViewModel.planActivities
-                    )
+            LaunchedEffect(Unit) {
+                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+                val confirmed = planRepository.isPlanConfirmed(today)
+
+                startDestination = if (confirmed) {
+                    "plan_execution"
+                } else {
+                    "plan_creation_home"
                 }
+            }
 
-                composable("energy") {
-                    EnergyScreen(
-                        energy = energyViewModel.energy,
-                        onIncrease = {energyViewModel.increaseEnergy()},
-                        onDecrease = {energyViewModel.decreaseEnergy()},
-                        onConfirm = {
-                            energyViewModel.saveEnergy()
-                            navController.popBackStack()
-                        }
-                    )
-                }
+            if(startDestination != null){
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination!!
+                ) {
 
-                composable("activity_selection") {
+                    composable("plan_creation_home") {
+                        PlanCreationHomeScreen(
+                            energy = energyViewModel.energy,
+                            isEnergySet = energyViewModel.isEnergySet,
+                            onGoToEnergyScreen = {
+                                navController.navigate("energy")
+                            },
+                            onGoToActivitySelection = {
+                                navController.navigate("activity_selection")
+                            },
+                            onGoToBreakScreen = {
+                                navController.navigate("assign_break")
+                            },
+                            onConfirmPlan = {
+                                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-                    activitySelectionModel.initEnergy(energyViewModel.energy)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    planRepository.confirmPlan(today)
+                                }
 
-                    ActivitySelectionScreen(
-                        activities = activitySelectionModel.activities,
-                        selectedActivities = activitySelectionModel.selectedActivities,
-                        remainingEnergy = activitySelectionModel.remainingEnergy,
-                        onToggle = {activitySelectionModel.toggleActivity(it)},
-                        onConfirm = {
-                            activitySelectionModel.savePlanActivities {
-                                breakViewModel.reloadPlanActivities()
+                                navController.navigate("plan_execution")
+                            },
+                            selectedActivities = breakViewModel.planActivities
+                        )
+                    }
+
+                    composable("energy") {
+                        EnergyScreen(
+                            energy = energyViewModel.energy,
+                            onIncrease = {energyViewModel.increaseEnergy()},
+                            onDecrease = {energyViewModel.decreaseEnergy()},
+                            onConfirm = {
+                                energyViewModel.saveEnergy()
                                 navController.popBackStack()
                             }
-                        }
-                    )
-                }
-
-                composable("assign_break"){
-                    breakViewModel.reloadPlanActivities()
-
-                    ActivityBreakListScreen(
-                        planActivities = breakViewModel.planActivities,
-                        onActivityClick = { planActivityId, planActivityName ->
-                            breakViewModel.loadBreak(planActivityId)
-                            navController.navigate("break_setup/$planActivityId/$planActivityName")
-                        }
-                    )
-                }
-
-                composable("break_setup/{planActivityId}/{planActivityName}") { backStackEntry ->
-
-                    val planActivityId = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
-                    val planActivityName = backStackEntry.arguments?.getString("planActivityName") ?: ""
-
-                    BreakSetupScreen(
-                        activityName = planActivityName,
-                        breakDuration = breakViewModel.breakDuration,
-                        onIncrease = {breakViewModel.increaseBreakDuration()},
-                        onDecrease = {breakViewModel.decreaseBreakDuration()},
-                        onConfirm = {
-                            breakViewModel.createBreak(planActivityId)
-                            breakViewModel.reloadPlanActivities()
-                            navController.popBackStack()
-                        }
-                    )
-                }
-
-                composable("plan_execution") {
-                    breakViewModel.setEnergy(energyViewModel.energy)
-                    breakViewModel.reloadPlanActivities()
-
-                    val runningBreakId = breakViewModel.getRunningBreakActivityId()
-
-                    LaunchedEffect(runningBreakId) {
-                        if (runningBreakId != null) {
-                            navController.navigate("timer/$runningBreakId")
-                        }
+                        )
                     }
-                    if (runningBreakId == null) {
-                        PlanExecutionScreen(
-                            energy = breakViewModel.remainingEnergy,
-                            activities = breakViewModel.planActivities,
-                            onConfirmComplete = { ids ->
-                                breakViewModel.completeActivities(ids) { breakActivityId ->
 
-                                    if (breakActivityId != null) {
-                                        breakViewModel.startBreakTimer(breakActivityId) {
-                                            navController.navigate("timer/$breakActivityId")
-                                        }
-                                    }
+                    composable("activity_selection") {
+
+                        activitySelectionModel.initEnergy(energyViewModel.energy)
+
+                        ActivitySelectionScreen(
+                            activities = activitySelectionModel.activities,
+                            selectedActivities = activitySelectionModel.selectedActivities,
+                            remainingEnergy = activitySelectionModel.remainingEnergy,
+                            onToggle = {activitySelectionModel.toggleActivity(it)},
+                            onConfirm = {
+                                activitySelectionModel.savePlanActivities {
+                                    breakViewModel.reloadPlanActivities()
+                                    navController.popBackStack()
                                 }
                             }
                         )
                     }
-                }
 
-                composable("timer/{planActivityId}") { backStackEntry ->
-                    val id = backStackEntry.arguments?.getString("planActivityId")?.toIntOrNull() ?: 0
+                    composable("assign_break"){
+                        breakViewModel.reloadPlanActivities()
 
-                    val activity = breakViewModel.planActivities.find {it.id == id}
+                        ActivityBreakListScreen(
+                            planActivities = breakViewModel.planActivities,
+                            onActivityClick = { planActivityId, planActivityName ->
+                                breakViewModel.loadBreak(planActivityId)
+                                navController.navigate("break_setup/$planActivityId/$planActivityName")
+                            }
+                        )
+                    }
 
-                    BreakTimerScreen(
-                        endTime = activity?.endTime ?: 0L,
-                        onFinish = {
-                            breakViewModel.completeAfterBreak(id) {
+                    composable("break_setup/{planActivityId}/{planActivityName}") { backStackEntry ->
+
+                        val planActivityId = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
+                        val planActivityName = backStackEntry.arguments?.getString("planActivityName") ?: ""
+
+                        BreakSetupScreen(
+                            activityName = planActivityName,
+                            breakDuration = breakViewModel.breakDuration,
+                            onIncrease = {breakViewModel.increaseBreakDuration()},
+                            onDecrease = {breakViewModel.decreaseBreakDuration()},
+                            onConfirm = {
+                                breakViewModel.createBreak(planActivityId)
+                                breakViewModel.reloadPlanActivities()
                                 navController.popBackStack()
                             }
+                        )
+                    }
+
+                    composable("plan_execution") {
+                        breakViewModel.setEnergy(energyViewModel.energy)
+                        breakViewModel.reloadPlanActivities()
+
+                        val runningBreakId = breakViewModel.getRunningBreakActivityId()
+
+                        LaunchedEffect(runningBreakId) {
+                            if (runningBreakId != null) {
+                                navController.navigate("timer/$runningBreakId")
+                            }
                         }
-                    )
+                        if (runningBreakId == null) {
+                            PlanExecutionScreen(
+                                energy = breakViewModel.remainingEnergy,
+                                activities = breakViewModel.planActivities,
+                                onConfirmComplete = { ids ->
+                                    breakViewModel.completeActivities(ids) { breakActivityId ->
+
+                                        if (breakActivityId != null) {
+                                            breakViewModel.startBreakTimer(breakActivityId) {
+                                                navController.navigate("timer/$breakActivityId")
+                                            }
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+
+                    composable("timer/{planActivityId}") { backStackEntry ->
+                        val id = backStackEntry.arguments?.getString("planActivityId")?.toIntOrNull() ?: 0
+
+                        val activity = breakViewModel.planActivities.find {it.id == id}
+
+                        BreakTimerScreen(
+                            endTime = activity?.endTime ?: 0L,
+                            onFinish = {
+                                breakViewModel.completeAfterBreak(id) {
+                                    navController.popBackStack()
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
