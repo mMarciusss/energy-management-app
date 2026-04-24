@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class PlanEntity(
     @PrimaryKey
     val date: String,
-    val energyLevel: Int
+    val energyLevel: Int,
+    val isConfirmed: Boolean = false
 )
