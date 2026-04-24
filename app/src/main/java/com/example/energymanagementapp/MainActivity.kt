@@ -196,7 +196,7 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate("timer/$runningBreakId")
                             }
                         }
-                        if (runningBreakId == null) {
+                        if (runningBreakId == null && !allCompleted) {
                             PlanExecutionScreen(
                                 energy = breakViewModel.remainingEnergy,
                                 activities = breakViewModel.planActivities,
