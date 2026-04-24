@@ -22,11 +22,13 @@ import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
 import com.example.energymanagementapp.ui.screens.BreakTimerScreen
+import com.example.energymanagementapp.ui.screens.DaySummaryScreen
 import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
 import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.BreakViewModel
+import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,9 +55,11 @@ class MainActivity : ComponentActivity() {
         val activityRepository = ActivityRepository(db.activityDao())
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
+        val daySummaryViewModel = DaySummaryViewModel(planActivityRepository)
 
         val breakRepository = BreakRepository(db.breakDao())
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
+
 
         setContent {
             val navController = rememberNavController()
@@ -213,6 +217,18 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                 }
                             }
+                        )
+                    }
+
+                    composable("day_summary") {
+                        LaunchedEffect(Unit) {
+                            daySummaryViewModel.loadSummary()
+                        }
+
+                        DaySummaryScreen(
+                            activities = daySummaryViewModel.activities,
+                            totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
+                            totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes
                         )
                     }
                 }
