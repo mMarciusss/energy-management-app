@@ -165,6 +165,9 @@ class MainActivity : ComponentActivity() {
                                 breakViewModel.createBreak(planActivityId)
                                 breakViewModel.reloadPlanActivities()
                                 navController.popBackStack()
+                            },
+                            onCancel = {
+                                navController.popBackStack()
                             }
                         )
                     }

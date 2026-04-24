@@ -20,7 +20,8 @@ fun BreakSetupScreen(
     breakDuration: Int,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -49,8 +50,15 @@ fun BreakSetupScreen(
 
         Spacer(Modifier.width(16.dp))
 
-        Button(onClick = onConfirm) {
-            Text("Confirm break")
+        Row(horizontalArrangement = Arrangement.Center){
+            Button(onClick = onCancel) {
+                Text("Cancel break")
+            }
+            Spacer(Modifier.width(16.dp))
+
+            Button(onClick = onConfirm) {
+                Text("Confirm break")
+            }
         }
     }
 }
@@ -63,6 +71,7 @@ fun BreakSetupScreenPreview() {
         breakDuration = 30,
         onIncrease = {},
         onDecrease = {},
-        onConfirm = {}
+        onConfirm = {},
+        onCancel = {}
     )
 }
