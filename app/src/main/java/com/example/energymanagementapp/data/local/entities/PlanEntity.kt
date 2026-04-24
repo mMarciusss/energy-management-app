@@ -8,5 +8,6 @@ data class PlanEntity(
     @PrimaryKey
     val date: String,
     val energyLevel: Int,
-    val isConfirmed: Boolean = false
+    val isConfirmed: Boolean = false,
+    val endTime: String = "22:00"
 )
