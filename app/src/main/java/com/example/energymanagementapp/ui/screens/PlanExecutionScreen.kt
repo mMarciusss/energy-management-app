@@ -31,7 +31,7 @@ fun PlanExecutionScreen(
             val pendingActivities = activities.filter { activity ->
                 val breakRunning =
                     (activity.startTime ?: 0L) > 0L &&
-                    (activity.endTime ?: 0L) > now
+                    activity.breakIsCompleted == false
 
                 !activity.isCompleted && !breakRunning
             }

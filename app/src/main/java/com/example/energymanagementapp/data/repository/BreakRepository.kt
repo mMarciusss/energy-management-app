@@ -9,7 +9,7 @@ import java.util.Locale
 class BreakRepository (
     private val breakDao: BreakDao
 ) {
-    suspend fun saveBreak(planActivityId: Int, durationMinutes: Int, startTime: Long, endTime: Long){
+    suspend fun saveBreak(planActivityId: Int, durationMinutes: Int, startTime: Long, endTime: Long, isCompleted: Boolean){
         val existing = breakDao.getBreakByPlanActivity(planActivityId)
 
         if(existing == null){
@@ -17,7 +17,7 @@ class BreakRepository (
                 BreakEntity(
                     planActivityId = planActivityId,
                     durationMinutes = durationMinutes,
-                    isCompleted = false,
+                    isCompleted = isCompleted,
                     startTime = startTime,
                     endTime = endTime
                 )
@@ -27,7 +27,8 @@ class BreakRepository (
                 existing.copy(
                     durationMinutes = durationMinutes,
                     startTime = startTime,
-                    endTime = endTime
+                    endTime = endTime,
+                    isCompleted = isCompleted
                 )
             )
         }

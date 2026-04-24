@@ -10,5 +10,6 @@ data class PlanActivityWithBreak (
     val energyCost: Int,
     val breakDuration: Int?,
     val startTime: Long?,
-    val endTime: Long?
+    val endTime: Long?,
+    val breakIsCompleted: Boolean?
 )

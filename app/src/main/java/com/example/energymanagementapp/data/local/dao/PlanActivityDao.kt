@@ -52,7 +52,8 @@ interface PlanActivityDao {
             a.energyCost,
             b.durationMinutes as breakDuration,
             b.startTime,
-            b.endTime
+            b.endTime,
+            b.isCompleted as breakIsCompleted
         FROM plan_activities pa
         INNER JOIN activities a ON pa.activityId = a.id
         LEFT JOIN breaks b ON b.planActivityId = pa.id

@@ -79,7 +79,8 @@ class BreakViewModel (
                 planActivityId = planActivityId,
                 durationMinutes = breakDuration,
                 startTime = 0L,
-                endTime = 0L
+                endTime = 0L,
+                isCompleted = false
             )
         }
     }
@@ -122,7 +123,8 @@ class BreakViewModel (
                     planActivityId = existing.planActivityId,
                     durationMinutes = existing.durationMinutes,
                     startTime = now,
-                    endTime = end
+                    endTime = end,
+                    isCompleted = false
                 )
             }
 
@@ -131,13 +133,11 @@ class BreakViewModel (
     }
 
     fun getRunningBreakActivityId(): Int?{
-        val now = System.currentTimeMillis()
-
         return planActivities
             .firstOrNull{ activity ->
                 val hasBreakStarted = (activity.startTime ?: 0L) > 0L
-                val breakNotfinished = (activity.endTime ?: 0L) > now
-                hasBreakStarted && breakNotfinished && !activity.isCompleted
+                val breakNotCompleted = activity.breakIsCompleted == false
+                hasBreakStarted && breakNotCompleted && !activity.isCompleted
             }
             ?.id
     }
@@ -152,7 +152,8 @@ class BreakViewModel (
                     planActivityId = existing.planActivityId,
                     durationMinutes = existing.durationMinutes,
                     startTime = existing.startTime,
-                    endTime = System.currentTimeMillis()
+                    endTime = System.currentTimeMillis(),
+                    isCompleted = true
                 )
             }
 
