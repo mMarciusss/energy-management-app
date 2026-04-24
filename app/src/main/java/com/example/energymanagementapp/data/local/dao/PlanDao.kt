@@ -13,4 +13,7 @@ interface PlanDao {
 
     @Query("SELECT * FROM plans WHERE date = :date LIMIT 1")
     suspend fun getPlanByDate(date: String): PlanEntity?
+
+    @Query("Update plans SET isConfirmed = 1 WHERE date = :date")
+    suspend fun confirmPlan(date: String)
 }

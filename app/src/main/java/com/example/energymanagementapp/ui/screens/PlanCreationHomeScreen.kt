@@ -91,19 +91,36 @@ fun PlanCreationHomeScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PlanCreationHomeScreenPreview(){
-    PlanCreationHomeScreen(
-        energy = 5,
-        isEnergySet = true,
-        onGoToEnergyScreen = {},
-        onGoToActivitySelection = {},
-        onGoToBreakScreen = {},
-        onConfirmPlan = {},
-        selectedActivities = listOf(
-            PlanActivityWithBreak(1,"Gym",2,45),
-            PlanActivityWithBreak(2,"Study",1,null)
-        )
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PlanCreationHomeScreenPreview(){
+//    PlanCreationHomeScreen(
+//        energy = 5,
+//        isEnergySet = true,
+//        onGoToEnergyScreen = {},
+//        onGoToActivitySelection = {},
+//        onGoToBreakScreen = {},
+//        onConfirmPlan = {},
+//        selectedActivities = listOf(
+//            PlanActivityWithBreak(
+//                id = 1,
+//                planDate = "2026-04-22",
+//                activityId = 1,
+//                isCompleted = false,
+//                completionTime = null,
+//                activityName = "Gym",
+//                energyCost = 2,
+//                breakDuration = 45),
+//            PlanActivityWithBreak(
+//                id = 2,
+//                planDate = "2026-04-22",
+//                activityId = 2,
+//                isCompleted = false,
+//                completionTime = null,
+//                activityName = "Study",
+//                energyCost = 1,
+//                breakDuration = null
+//            )
+//        )
+//    )
+//}

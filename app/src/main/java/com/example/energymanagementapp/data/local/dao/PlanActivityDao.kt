@@ -44,13 +44,27 @@ interface PlanActivityDao {
     @Query("""
         SELECT
             pa.id,
+            pa.planDate,
+            pa.activityId,
+            pa.isCompleted,
+            pa.completionTime,
             a.name as activityName,
             a.energyCost,
-            b.durationMinutes as breakDuration
+            b.durationMinutes as breakDuration,
+            b.startTime,
+            b.endTime,
+            b.isCompleted as breakIsCompleted
         FROM plan_activities pa
         INNER JOIN activities a ON pa.activityId = a.id
         LEFT JOIN breaks b ON b.planActivityId = pa.id
         WHERE pa.planDate = :planDate
     """)
     suspend fun getPlanActivitiesWithBreaks(planDate: String): List<PlanActivityWithBreak>
+
+    @Query("""
+        UPDATE plan_activities
+        SET isCompleted = :isCompleted
+        WHERE id = :id
+    """)
+    suspend fun updateCompletion(id: Int, isCompleted: Boolean)
 }
