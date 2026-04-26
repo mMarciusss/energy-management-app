@@ -10,6 +10,7 @@ import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 @Composable
 fun DaySummaryScreen (
     activities: List<PlanActivityWithBreak>,
+    totalEnergy: Int,
     totalEnergyUsed: Int,
     totalRestTimeMinutes: Int
 ) {
@@ -19,7 +20,7 @@ fun DaySummaryScreen (
     Column() {
         Text("Dienos apzvalga")
 
-        Text("Sunaudota energija: $totalEnergyUsed")
+        Text("Sunaudota energija: $totalEnergyUsed / $totalEnergy")
         Text("Bendras poilsio laikas: $totalRestTimeMinutes min")
 
         Text("Atliktos veiklos:")

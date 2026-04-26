@@ -257,6 +257,7 @@ class MainActivity : ComponentActivity() {
 
                         DaySummaryScreen(
                             activities = daySummaryViewModel.activities,
+                            totalEnergy = energyViewModel.energy,
                             totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                             totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes
                         )
