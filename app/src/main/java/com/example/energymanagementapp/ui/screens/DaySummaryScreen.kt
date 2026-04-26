@@ -26,7 +26,7 @@ fun DaySummaryScreen (
 
         LazyColumn() {
             items(completedActivities) { activity ->
-                Text(activity.activityName)
+                Text("${activity.activityName} completed at ${activity.completionTime}")
             }
         }
 
