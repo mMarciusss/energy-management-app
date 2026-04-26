@@ -85,6 +85,7 @@ class MainActivity : ComponentActivity() {
                         PlanCreationHomeScreen(
                             energy = energyViewModel.energy,
                             isEnergySet = energyViewModel.isEnergySet,
+                            endTime = planViewModel.plan?.endTime ?: "20:00",
                             onGoToEnergyScreen = {
                                 navController.navigate("energy")
                             },
@@ -115,8 +116,10 @@ class MainActivity : ComponentActivity() {
                             energy = energyViewModel.energy,
                             onIncrease = {energyViewModel.increaseEnergy()},
                             onDecrease = {energyViewModel.decreaseEnergy()},
-                            onConfirm = {
+                            onConfirm = { endTime ->
                                 energyViewModel.saveEnergy()
+                                planViewModel.setEndTime(endTime)
+
                                 navController.popBackStack()
                             }
                         )
