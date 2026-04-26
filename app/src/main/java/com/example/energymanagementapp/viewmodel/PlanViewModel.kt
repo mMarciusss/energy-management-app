@@ -16,9 +16,13 @@ class PlanViewModel (
     private val planRepository: PlanRepository
 ) : ViewModel() {
 
-    var plan by mutableStateOf<PlanEntity?>(null)
-        private set
     var isConfirmed by mutableStateOf(false)
+        private set
+
+    var planEndTime by mutableStateOf("20:00")
+        private set
+
+    var isExpired by mutableStateOf(false)
         private set
 
     init {
@@ -28,10 +32,15 @@ class PlanViewModel (
     private fun loadPlan(){
         viewModelScope.launch {
             val today = getToday()
-            val todayPlan = planRepository.getPlan(today)
+            val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+            val plan = planRepository.getPlan(today)
 
-            plan = todayPlan
-            isConfirmed = todayPlan?.isConfirmed == true
+            if(plan != null){
+                isConfirmed = plan.isConfirmed == true
+                planEndTime = plan.endTime
+                isExpired =
+                    planEndTime < now
+            }
         }
     }
 
@@ -48,19 +57,12 @@ class PlanViewModel (
         }
     }
 
-    fun isPlanExpired(): Boolean{
-        val currentPlan = plan ?: return false
-        val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-
-        return now >= currentPlan.endTime
-    }
-
     fun setEndTime(endTime: String) {
         viewModelScope.launch {
             val today = getToday()
             planRepository.updateEndTime(today, endTime)
 
-            plan = plan?.copy(endTime = endTime)
+            planEndTime = endTime
         }
     }
 }

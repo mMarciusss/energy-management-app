@@ -1,5 +1,6 @@
 package com.example.energymanagementapp.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,12 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @Composable
 fun EnergyScreen(
     energy: Int,
+    endTime: String,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
     onConfirm: (String) -> Unit
@@ -52,7 +56,7 @@ fun EnergyScreen(
             }
         }
         Spacer(Modifier.width(16.dp))
-        var selectedTime by remember { mutableStateOf("20:00") }
+        var selectedTime by remember { mutableStateOf(endTime) }
         val context = LocalContext.current
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -81,7 +85,12 @@ fun EnergyScreen(
         }
 
         Spacer(Modifier.width(16.dp))
+        val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         Button(onClick = {
+            if(selectedTime <= currentTime) {
+                Toast.makeText(context, "Choose future time", Toast.LENGTH_SHORT).show()
+                return@Button
+            }
             onConfirm(selectedTime)
         }) {
             Text("Confirm energy and plan deadline")
@@ -94,6 +103,7 @@ fun EnergyScreen(
 fun EnergyScreenPreview() {
     EnergyScreen(
         energy = 5,
+        endTime = "20:00",
         onIncrease = {},
         onDecrease = {},
         onConfirm = {}

@@ -22,10 +22,6 @@ class PlanRepository (
         return planDao.getPlanByDate(date)
     }
 
-    suspend fun isPlanConfirmed(date: String): Boolean {
-        return planDao.getPlanByDate(date)?.isConfirmed == true
-    }
-
     suspend fun confirmPlan(date: String) {
         planDao.confirmPlan(date)
     }
