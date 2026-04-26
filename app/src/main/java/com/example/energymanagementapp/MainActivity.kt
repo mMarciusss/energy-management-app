@@ -22,12 +22,15 @@ import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
 import com.example.energymanagementapp.ui.screens.BreakTimerScreen
+import com.example.energymanagementapp.ui.screens.DaySummaryScreen
 import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
 import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.BreakViewModel
+import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
+import com.example.energymanagementapp.viewmodel.PlanViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,30 +51,28 @@ class MainActivity : ComponentActivity() {
         .build()
 
         val planRepository = PlanRepository(db.planDao())
+        val planViewModel = PlanViewModel(planRepository)
         val energyViewModel = EnergyViewModel(planRepository)
 
         val activityRepository = ActivityRepository(db.activityDao())
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
+        val daySummaryViewModel = DaySummaryViewModel(planActivityRepository)
 
         val breakRepository = BreakRepository(db.breakDao())
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
+
 
         setContent {
             val navController = rememberNavController()
 
             var startDestination by remember { mutableStateOf<String?>(null) }
 
-            LaunchedEffect(Unit) {
-                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-                val confirmed = planRepository.isPlanConfirmed(today)
-
-                startDestination = if (confirmed) {
-                    "plan_execution"
-                } else {
-                    "plan_creation_home"
-                }
+            LaunchedEffect(planViewModel.isConfirmed) {
+                startDestination =
+                    if(planViewModel.isConfirmed) "plan_execution"
+                    else if(planViewModel.isPlanExpired()) "day_summary"
+                    else "plan_creation_home"
             }
 
             if(startDestination != null){
@@ -94,13 +95,16 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate("assign_break")
                             },
                             onConfirmPlan = {
-                                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    planRepository.confirmPlan(today)
+//                                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+//
+//                                CoroutineScope(Dispatchers.IO).launch {
+//                                    planRepository.confirmPlan(today)
+//                                }
+//
+//                                navController.navigate("plan_execution")
+                                planViewModel.confirmPlan {
+                                    navController.navigate("plan_execution")
                                 }
-
-                                navController.navigate("plan_execution")
                             },
                             selectedActivities = breakViewModel.planActivities
                         )
@@ -177,13 +181,31 @@ class MainActivity : ComponentActivity() {
                         breakViewModel.reloadPlanActivities()
 
                         val runningBreakId = breakViewModel.getRunningBreakActivityId()
+                        val allCompleted = breakViewModel.areAllActivitiesCompleted()
+                        val isExpired = planViewModel.isPlanExpired()
+
+                        LaunchedEffect(isExpired) {
+                            if(isExpired) {
+                                navController.navigate("day_summary") {
+                                    popUpTo("plan_execution") {inclusive = true}
+                                }
+                            }
+                        }
+
+                        LaunchedEffect(allCompleted) {
+                            if(allCompleted) {
+                                navController.navigate("day_summary") {
+                                    popUpTo("plan_execution") {inclusive = true}
+                                }
+                            }
+                        }
 
                         LaunchedEffect(runningBreakId) {
                             if (runningBreakId != null) {
                                 navController.navigate("timer/$runningBreakId")
                             }
                         }
-                        if (runningBreakId == null) {
+                        if (runningBreakId == null && !allCompleted) {
                             PlanExecutionScreen(
                                 energy = breakViewModel.remainingEnergy,
                                 activities = breakViewModel.planActivities,
@@ -193,6 +215,10 @@ class MainActivity : ComponentActivity() {
                                         if (breakActivityId != null) {
                                             breakViewModel.startBreakTimer(breakActivityId) {
                                                 navController.navigate("timer/$breakActivityId")
+                                            }
+                                        } else {
+                                            if (breakViewModel.areAllActivitiesCompleted()) {
+                                                navController.navigate("day_summary")
                                             }
                                         }
                                     }
@@ -210,9 +236,25 @@ class MainActivity : ComponentActivity() {
                             endTime = activity?.endTime ?: 0L,
                             onFinish = {
                                 breakViewModel.completeAfterBreak(id) {
-                                    navController.popBackStack()
+                                    if(breakViewModel.areAllActivitiesCompleted()) {
+                                        navController.navigate("day_summary")
+                                    } else {
+                                        navController.popBackStack()
+                                    }
                                 }
                             }
+                        )
+                    }
+
+                    composable("day_summary") {
+                        LaunchedEffect(Unit) {
+                            daySummaryViewModel.loadSummary()
+                        }
+
+                        DaySummaryScreen(
+                            activities = daySummaryViewModel.activities,
+                            totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
+                            totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes
                         )
                     }
                 }

@@ -98,15 +98,26 @@ class BreakViewModel (
             val selected = planActivities.filter { ids.contains(it.id) }
             val withBreak = selected.filter { it.breakDuration != null }
             val withoutBreak = selected.filter { it.breakDuration == null }
+            val completionTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
             withoutBreak.forEach {
-                planActivityRepository.toggleComplete(it.id, true)
+                planActivityRepository.completeActivity(it.id, completionTime)
             }
 
-            reloadPlanActivities()
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val updatedList = planActivityRepository.getPlanActivitiesWithBreaks(today)
+
+            val usedEnergy = updatedList
+                .filter { it.isCompleted }
+                .sumOf { it.energyCost }
+
+            remainingEnergy = totalEnergy - usedEnergy
+            planActivities = updatedList
 
             if (withBreak.isNotEmpty()) {
                 onBreakNeeded(withBreak.first().id)
+            } else {
+                onBreakNeeded(null)
             }
         }
     }
@@ -157,9 +168,25 @@ class BreakViewModel (
                 )
             }
 
-            planActivityRepository.toggleComplete(planActivityId, true)
-            reloadPlanActivities()
+            val completionTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
+            planActivityRepository.completeActivity(planActivityId, completionTime)
+
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val updatedList = planActivityRepository.getPlanActivitiesWithBreaks(today)
+
+            val usedEnergy = updatedList
+                .filter {it.isCompleted}
+                .sumOf {it.energyCost}
+
+            remainingEnergy = totalEnergy - usedEnergy
+            planActivities = updatedList
+
             onDone()
         }
+    }
+
+    fun areAllActivitiesCompleted(): Boolean {
+        return planActivities.isNotEmpty() && planActivities.all {it.isCompleted}
     }
 }

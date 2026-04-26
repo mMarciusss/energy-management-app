@@ -34,6 +34,8 @@ class ActivitySelectionModel (
     var isIntialized by mutableStateOf(false)
         private set
 
+    var currentDay by mutableStateOf("")
+
     init {
         loadActivities()
     }
@@ -69,12 +71,21 @@ class ActivitySelectionModel (
     }
 
     fun initEnergy(energy: Int){
-        if(!isIntialized) {
-            initialEnergy = energy
-            isIntialized = true
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-            loadSelectedActivitiesForToday()
+        if(currentDay != today){
+            currentDay = today
+            isIntialized = false
         }
+
+        if(isIntialized) return
+
+        isIntialized = true
+
+        initialEnergy = energy
+        remainingEnergy = energy
+
+        loadSelectedActivitiesForToday()
     }
 
     fun toggleActivity(activity: ActivityEntity){
@@ -120,6 +131,10 @@ class ActivitySelectionModel (
 
             selectedActivities.clear()
             selectedActivities.addAll(existing.map {it.activityId})
+
+            if(activities.isEmpty()) {
+                activities = activityRepository.getActivityList()
+            }
 
             val selected = activities.filter {selectedActivities.contains(it.id)}
             val usedEnergy = selected.sumOf {it.energyCost}
