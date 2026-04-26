@@ -14,6 +14,10 @@ class ActivityRepository (
         activityDao.insertOrUpdateActivity(activity)
     }
 
+    suspend fun deleteActivity(id: Int){
+        activityDao.deleteActivity(id)
+    }
+
     suspend fun getActivityList(): List<ActivityEntity>{
         return activityDao.getActivities()
     }
