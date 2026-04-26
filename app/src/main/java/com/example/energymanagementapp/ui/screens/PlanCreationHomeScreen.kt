@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 fun PlanCreationHomeScreen(
     energy: Int,
     isEnergySet: Boolean,
+    endTime: String,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
@@ -43,11 +45,15 @@ fun PlanCreationHomeScreen(
 
         if(isEnergySet) {
             Text("Dabartinė energija: $energy")
+            Text(
+                text = "Plano Pabaiga: $endTime",
+                style = MaterialTheme.typography.bodyLarge
+            )
             Spacer(Modifier.height(16.dp))
         }
 
         Button(onClick = onGoToEnergyScreen){
-            Text("Nustatyti dienos energiją")
+            Text("Nustatyti dienos energiją ir plano pabaigos laiką")
         }
 
         if(isEnergySet) {

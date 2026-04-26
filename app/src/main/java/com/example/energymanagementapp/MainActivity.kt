@@ -68,10 +68,10 @@ class MainActivity : ComponentActivity() {
 
             var startDestination by remember { mutableStateOf<String?>(null) }
 
-            LaunchedEffect(planViewModel.isConfirmed) {
+            LaunchedEffect(planViewModel.isConfirmed, planViewModel.isExpired) {
                 startDestination =
                     if(planViewModel.isConfirmed) "plan_execution"
-                    else if(planViewModel.isPlanExpired()) "day_summary"
+                    else if(planViewModel.isExpired) "day_summary"
                     else "plan_creation_home"
             }
 
@@ -85,6 +85,7 @@ class MainActivity : ComponentActivity() {
                         PlanCreationHomeScreen(
                             energy = energyViewModel.energy,
                             isEnergySet = energyViewModel.isEnergySet,
+                            endTime = planViewModel.planEndTime,
                             onGoToEnergyScreen = {
                                 navController.navigate("energy")
                             },
@@ -113,10 +114,13 @@ class MainActivity : ComponentActivity() {
                     composable("energy") {
                         EnergyScreen(
                             energy = energyViewModel.energy,
+                            endTime = planViewModel.planEndTime,
                             onIncrease = {energyViewModel.increaseEnergy()},
                             onDecrease = {energyViewModel.decreaseEnergy()},
-                            onConfirm = {
+                            onConfirm = { endTime ->
                                 energyViewModel.saveEnergy()
+                                planViewModel.setEndTime(endTime)
+
                                 navController.popBackStack()
                             }
                         )
@@ -182,7 +186,7 @@ class MainActivity : ComponentActivity() {
 
                         val runningBreakId = breakViewModel.getRunningBreakActivityId()
                         val allCompleted = breakViewModel.areAllActivitiesCompleted()
-                        val isExpired = planViewModel.isPlanExpired()
+                        val isExpired = planViewModel.isExpired
 
                         LaunchedEffect(isExpired) {
                             if(isExpired) {
@@ -253,6 +257,7 @@ class MainActivity : ComponentActivity() {
 
                         DaySummaryScreen(
                             activities = daySummaryViewModel.activities,
+                            totalEnergy = energyViewModel.energy,
                             totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                             totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes
                         )
