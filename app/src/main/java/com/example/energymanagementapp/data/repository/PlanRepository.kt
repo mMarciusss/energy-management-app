@@ -29,4 +29,13 @@ class PlanRepository (
     suspend fun confirmPlan(date: String) {
         planDao.confirmPlan(date)
     }
+
+    suspend fun updateEndTime(date: String, endTime: String){
+        val existing = planDao.getPlanByDate(date)
+
+        if(existing != null){
+            val updated = existing.copy(endTime = endTime)
+            planDao.insertOrUpdatePlan(updated)
+        }
+    }
 }

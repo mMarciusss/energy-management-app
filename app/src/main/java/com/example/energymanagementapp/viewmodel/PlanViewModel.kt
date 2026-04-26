@@ -54,4 +54,13 @@ class PlanViewModel (
 
         return now >= currentPlan.endTime
     }
+
+    fun setEndTime(endTime: String) {
+        viewModelScope.launch {
+            val today = getToday()
+            planRepository.updateEndTime(today, endTime)
+
+            plan = plan?.copy(endTime = endTime)
+        }
+    }
 }
