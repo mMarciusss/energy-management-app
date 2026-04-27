@@ -268,6 +268,11 @@ class MainActivity : ComponentActivity() {
                 composable("manage_activities") {
                     ManageActivitiesScreen(
                         activities = activitySelectionModel.activities,
+                        onBackToHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") {inclusive = true}
+                            }
+                        },
                         onAdd = { name, energyCost ->
                             activityManagementViewModel.addActivity(name, energyCost)
                         },

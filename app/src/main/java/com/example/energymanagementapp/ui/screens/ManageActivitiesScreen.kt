@@ -27,6 +27,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 @Composable
 fun ManageActivitiesScreen(
     activities: List<ActivityEntity>,
+    onBackToHome: () -> Unit,
     onAdd: (String, Int) -> Unit,
     onDelete: (ActivityEntity) -> Unit
 ) {
@@ -90,6 +91,10 @@ fun ManageActivitiesScreen(
                     onDelete = { onDelete(activity) }
                 )
             }
+        }
+
+        Button(onClick = onBackToHome){
+            Text("Back to home")
         }
     }
 }
