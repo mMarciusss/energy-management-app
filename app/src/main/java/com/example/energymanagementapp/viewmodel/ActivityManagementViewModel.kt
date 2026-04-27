@@ -32,9 +32,9 @@ class ActivityManagementViewModel (
         }
     }
 
-    fun deleteActivity(id: Int) {
+    fun deleteActivity(activity: ActivityEntity) {
         viewModelScope.launch {
-            activityRepository.deleteActivity(id)
+            activityRepository.deleteActivity(activity)
         }
     }
 }

@@ -18,7 +18,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 fun ManageActivitiesScreen(
     activities: List<ActivityEntity>,
     onAdd: (String, Int) -> Unit,
-    onDelete: (Int) -> Unit
+    onDelete: (ActivityEntity) -> Unit
 ) {
     Column() {
         LazyColumn() {
@@ -27,7 +27,7 @@ fun ManageActivitiesScreen(
                     Text(activity.name)
                     Text("${activity.energyCost}")
 
-                    Button(onClick = {onDelete(activity.id)}) {
+                    Button(onClick = {onDelete(activity)}) {
                         Text("Delete")
                     }
                 }

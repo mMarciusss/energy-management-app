@@ -12,8 +12,8 @@ interface ActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdateActivity(activity: ActivityEntity)
 
-    @Delete("DELETE FROM activities WHERE id = :id")
-    suspend fun deleteActivity(id: Int)
+    @Delete
+    suspend fun deleteActivity(activity: ActivityEntity)
 
     @Query("SELECT * FROM activities")
     suspend fun getActivities(): List<ActivityEntity>

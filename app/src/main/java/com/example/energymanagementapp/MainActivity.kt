@@ -271,8 +271,8 @@ class MainActivity : ComponentActivity() {
                         onAdd = { name, energyCost ->
                             activityManagementViewModel.addActivity(name, energyCost)
                         },
-                        onDelete = { id ->
-                            activityManagementViewModel.deleteActivity(id)
+                        onDelete = { activity ->
+                            activityManagementViewModel.deleteActivity(activity)
                         }
                     )
                 }
