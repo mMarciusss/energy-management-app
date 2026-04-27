@@ -29,12 +29,14 @@ class ActivityManagementViewModel (
     fun addActivity(name: String, energyCost: Int) {
         viewModelScope.launch {
             activityRepository.saveActivity(name, energyCost)
+            loadActivities()
         }
     }
 
     fun deleteActivity(activity: ActivityEntity) {
         viewModelScope.launch {
             activityRepository.deleteActivity(activity)
+            loadActivities()
         }
     }
 }

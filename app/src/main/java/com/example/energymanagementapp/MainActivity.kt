@@ -267,7 +267,7 @@ class MainActivity : ComponentActivity() {
 
                 composable("manage_activities") {
                     ManageActivitiesScreen(
-                        activities = activitySelectionModel.activities,
+                        activities = activityManagementViewModel.activities,
                         onBackToHome = {
                             navController.navigate("home") {
                                 popUpTo("home") {inclusive = true}
