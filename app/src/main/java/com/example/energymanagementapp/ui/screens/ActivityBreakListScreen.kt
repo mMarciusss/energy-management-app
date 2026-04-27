@@ -21,7 +21,7 @@ import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 fun ActivityBreakListScreen(
     planActivities: List<PlanActivityWithBreak>,
     onActivityClick: (Int, String) -> Unit,
-    onBackToHome: () -> Unit
+    onBackToPlanCreation: () -> Unit
 ) {
 
     Column(
@@ -48,7 +48,7 @@ fun ActivityBreakListScreen(
             }
         }
 
-        Button(onClick = onBackToHome){
+        Button(onClick = onBackToPlanCreation){
             Text("Grįžti į plano sudarymą")
         }
     }
