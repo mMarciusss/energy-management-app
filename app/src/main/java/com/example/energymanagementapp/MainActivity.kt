@@ -4,16 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.energymanagementapp.data.local.database.AppDatabase
-import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.BreakRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
@@ -27,17 +22,13 @@ import com.example.energymanagementapp.ui.screens.EnergyScreen
 import com.example.energymanagementapp.ui.screens.HomeScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
 import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
+import com.example.energymanagementapp.ui.screens.ManageActivitiesScreen
+import com.example.energymanagementapp.viewmodel.ActivityManagementViewModel
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.BreakViewModel
 import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +50,7 @@ class MainActivity : ComponentActivity() {
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
         val daySummaryViewModel = DaySummaryViewModel(planActivityRepository)
+        val activityManagementViewModel = ActivityManagementViewModel(activityRepository)
 
         val breakRepository = BreakRepository(db.breakDao())
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
@@ -85,7 +77,6 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-
 
                     HomeScreen(
                         onStartPlan = {
@@ -271,6 +262,23 @@ class MainActivity : ComponentActivity() {
                         totalEnergy = energyViewModel.energy,
                         totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                         totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes
+                    )
+                }
+
+                composable("manage_activities") {
+                    ManageActivitiesScreen(
+                        activities = activityManagementViewModel.activities,
+                        onBackToHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") {inclusive = true}
+                            }
+                        },
+                        onAdd = { name, energyCost ->
+                            activityManagementViewModel.addActivity(name, energyCost)
+                        },
+                        onDelete = { activity ->
+                            activityManagementViewModel.deleteActivity(activity)
+                        }
                     )
                 }
             }
