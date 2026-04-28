@@ -1,5 +1,7 @@
 package com.example.energymanagementapp.ui.screens
 
+import android.widget.Button
+import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,12 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.room.migration.Migration
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
+import com.example.energymanagementapp.utils.getWeatherDescription
+import com.example.energymanagementapp.utils.getWeatherIcon
 
 @Composable
 fun PlanCreationHomeScreen(
     energy: Int,
     isEnergySet: Boolean,
     endTime: String,
+    weatherTemperature: Double?,
+    weatherCode: Int?,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
@@ -93,6 +100,21 @@ fun PlanCreationHomeScreen(
                     Text("Confirm plan")
                 }
             }
+
+        }
+        Spacer(Modifier.height(16.dp))
+        if(weatherTemperature != null && weatherCode != null) {
+            Text("Today's weather:")
+            Text("Temperature: $weatherTemperature °C")
+            Text(getWeatherDescription(weatherCode))
+
+            Icon(
+                imageVector = getWeatherIcon(weatherCode),
+                contentDescription = null
+            )
+
+        } else {
+            Text("Loading today's weather...")
         }
     }
 }

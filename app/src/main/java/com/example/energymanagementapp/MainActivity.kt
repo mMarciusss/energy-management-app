@@ -9,10 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.energymanagementapp.data.local.database.AppDatabase
+import com.example.energymanagementapp.data.remote.weather.WeatherRetrofitInstance
 import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.BreakRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import com.example.energymanagementapp.data.repository.PlanRepository
+import com.example.energymanagementapp.data.repository.WeatherRepository
 import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
@@ -29,6 +31,7 @@ import com.example.energymanagementapp.viewmodel.BreakViewModel
 import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
+import com.example.energymanagementapp.viewmodel.WeatherViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +58,8 @@ class MainActivity : ComponentActivity() {
         val breakRepository = BreakRepository(db.breakDao())
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
 
+        val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
+        val weatherViewModel = WeatherViewModel(weatherRepository)
 
         setContent {
             val navController = rememberNavController()
@@ -64,6 +69,10 @@ class MainActivity : ComponentActivity() {
                 startDestination = "home"
             ) {
                 composable("home") {
+
+                    LaunchedEffect(Unit) {
+                        weatherViewModel.loadWeather()
+                    }
 
                     LaunchedEffect(planViewModel.isConfirmed, planViewModel.isExpired) {
                         if(planViewModel.isConfirmed) {
@@ -93,6 +102,8 @@ class MainActivity : ComponentActivity() {
                         energy = energyViewModel.energy,
                         isEnergySet = energyViewModel.isEnergySet,
                         endTime = planViewModel.planEndTime,
+                        weatherTemperature = weatherViewModel.weatherNow?.first,
+                        weatherCode = weatherViewModel.weatherNow?.second,
                         onGoToEnergyScreen = {
                             navController.navigate("energy")
                         },
@@ -136,6 +147,9 @@ class MainActivity : ComponentActivity() {
                         activities = activitySelectionModel.activities,
                         selectedActivities = activitySelectionModel.selectedActivities,
                         remainingEnergy = activitySelectionModel.remainingEnergy,
+                        weatherNow = weatherViewModel.weatherNow,
+                        weatherIn3Hours = weatherViewModel.weatherIn3Hours,
+                        weatherEvening = weatherViewModel.weatherEvening,
                         onToggle = {activitySelectionModel.toggleActivity(it)},
                         onConfirm = {
                             activitySelectionModel.savePlanActivities {
@@ -215,6 +229,9 @@ class MainActivity : ComponentActivity() {
                         PlanExecutionScreen(
                             energy = breakViewModel.remainingEnergy,
                             activities = breakViewModel.planActivities,
+                            weatherNow = weatherViewModel.weatherNow,
+                            weatherIn3Hours = weatherViewModel.weatherIn3Hours,
+                            weatherEvening = weatherViewModel.weatherEvening,
                             onConfirmComplete = { ids ->
                                 breakViewModel.completeActivities(ids) { breakActivityId ->
 
