@@ -84,6 +84,8 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(Unit) {
                         planViewModel.reloadPlan()
+                        activitySelectionModel.initEnergy(energyViewModel.energy)
+                        breakViewModel.reloadPlanActivities()
                         weatherViewModel.loadWeather()
                     }
 

@@ -21,6 +21,8 @@ class PlanViewModel (
     private val planActivityRepository: PlanActivityRepository
 ) : ViewModel() {
 
+   private var lastLoadedDate: String? = null
+
     var isConfirmed by mutableStateOf(false)
         private set
 
@@ -43,6 +45,12 @@ class PlanViewModel (
     private fun loadPlan() {
         viewModelScope.launch {
             val today = getToday()
+
+            if (lastLoadedDate != null && lastLoadedDate != today) {
+                resetLocalState()
+            }
+            lastLoadedDate = today
+
             val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val plan = planRepository.getPlan(today)
 
@@ -67,6 +75,14 @@ class PlanViewModel (
                 else -> PlanState.CREATING
             }
         }
+    }
+
+    private fun resetLocalState() {
+        isConfirmed = false
+        isExpired = false
+        isAllCompleted = false
+        planEndTime = "20:00"
+        planState = PlanState.NOT_STARTED
     }
 
     fun startCreatingPlan() {
