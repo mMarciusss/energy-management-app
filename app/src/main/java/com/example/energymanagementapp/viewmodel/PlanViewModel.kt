@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.energymanagementapp.core.state.PlanState
 import com.example.energymanagementapp.data.local.entities.PlanEntity
+import com.example.energymanagementapp.data.repository.BreakRepository
+import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import com.example.energymanagementapp.data.repository.PlanRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -14,7 +16,9 @@ import java.util.Date
 import java.util.Locale
 
 class PlanViewModel (
-    private val planRepository: PlanRepository
+    private val planRepository: PlanRepository,
+    private val breakRepository: BreakRepository,
+    private val planActivityRepository: PlanActivityRepository
 ) : ViewModel() {
 
     var isConfirmed by mutableStateOf(false)
@@ -71,17 +75,21 @@ class PlanViewModel (
         }
     }
 
-    fun resetPlan() {
+    fun resetPlan(onDone: () -> Unit) {
         viewModelScope.launch {
             val today = getToday()
 
             planRepository.deletePlan(today)
+            breakRepository.deleteBreaksByDate(today)
+            planActivityRepository.deletePlanActivitiesByDate(today)
 
             isConfirmed = false
             isExpired = false
             planEndTime = "20:00"
 
             planState = PlanState.NOT_STARTED
+
+            onDone()
         }
     }
 

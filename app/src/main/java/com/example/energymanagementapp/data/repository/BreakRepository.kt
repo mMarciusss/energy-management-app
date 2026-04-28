@@ -42,6 +42,10 @@ class BreakRepository (
         }
     }
 
+    suspend fun deleteBreaksByDate(date: String){
+        breakDao.deleteBreaksByDate(date)
+    }
+
     suspend fun getBreakList(planActivityId: Int): List<BreakEntity>{
         return breakDao.getBreaksByPlanActivity(planActivityId)
     }
