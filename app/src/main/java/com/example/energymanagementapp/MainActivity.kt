@@ -81,22 +81,19 @@ class MainActivity : ComponentActivity() {
                         weatherViewModel.loadWeather()
                     }
 
-                    LaunchedEffect(planViewModel.isConfirmed, planViewModel.isExpired) {
-                        if(planViewModel.isConfirmed) {
-                            navController.navigate("plan_execution") {
-                                popUpTo("home") {inclusive = true}
-                            }
-                        }
-                        else if(planViewModel.isExpired) {
-                            navController.navigate("day_summary") {
-                                popUpTo("home") {inclusive = true}
-                            }
-                        }
-                    }
-
                     HomeScreen(
+                        planState = planViewModel.planState,
                         onStartPlan = {
                             navController.navigate("plan_creation_home")
+                        },
+                        onContinuePlan = {
+                            navController.navigate("plan_creation_home")
+                        },
+                        onViewPlan = {
+                            navController.navigate("plan_execution")
+                        },
+                        onViewSummary = {
+                            navController.navigate("day_summary")
                         },
                         onManageActivities = {
                             navController.navigate("manage_activities")
