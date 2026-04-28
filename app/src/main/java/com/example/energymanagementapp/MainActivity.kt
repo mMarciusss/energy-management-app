@@ -223,7 +223,7 @@ class MainActivity : ComponentActivity() {
                     breakViewModel.reloadPlanActivities()
 
                     val runningBreakId = breakViewModel.getRunningBreakActivityId()
-                    val allCompleted = breakViewModel.areAllActivitiesCompleted()
+                    val allCompleted = planViewModel.isAllCompleted
                     val isExpired = planViewModel.isExpired
 
                     LaunchedEffect(isExpired) {

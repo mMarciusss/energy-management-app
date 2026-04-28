@@ -33,36 +33,40 @@ class PlanViewModel (
     var planState by mutableStateOf(PlanState.NOT_STARTED)
         private set
 
+    var isAllCompleted by mutableStateOf(false)
+        private set
+
     init {
         loadPlan()
     }
 
-    private fun loadPlan(){
+    private fun loadPlan() {
         viewModelScope.launch {
             val today = getToday()
             val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val plan = planRepository.getPlan(today)
 
-            if(plan == null){
+            if (plan == null) {
                 planState = PlanState.NOT_STARTED
                 return@launch
             }
 
+            val activities = planActivityRepository.getPlanActivitiesWithBreaks(today)
+
+            val allCompleted = activities.isNotEmpty() && activities.all { it.isCompleted }
+            val expired = plan.endTime < now
+
             isConfirmed = plan.isConfirmed == true
             planEndTime = plan.endTime
-            isExpired = planEndTime < now
+            isExpired = expired
+            isAllCompleted = allCompleted
 
             planState = when {
-                !isConfirmed -> PlanState.CREATING
-                isConfirmed && isExpired -> PlanState.COMPLETED
+                allCompleted || expired -> PlanState.COMPLETED
                 isConfirmed -> PlanState.CONFIRMED
-                else -> PlanState.NOT_STARTED
+                else -> PlanState.CREATING
             }
         }
-    }
-
-    private fun getToday(): String{
-        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }
 
     fun confirmPlan(onDone: () -> Unit) {
@@ -91,6 +95,10 @@ class PlanViewModel (
 
             onDone()
         }
+    }
+
+    private fun getToday(): String{
+        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }
 
     fun setEndTime(endTime: String) {
