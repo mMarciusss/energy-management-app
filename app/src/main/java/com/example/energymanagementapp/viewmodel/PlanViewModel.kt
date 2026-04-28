@@ -97,6 +97,10 @@ class PlanViewModel (
         }
     }
 
+    fun reloadPlan(){
+        loadPlan()
+    }
+
     private fun getToday(): String{
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }

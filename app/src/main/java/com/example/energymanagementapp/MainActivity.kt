@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
                 composable("home") {
 
                     LaunchedEffect(Unit) {
+                        planViewModel.reloadPlan()
                         weatherViewModel.loadWeather()
                     }
 
@@ -300,7 +301,12 @@ class MainActivity : ComponentActivity() {
                         activities = daySummaryViewModel.activities,
                         totalEnergy = energyViewModel.energy,
                         totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
-                        totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes
+                        totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
+                        onGoHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") {inclusive = true}
+                            }
+                        }
                     )
                 }
 
