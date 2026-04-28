@@ -229,8 +229,9 @@ class MainActivity : ComponentActivity() {
                         PlanExecutionScreen(
                             energy = breakViewModel.remainingEnergy,
                             activities = breakViewModel.planActivities,
-                            weatherTemperature = weatherViewModel.weatherNow?.first,
-                            weatherCode = weatherViewModel.weatherNow?.second,
+                            weatherNow = weatherViewModel.weatherNow,
+                            weatherIn3Hours = weatherViewModel.weatherIn3Hours,
+                            weatherEvening = weatherViewModel.weatherEvening,
                             onConfirmComplete = { ids ->
                                 breakViewModel.completeActivities(ids) { breakActivityId ->
 

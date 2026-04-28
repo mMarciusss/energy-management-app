@@ -17,15 +17,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.utils.getWeatherDescription
+import java.util.Calendar
 
 @Composable
 fun PlanExecutionScreen(
     energy: Int,
     activities: List<PlanActivityWithBreak>,
-    weatherTemperature: Double?,
-    weatherCode: Int?,
+    weatherNow: Pair<Double, Int>?,
+    weatherIn3Hours: Pair<Double, Int>?,
+    weatherEvening: Pair<Double, Int>?,
     onConfirmComplete: (List<Int>) -> Unit
 ) {
+    val nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+    val in3hHour = (nowHour + 3) % 24
+
+    val showIn3h = nowHour <= 20
+    val showEvening = when {
+        in3hHour >= 19 -> false
+        nowHour < 19 -> true
+        else -> false
+    }
+
     val checkedIds = remember { mutableStateListOf<Int>() }
 
     Column {
@@ -98,10 +110,17 @@ fun PlanExecutionScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        if(weatherTemperature != null && weatherCode != null) {
+        Spacer(Modifier.height(16.dp))
+        if(weatherNow != null && weatherIn3Hours != null && weatherEvening != null) {
             Text("Today's weather:")
-            Text("Temperature: $weatherTemperature °C")
-            Text(getWeatherDescription(weatherCode))
+            Text("Current weather: ${weatherNow.first} °C, ${getWeatherDescription(weatherNow.second)}")
+            if(showIn3h){
+                Text("Weather in 3 hours from now: ${weatherIn3Hours.first} °C, ${getWeatherDescription(weatherIn3Hours.second)}")
+            }
+            if(showEvening){
+                Text("Evening weather: ${weatherEvening.first} °C, ${getWeatherDescription(weatherEvening.second)}")
+            }
+            Text("Take weather into consideration when choosing activities!")
         } else {
             Text("Loading today's weather...")
         }
