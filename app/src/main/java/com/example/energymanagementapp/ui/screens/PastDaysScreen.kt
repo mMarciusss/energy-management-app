@@ -1,6 +1,7 @@
 package com.example.energymanagementapp.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,12 +44,16 @@ fun PastDaysScreen(
         firstVisibleMonth = currentMonth
     )
 
+    val today = LocalDate.now()
+
     Column {
+
         HorizontalCalendar(
             state = state,
             dayContent = { calendarDay ->
 
                 val status = dayStatuses.find { it.date == calendarDay.date }?.status
+                val isToday = calendarDay.date == today
 
                 Box(
                     modifier = Modifier
@@ -63,6 +68,15 @@ fun PastDaysScreen(
                             },
                             shape = CircleShape
 
+                        )
+                        .then(
+                            if(isToday) {
+                                Modifier.border(
+                                    width = 2.dp,
+                                    color = Color.Black,
+                                    shape = CircleShape
+                                )
+                            } else Modifier
                         )
                         .clickable {
                             if (status != null) {
