@@ -47,10 +47,6 @@ class MainActivity : ComponentActivity() {
         .fallbackToDestructiveMigration(false)
         .build()
 
-        val planRepository = PlanRepository(db.planDao())
-        val planViewModel = PlanViewModel(planRepository)
-        val energyViewModel = EnergyViewModel(planRepository)
-
         val activityRepository = ActivityRepository(db.activityDao())
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
@@ -59,6 +55,10 @@ class MainActivity : ComponentActivity() {
 
         val breakRepository = BreakRepository(db.breakDao())
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
+
+        val planRepository = PlanRepository(db.planDao())
+        val planViewModel = PlanViewModel(planRepository, breakRepository, planActivityRepository)
+        val energyViewModel = EnergyViewModel(planRepository)
 
         val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
         val weatherViewModel = WeatherViewModel(weatherRepository)
@@ -108,6 +108,17 @@ class MainActivity : ComponentActivity() {
                         endTime = planViewModel.planEndTime,
                         weatherTemperature = weatherViewModel.weatherNow?.first,
                         weatherCode = weatherViewModel.weatherNow?.second,
+                        onCancelPlan = {
+                            planViewModel.resetPlan(){
+                                energyViewModel.reloadEnergy()
+                                breakViewModel.reloadPlanActivities()
+                                activitySelectionModel.loadSelectedActivitiesForToday()
+                            }
+
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = true }
+                            }
+                        },
                         onGoToEnergyScreen = {
                             navController.navigate("energy")
                         },
@@ -135,8 +146,9 @@ class MainActivity : ComponentActivity() {
                         onIncrease = {energyViewModel.increaseEnergy()},
                         onDecrease = {energyViewModel.decreaseEnergy()},
                         onConfirm = { endTime ->
-                            energyViewModel.saveEnergy()
-                            planViewModel.setEndTime(endTime)
+                            energyViewModel.saveEnergy(){
+                                planViewModel.setEndTime(endTime)
+                            }
 
                             navController.popBackStack()
                         }

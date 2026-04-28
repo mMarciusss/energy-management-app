@@ -34,6 +34,7 @@ fun PlanCreationHomeScreen(
     endTime: String,
     weatherTemperature: Double?,
     weatherCode: Int?,
+    onCancelPlan: () -> Unit,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
@@ -115,6 +116,11 @@ fun PlanCreationHomeScreen(
 
         } else {
             Text("Loading today's weather...")
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = onCancelPlan) {
+            Text("Cancel plan")
         }
     }
 }
