@@ -58,7 +58,7 @@ class WeatherViewModel (
                 }
 
                 val eveningIndex = times.indexOfFirst {
-                    it.contains("T18:00")
+                    it.contains("T19:00")
                 }
 
                 weatherNow = nowIndex.takeIf { it != -1 }?.let {

@@ -99,14 +99,14 @@ fun PlanCreationHomeScreen(
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
-            if(weatherTemperature != null && weatherCode != null) {
-                Text("Today's weather:")
-                Text("Temperature: $weatherTemperature °C")
-                Text(getWeatherDescription(weatherCode))
-            } else {
-                Text("Loading today's weather...")
-            }
+        }
+        Spacer(Modifier.height(16.dp))
+        if(weatherTemperature != null && weatherCode != null) {
+            Text("Today's weather:")
+            Text("Temperature: $weatherTemperature °C")
+            Text(getWeatherDescription(weatherCode))
+        } else {
+            Text("Loading today's weather...")
         }
     }
 }

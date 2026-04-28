@@ -147,6 +147,9 @@ class MainActivity : ComponentActivity() {
                         activities = activitySelectionModel.activities,
                         selectedActivities = activitySelectionModel.selectedActivities,
                         remainingEnergy = activitySelectionModel.remainingEnergy,
+                        weatherNow = weatherViewModel.weatherNow,
+                        weatherIn3Hours = weatherViewModel.weatherIn3Hours,
+                        weatherEvening = weatherViewModel.weatherEvening,
                         onToggle = {activitySelectionModel.toggleActivity(it)},
                         onConfirm = {
                             activitySelectionModel.savePlanActivities {
