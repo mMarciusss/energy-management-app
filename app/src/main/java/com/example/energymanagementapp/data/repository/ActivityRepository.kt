@@ -18,6 +18,27 @@ class ActivityRepository (
         activityDao.deleteActivity(activity)
     }
 
+    suspend fun seedActivitiesIfEmpty() {
+        val existing = getActivityList()
+
+        if(existing.isNotEmpty()) return
+
+        val presetActivities = listOf(
+            "Workout" to 3,
+            "Reading" to 1,
+            "Coding" to 2,
+            "Gaming" to 2,
+            "Walking" to 1
+        )
+
+        presetActivities.forEach {
+            saveActivity(
+                name = it.first,
+                energyCost = it.second
+            )
+        }
+    }
+
     suspend fun getActivityList(): List<ActivityEntity>{
         return activityDao.getActivities()
     }

@@ -45,28 +45,10 @@ class ActivitySelectionModel (
             var list = activityRepository.getActivityList()
 
             if (list.isEmpty()) {
-                seedActivities()
                 list = activityRepository.getActivityList()
             }
 
             activities = list
-        }
-    }
-
-    private suspend fun seedActivities() {
-        val presetActivities = listOf(
-            "Workout" to 3,
-            "Reading" to 1,
-            "Coding" to 2,
-            "Gaming" to 2,
-            "Walking" to 1
-        )
-
-        presetActivities.forEach {
-            activityRepository.saveActivity(
-                name = it.first,
-                energyCost = it.second
-            )
         }
     }
 

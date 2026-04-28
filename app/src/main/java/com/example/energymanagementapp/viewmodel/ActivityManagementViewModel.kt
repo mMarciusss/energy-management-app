@@ -26,6 +26,10 @@ class ActivityManagementViewModel (
         }
     }
 
+    fun refreshActivities(){
+        loadActivities()
+    }
+
     fun addActivity(name: String, energyCost: Int) {
         viewModelScope.launch {
             activityRepository.saveActivity(name, energyCost)
