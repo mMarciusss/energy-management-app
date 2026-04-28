@@ -21,6 +21,7 @@ fun HomeScreen(
     onContinuePlan: () -> Unit,
     onViewPlan: () -> Unit,
     onViewSummary: () -> Unit,
+    onViewPastDays: () -> Unit,
     onManageActivities: () -> Unit
 ) {
     Column(
@@ -58,7 +59,7 @@ fun HomeScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Button(onClick = {}) {
+        Button(onClick = onViewPastDays) {
             Text("View past days")
         }
 

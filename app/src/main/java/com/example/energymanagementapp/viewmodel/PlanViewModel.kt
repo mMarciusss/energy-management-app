@@ -107,7 +107,7 @@ class PlanViewModel (
         loadPlan()
     }
 
-    private fun getToday(): String{
+    fun getToday(): String{
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }
 

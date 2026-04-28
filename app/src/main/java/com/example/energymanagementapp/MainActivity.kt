@@ -26,11 +26,13 @@ import com.example.energymanagementapp.ui.screens.HomeScreen
 import com.example.energymanagementapp.ui.screens.PlanCreationHomeScreen
 import com.example.energymanagementapp.ui.screens.PlanExecutionScreen
 import com.example.energymanagementapp.ui.screens.ManageActivitiesScreen
+import com.example.energymanagementapp.ui.screens.PastDaysScreen
 import com.example.energymanagementapp.viewmodel.ActivityManagementViewModel
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import com.example.energymanagementapp.viewmodel.BreakViewModel
 import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
+import com.example.energymanagementapp.viewmodel.PastDaysViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
 import com.example.energymanagementapp.viewmodel.WeatherViewModel
 import kotlinx.coroutines.launch
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
         val daySummaryViewModel = DaySummaryViewModel(planActivityRepository)
+        val pastDaysViewModel = PastDaysViewModel(planActivityRepository)
         val activityManagementViewModel = ActivityManagementViewModel(activityRepository)
 
         val breakRepository = BreakRepository(db.breakDao())
@@ -59,6 +62,7 @@ class MainActivity : ComponentActivity() {
         val planRepository = PlanRepository(db.planDao())
         val planViewModel = PlanViewModel(planRepository, breakRepository, planActivityRepository)
         val energyViewModel = EnergyViewModel(planRepository)
+
 
         val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
         val weatherViewModel = WeatherViewModel(weatherRepository)
@@ -95,6 +99,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onViewSummary = {
                             navController.navigate("day_summary")
+                        },
+                        onViewPastDays = {
+                            navController.navigate("past_days")
                         },
                         onManageActivities = {
                             navController.navigate("manage_activities")
@@ -301,7 +308,7 @@ class MainActivity : ComponentActivity() {
 
                 composable("day_summary") {
                     LaunchedEffect(Unit) {
-                        daySummaryViewModel.loadSummary()
+                        daySummaryViewModel.loadSummary(planViewModel.getToday())
                     }
 
                     DaySummaryScreen(
@@ -315,6 +322,41 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     )
+                }
+
+                composable("past_days") {
+                    LaunchedEffect(Unit) {
+                        pastDaysViewModel.loadDates()
+                    }
+
+                    PastDaysScreen(
+                        dates = pastDaysViewModel.dates,
+                        onSelectDate = { date ->
+                            navController.navigate("day_summary/$date")
+                        }
+
+                    )
+                }
+
+                composable("day_summary/{date}") { backStackEntry ->
+                    val date = backStackEntry.arguments?.getString("date") ?: ""
+
+                    LaunchedEffect(date) {
+                        daySummaryViewModel.loadSummary(date)
+                    }
+
+                    DaySummaryScreen(
+                        activities = daySummaryViewModel.activities,
+                        totalEnergy = energyViewModel.energy,
+                        totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
+                        totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
+                        onGoHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") {inclusive = true}
+                            }
+                        }
+                    )
+
                 }
 
                 composable("manage_activities") {
