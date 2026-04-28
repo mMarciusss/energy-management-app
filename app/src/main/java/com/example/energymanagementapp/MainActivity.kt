@@ -36,6 +36,7 @@ import com.example.energymanagementapp.viewmodel.PastDaysViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
 import com.example.energymanagementapp.viewmodel.WeatherViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -330,11 +331,17 @@ class MainActivity : ComponentActivity() {
                     }
 
                     PastDaysScreen(
-                        dates = pastDaysViewModel.dates,
-                        onSelectDate = { date ->
+                        datesWithPlans = pastDaysViewModel.dates.mapNotNull {
+                            try {
+                                LocalDate.parse(it)
+                            } catch (e: Exception) {
+                                println("BAD DATE: $it")
+                                null
+                            }
+                        },
+                        onDateClick = { date ->
                             navController.navigate("day_summary/$date")
                         }
-
                     )
                 }
 
