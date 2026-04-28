@@ -34,8 +34,15 @@ class EnergyViewModel (
             if(plan != null){
                 energy = plan.energyLevel
                 isEnergySet = true
+            } else {
+                energy = 5
+                isEnergySet = false
             }
         }
+    }
+
+    fun reloadEnergy(){
+        loadTodayEnergy()
     }
 
     fun increaseEnergy(){
@@ -50,11 +57,12 @@ class EnergyViewModel (
         }
     }
 
-    fun saveEnergy(){
+    fun saveEnergy(onDone: () -> Unit){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             repository.saveEnergy(today, energy)
             isEnergySet = true
+            onDone()
         }
     }
 }

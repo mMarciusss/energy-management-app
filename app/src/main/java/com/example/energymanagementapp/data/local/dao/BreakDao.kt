@@ -19,6 +19,15 @@ interface BreakDao {
     @Delete
     suspend fun deleteBreak(activityBreak: BreakEntity)
 
+    @Query("""
+        DELETE FROM breaks
+        WHERE planActivityId IN (
+            SELECT id FROM plan_activities
+            WHERE planDate = :date
+        )
+    """)
+    suspend fun deleteBreaksByDate(date: String)
+
     @Query("SELECT * FROM breaks WHERE planActivityId = :planActivityId")
     suspend fun getBreaksByPlanActivity(planActivityId: Int): List<BreakEntity>
 

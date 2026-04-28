@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.room.migration.Migration
+import com.example.energymanagementapp.core.state.PlanState
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 import com.example.energymanagementapp.utils.getWeatherDescription
@@ -32,8 +34,11 @@ fun PlanCreationHomeScreen(
     energy: Int,
     isEnergySet: Boolean,
     endTime: String,
+    planState: PlanState,
     weatherTemperature: Double?,
     weatherCode: Int?,
+    onGoHome: () -> Unit,
+    onCancelPlan: () -> Unit,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
@@ -115,6 +120,22 @@ fun PlanCreationHomeScreen(
 
         } else {
             Text("Loading today's weather...")
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Button(onClick = onGoHome) {
+                Text("Go home")
+            }
+            if(planState != PlanState.NOT_STARTED){
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(onClick = onCancelPlan) {
+                    Text("Cancel plan")
+                }
+            }
         }
     }
 }

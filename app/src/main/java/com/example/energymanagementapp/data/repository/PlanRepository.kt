@@ -26,6 +26,14 @@ class PlanRepository (
         planDao.confirmPlan(date)
     }
 
+    suspend fun deletePlan(date: String) {
+        val plan = planDao.getPlanByDate(date)
+
+        if(plan != null){
+            planDao.deletePlan(plan)
+        }
+    }
+
     suspend fun updateEndTime(date: String, endTime: String){
         val existing = planDao.getPlanByDate(date)
 
