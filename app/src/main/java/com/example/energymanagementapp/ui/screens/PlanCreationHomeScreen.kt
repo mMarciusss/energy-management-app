@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import androidx.room.migration.Migration
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 import com.example.energymanagementapp.utils.getWeatherDescription
+import com.example.energymanagementapp.utils.getWeatherIcon
 
 @Composable
 fun PlanCreationHomeScreen(
@@ -105,6 +107,12 @@ fun PlanCreationHomeScreen(
             Text("Today's weather:")
             Text("Temperature: $weatherTemperature °C")
             Text(getWeatherDescription(weatherCode))
+
+            Icon(
+                imageVector = getWeatherIcon(weatherCode),
+                contentDescription = null
+            )
+
         } else {
             Text("Loading today's weather...")
         }
