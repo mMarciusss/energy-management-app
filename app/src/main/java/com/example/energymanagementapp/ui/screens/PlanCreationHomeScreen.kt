@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -34,6 +35,7 @@ fun PlanCreationHomeScreen(
     endTime: String,
     weatherTemperature: Double?,
     weatherCode: Int?,
+    onGoHome: () -> Unit,
     onCancelPlan: () -> Unit,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
@@ -119,8 +121,18 @@ fun PlanCreationHomeScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Button(onClick = onCancelPlan) {
-            Text("Cancel plan")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Button(onClick = onGoHome) {
+                Text("Go home")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Button(onClick = onCancelPlan) {
+                Text("Cancel plan")
+            }
         }
     }
 }

@@ -109,6 +109,11 @@ class MainActivity : ComponentActivity() {
                         endTime = planViewModel.planEndTime,
                         weatherTemperature = weatherViewModel.weatherNow?.first,
                         weatherCode = weatherViewModel.weatherNow?.second,
+                        onGoHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = true }
+                            }
+                        },
                         onCancelPlan = {
                             planViewModel.resetPlan(){
                                 energyViewModel.reloadEnergy()
