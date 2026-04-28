@@ -1,5 +1,6 @@
 package com.example.energymanagementapp.ui.screens
 
+import android.R.attr.enabled
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +51,9 @@ fun HomeScreen(
                 Button(onClick = onViewSummary) {
                     Text("View day summary")
                 }
+
+                Spacer(Modifier.height(16.dp))
+                Text("Wait for tomorrow morning to start a new plan")
             }
         }
 
@@ -59,8 +63,20 @@ fun HomeScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Button(onClick = onManageActivities) {
+        Button(
+            onClick = onManageActivities,
+            enabled = planState == PlanState.NOT_STARTED ||
+                    planState == PlanState.COMPLETED
+        ) {
             Text("Manage activities")
+        }
+
+        if (planState == PlanState.CREATING) {
+           Text("Cancel your day plan to manage activities")
+        }
+
+        if (planState == PlanState.CONFIRMED) {
+            Text("Complete your day plan to manage activities")
         }
     }
 }
