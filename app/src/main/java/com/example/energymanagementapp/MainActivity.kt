@@ -102,8 +102,8 @@ class MainActivity : ComponentActivity() {
                         energy = energyViewModel.energy,
                         isEnergySet = energyViewModel.isEnergySet,
                         endTime = planViewModel.planEndTime,
-                        weatherTemperature = weatherViewModel.temperature,
-                        weatherCode = weatherViewModel.weatherCode,
+                        weatherTemperature = weatherViewModel.weatherNow?.first,
+                        weatherCode = weatherViewModel.weatherNow?.second,
                         onGoToEnergyScreen = {
                             navController.navigate("energy")
                         },
@@ -226,8 +226,8 @@ class MainActivity : ComponentActivity() {
                         PlanExecutionScreen(
                             energy = breakViewModel.remainingEnergy,
                             activities = breakViewModel.planActivities,
-                            weatherTemperature = weatherViewModel.temperature,
-                            weatherCode = weatherViewModel.weatherCode,
+                            weatherTemperature = weatherViewModel.weatherNow?.first,
+                            weatherCode = weatherViewModel.weatherNow?.second,
                             onConfirmComplete = { ids ->
                                 breakViewModel.completeActivities(ids) { breakActivityId ->
 

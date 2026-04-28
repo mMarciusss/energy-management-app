@@ -11,6 +11,6 @@ class WeatherRepository (
         latitude: Double,
         longitude: Double
     ): WeatherResponse {
-        return weatherApi.getCurrentWeather(latitude, longitude)
+        return weatherApi.getWeather(latitude, longitude)
     }
 }
