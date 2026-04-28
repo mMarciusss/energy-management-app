@@ -18,10 +18,12 @@ import androidx.compose.ui.unit.dp
 fun BreakSetupScreen(
     activityName: String,
     breakDuration: Int,
+    hasBreak: Boolean,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
     onConfirm: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    onRemove: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -51,13 +53,20 @@ fun BreakSetupScreen(
         Spacer(Modifier.width(16.dp))
 
         Row(horizontalArrangement = Arrangement.Center){
-            Button(onClick = onCancel) {
-                Text("Cancel break")
-            }
-            Spacer(Modifier.width(16.dp))
 
+            if(hasBreak) {
+                Button(onClick = onRemove) {
+                    Text("Remove break")
+                }
+            } else {
+                Button(onClick = onCancel) {
+                    Text("Cancel break")
+                }
+            }
+
+            Spacer(Modifier.width(16.dp))
             Button(onClick = onConfirm) {
-                Text("Confirm break")
+                Text(if (hasBreak) "Update break" else "Confirm break")
             }
         }
     }
@@ -69,9 +78,11 @@ fun BreakSetupScreenPreview() {
     BreakSetupScreen(
         activityName = "Gym",
         breakDuration = 30,
+        hasBreak = false,
         onIncrease = {},
         onDecrease = {},
         onConfirm = {},
-        onCancel = {}
+        onCancel = {},
+        onRemove = {}
     )
 }

@@ -190,6 +190,8 @@ class MainActivity : ComponentActivity() {
                     BreakSetupScreen(
                         activityName = planActivityName,
                         breakDuration = breakViewModel.breakDuration,
+                        hasBreak = breakViewModel.hasBreak,
+
                         onIncrease = {breakViewModel.increaseBreakDuration()},
                         onDecrease = {breakViewModel.decreaseBreakDuration()},
                         onConfirm = {
@@ -198,6 +200,10 @@ class MainActivity : ComponentActivity() {
                             navController.popBackStack()
                         },
                         onCancel = {
+                            navController.popBackStack()
+                        },
+                        onRemove = {
+                            breakViewModel.removeBreak(planActivityId)
                             navController.popBackStack()
                         }
                     )
