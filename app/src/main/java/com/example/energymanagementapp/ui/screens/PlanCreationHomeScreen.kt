@@ -1,5 +1,7 @@
 package com.example.energymanagementapp.ui.screens
 
+import android.widget.Button
+import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.room.migration.Migration
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
+import com.example.energymanagementapp.utils.getWeatherDescription
 
 @Composable
 fun PlanCreationHomeScreen(
     energy: Int,
     isEnergySet: Boolean,
     endTime: String,
+    weatherTemperature: Double?,
+    weatherCode: Int?,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
@@ -92,6 +97,12 @@ fun PlanCreationHomeScreen(
                 Button(onClick = onConfirmPlan) {
                     Text("Confirm plan")
                 }
+            }
+
+            Spacer(Modifier.height(16.dp))
+            if(weatherTemperature != null && weatherCode != null) {
+                Text("Temperature: $weatherTemperature")
+                Text(getWeatherDescription(weatherCode))
             }
         }
     }

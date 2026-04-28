@@ -1,6 +1,5 @@
-package com.example.energymanagementapp.data.remote.wheather
+package com.example.energymanagementapp.data.remote.weather
 
-import com.example.energymanagementapp.data.remote.weather.WeatherApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.jvm.java
