@@ -10,6 +10,8 @@ data class PlanActivityEntity (
 
     val planDate: String,
     val activityId: Int,
+    val activityName: String,
+    val energyCost: Int,
 
     val isCompleted: Boolean = false,
     val completionTime: String? = null

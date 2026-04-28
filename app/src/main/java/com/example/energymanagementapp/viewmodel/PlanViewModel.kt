@@ -69,6 +69,12 @@ class PlanViewModel (
         }
     }
 
+    fun startCreatingPlan() {
+        if (planState == PlanState.NOT_STARTED) {
+            planState = PlanState.CREATING
+        }
+    }
+
     fun confirmPlan(onDone: () -> Unit) {
         viewModelScope.launch {
             val today = getToday()

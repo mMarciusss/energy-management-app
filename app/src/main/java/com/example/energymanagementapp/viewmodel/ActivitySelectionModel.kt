@@ -100,9 +100,14 @@ class ActivitySelectionModel (
             }
 
             toAdd.forEach { id ->
+
+                val activity = activities.find {it.id == id} ?: return@forEach
+
                 planActivityRepository.savePlanActivity(
                     planDate = today,
                     activityId = id,
+                    activityName = activity.name,
+                    energyCost = activity.energyCost,
                     isCompleted = false,
                     completionTime = null
                 )

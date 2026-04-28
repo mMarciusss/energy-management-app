@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.room.migration.Migration
+import com.example.energymanagementapp.core.state.PlanState
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 import com.example.energymanagementapp.utils.getWeatherDescription
@@ -33,6 +34,7 @@ fun PlanCreationHomeScreen(
     energy: Int,
     isEnergySet: Boolean,
     endTime: String,
+    planState: PlanState,
     weatherTemperature: Double?,
     weatherCode: Int?,
     onGoHome: () -> Unit,
@@ -128,10 +130,11 @@ fun PlanCreationHomeScreen(
             Button(onClick = onGoHome) {
                 Text("Go home")
             }
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Button(onClick = onCancelPlan) {
-                Text("Cancel plan")
+            if(planState != PlanState.NOT_STARTED){
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(onClick = onCancelPlan) {
+                    Text("Cancel plan")
+                }
             }
         }
     }

@@ -107,6 +107,7 @@ class MainActivity : ComponentActivity() {
                         energy = energyViewModel.energy,
                         isEnergySet = energyViewModel.isEnergySet,
                         endTime = planViewModel.planEndTime,
+                        planState = planViewModel.planState,
                         weatherTemperature = weatherViewModel.weatherNow?.first,
                         weatherCode = weatherViewModel.weatherNow?.second,
                         onGoHome = {
@@ -154,6 +155,7 @@ class MainActivity : ComponentActivity() {
                         onConfirm = { endTime ->
                             energyViewModel.saveEnergy(){
                                 planViewModel.setEndTime(endTime)
+                                planViewModel.startCreatingPlan()
                             }
 
                             navController.popBackStack()

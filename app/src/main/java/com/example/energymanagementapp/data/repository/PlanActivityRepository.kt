@@ -8,10 +8,12 @@ import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 class PlanActivityRepository (
     val planActivityDao: PlanActivityDao
 ) {
-    suspend fun savePlanActivity(planDate: String, activityId: Int, isCompleted: Boolean, completionTime: String?){
+    suspend fun savePlanActivity(planDate: String, activityId: Int, activityName: String, energyCost: Int, isCompleted: Boolean, completionTime: String?){
         val planActivity = PlanActivityEntity(
             planDate = planDate,
             activityId = activityId,
+            activityName = activityName,
+            energyCost = energyCost,
             isCompleted = isCompleted,
             completionTime = completionTime
         )
