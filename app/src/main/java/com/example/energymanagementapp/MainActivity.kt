@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +33,7 @@ import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import com.example.energymanagementapp.viewmodel.EnergyViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
 import com.example.energymanagementapp.viewmodel.WeatherViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,11 @@ class MainActivity : ComponentActivity() {
 
         val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
         val weatherViewModel = WeatherViewModel(weatherRepository)
+
+        lifecycleScope.launch{
+            activityRepository.seedActivitiesIfEmpty()
+            activityManagementViewModel.refreshActivities()
+        }
 
         setContent {
             val navController = rememberNavController()
@@ -183,6 +190,8 @@ class MainActivity : ComponentActivity() {
                     BreakSetupScreen(
                         activityName = planActivityName,
                         breakDuration = breakViewModel.breakDuration,
+                        hasBreak = breakViewModel.hasBreak,
+
                         onIncrease = {breakViewModel.increaseBreakDuration()},
                         onDecrease = {breakViewModel.decreaseBreakDuration()},
                         onConfirm = {
@@ -191,6 +200,10 @@ class MainActivity : ComponentActivity() {
                             navController.popBackStack()
                         },
                         onCancel = {
+                            navController.popBackStack()
+                        },
+                        onRemove = {
+                            breakViewModel.removeBreak(planActivityId)
                             navController.popBackStack()
                         }
                     )

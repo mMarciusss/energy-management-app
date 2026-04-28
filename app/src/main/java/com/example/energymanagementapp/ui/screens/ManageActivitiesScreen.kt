@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.local.entities.ActivityEntity
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageActivitiesScreen(
     activities: List<ActivityEntity>,
@@ -32,7 +37,8 @@ fun ManageActivitiesScreen(
     onDelete: (ActivityEntity) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
-    var energyText by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedEnergy by remember { mutableStateOf<Int?>(null) }
 
     Column(
         modifier = Modifier
@@ -56,24 +62,53 @@ fun ManageActivitiesScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        TextField(
-            value = energyText,
-            onValueChange = { energyText = it },
-            label = { Text("Energy cost") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            TextField(
+                value = selectedEnergy?.toString() ?: "",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Energy cost") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                (1..5).forEach { value ->
+                    DropdownMenuItem(
+                        text = { Text(value.toString()) },
+                        onClick = {
+                            selectedEnergy = value
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+
 
         Spacer(Modifier.height(12.dp))
 
         Button(
             onClick = {
-                val energy = energyText.toIntOrNull() ?: return@Button
+                val energy = selectedEnergy ?: return@Button
+                if (energy !in 1..5) return@Button
                 if (name.isBlank()) return@Button
 
                 onAdd(name, energy)
 
                 name = ""
-                energyText = ""
+                selectedEnergy = null
             },
             modifier = Modifier.fillMaxWidth()
         ) {

@@ -32,6 +32,9 @@ class BreakViewModel (
     var totalEnergy by mutableStateOf(0)
         private set
 
+    var hasBreak by mutableStateOf(false)
+        private set
+
 
     init {
         loadPlanActivities()
@@ -85,10 +88,24 @@ class BreakViewModel (
         }
     }
 
+    fun removeBreak(planActivityId: Int) {
+        viewModelScope.launch {
+            breakRepository.deleteBreak(planActivityId)
+            reloadPlanActivities()
+        }
+    }
+
     fun loadBreak(planActivityId: Int){
         viewModelScope.launch {
             val existing = breakRepository.getBreak(planActivityId)
-            breakDuration = existing?.durationMinutes ?: 30
+
+            if(existing != null) {
+                breakDuration = existing.durationMinutes
+                hasBreak = true
+            } else {
+                breakDuration = 30
+                hasBreak = false
+            }
         }
     }
 

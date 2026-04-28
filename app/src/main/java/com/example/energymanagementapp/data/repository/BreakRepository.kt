@@ -34,6 +34,14 @@ class BreakRepository (
         }
     }
 
+    suspend fun deleteBreak(planActivityId: Int){
+        val existing = breakDao.getBreakByPlanActivity(planActivityId)
+
+        if(existing != null){
+            breakDao.deleteBreak(existing)
+        }
+    }
+
     suspend fun getBreakList(planActivityId: Int): List<BreakEntity>{
         return breakDao.getBreaksByPlanActivity(planActivityId)
     }
