@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.energymanagementapp.core.state.PlanState
 import com.example.energymanagementapp.data.local.entities.PlanEntity
 import com.example.energymanagementapp.data.repository.PlanRepository
 import kotlinx.coroutines.launch
@@ -25,6 +26,9 @@ class PlanViewModel (
     var isExpired by mutableStateOf(false)
         private set
 
+    var planState by mutableStateOf(PlanState.NOT_STARTED)
+        private set
+
     init {
         loadPlan()
     }
@@ -35,11 +39,20 @@ class PlanViewModel (
             val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val plan = planRepository.getPlan(today)
 
-            if(plan != null){
-                isConfirmed = plan.isConfirmed == true
-                planEndTime = plan.endTime
-                isExpired =
-                    planEndTime < now
+            if(plan == null){
+                planState = PlanState.NOT_STARTED
+                return@launch
+            }
+
+            isConfirmed = plan.isConfirmed == true
+            planEndTime = plan.endTime
+            isExpired = planEndTime < now
+
+            planState = when {
+                !isConfirmed -> PlanState.CREATING
+                isConfirmed && isExpired -> PlanState.COMPLETED
+                isConfirmed -> PlanState.CONFIRMED
+                else -> PlanState.NOT_STARTED
             }
         }
     }
@@ -53,7 +66,22 @@ class PlanViewModel (
             val today = getToday()
             planRepository.confirmPlan(today)
             isConfirmed = true
+            planState = PlanState.CONFIRMED
             onDone()
+        }
+    }
+
+    fun resetPlan() {
+        viewModelScope.launch {
+            val today = getToday()
+
+            planRepository.deletePlan(today)
+
+            isConfirmed = false
+            isExpired = false
+            planEndTime = "20:00"
+
+            planState = PlanState.NOT_STARTED
         }
     }
 
