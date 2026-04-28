@@ -99,10 +99,11 @@ fun PlanExecutionScreen(
 
         Spacer(Modifier.height(16.dp))
         if(weatherTemperature != null && weatherCode != null) {
-            Text("Temperature: $weatherTemperature")
+            Text("Today's weather:")
+            Text("Temperature: $weatherTemperature °C")
             Text(getWeatherDescription(weatherCode))
         } else {
-            Text("Loading weather...")
+            Text("Loading today's weather...")
         }
     }
 }
