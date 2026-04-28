@@ -3,9 +3,13 @@ package com.example.energymanagementapp.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +25,8 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 @Composable
 fun PastDaysScreen(
     datesWithPlans: List<LocalDate>,
-    onDateClick: (LocalDate) -> Unit
+    onDateClick: (LocalDate) -> Unit,
+    onGoHome: () -> Unit
 ) {
     val currentMonth = YearMonth.of(
         LocalDate.now().year,
@@ -34,29 +39,37 @@ fun PastDaysScreen(
         firstVisibleMonth = currentMonth
     )
 
-    HorizontalCalendar(
-        state = state,
-        dayContent = { calendarDay ->
+    Column {
+        HorizontalCalendar(
+            state = state,
+            dayContent = { calendarDay ->
 
-            val hasPlan = datesWithPlans.contains(calendarDay.date)
+                val hasPlan = datesWithPlans.contains(calendarDay.date)
 
-            Box(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .size(40.dp)
-                    .background(
-                        if (hasPlan) Color.Green else Color.Transparent,
-                        shape = CircleShape
-                    )
-                    .clickable {
-                        if (hasPlan) {
-                            onDateClick(calendarDay.date)
-                        }
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(calendarDay.date.dayOfMonth.toString())
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(40.dp)
+                        .background(
+                            if (hasPlan) Color.Green else Color.Transparent,
+                            shape = CircleShape
+                        )
+                        .clickable {
+                            if (hasPlan) {
+                                onDateClick(calendarDay.date)
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(calendarDay.date.dayOfMonth.toString())
+                }
             }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = onGoHome) {
+            Text("Go Home")
         }
-    )
+    }
 }

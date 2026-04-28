@@ -317,6 +317,7 @@ class MainActivity : ComponentActivity() {
                         totalEnergy = energyViewModel.energy,
                         totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                         totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
+                        isFromCalendar = false,
                         onGoHome = {
                             navController.navigate("home") {
                                 popUpTo("home") {inclusive = true}
@@ -335,18 +336,24 @@ class MainActivity : ComponentActivity() {
                             try {
                                 LocalDate.parse(it)
                             } catch (e: Exception) {
-                                println("BAD DATE: $it")
                                 null
                             }
                         },
                         onDateClick = { date ->
-                            navController.navigate("day_summary/$date")
+                            navController.navigate("day_summary/$date?fromCalendar=true")
+                        },
+                        onGoHome = {
+                            navController.navigate("home") {
+                                popUpTo("home") {inclusive = true}
+                            }
                         }
                     )
                 }
 
-                composable("day_summary/{date}") { backStackEntry ->
+                composable("day_summary/{date}?fromCalendar={fromCalendar}") { backStackEntry ->
                     val date = backStackEntry.arguments?.getString("date") ?: ""
+                    val fromCalendar = backStackEntry.arguments?.getString("fromCalendar") == "true"
+
 
                     LaunchedEffect(date) {
                         daySummaryViewModel.loadSummary(date)
@@ -357,10 +364,14 @@ class MainActivity : ComponentActivity() {
                         totalEnergy = energyViewModel.energy,
                         totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                         totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
+                        isFromCalendar = fromCalendar,
                         onGoHome = {
                             navController.navigate("home") {
                                 popUpTo("home") {inclusive = true}
                             }
+                        },
+                        onGoBack = {
+                            navController.popBackStack()
                         }
                     )
 

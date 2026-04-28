@@ -14,7 +14,9 @@ fun DaySummaryScreen (
     totalEnergy: Int,
     totalEnergyUsed: Int,
     totalRestTimeMinutes: Int,
-    onGoHome: () -> Unit
+    isFromCalendar: Boolean,
+    onGoHome: () -> Unit,
+    onGoBack: (() -> Unit)? = null
 ) {
     val completedActivities = activities.filter{it.isCompleted}
     val notCompletedActivities = activities.filter{!it.isCompleted}
@@ -41,8 +43,14 @@ fun DaySummaryScreen (
             }
         }
 
-        Button(onClick = onGoHome){
-            Text("Back to home")
+        if (isFromCalendar && onGoBack != null) {
+            Button(onClick = onGoBack) {
+                Text("Go back")
+            }
+        }
+
+        Button(onClick = onGoHome) {
+            Text("Go home")
         }
     }
 }
