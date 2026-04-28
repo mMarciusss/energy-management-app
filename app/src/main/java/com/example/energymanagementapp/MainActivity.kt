@@ -328,17 +328,11 @@ class MainActivity : ComponentActivity() {
 
                 composable("past_days") {
                     LaunchedEffect(Unit) {
-                        pastDaysViewModel.loadDates()
+                        pastDaysViewModel.loadDayStatuses()
                     }
 
                     PastDaysScreen(
-                        datesWithPlans = pastDaysViewModel.dates.mapNotNull {
-                            try {
-                                LocalDate.parse(it)
-                            } catch (e: Exception) {
-                                null
-                            }
-                        },
+                        dayStatuses = pastDaysViewModel.dayStatuses,
                         onDateClick = { date ->
                             navController.navigate("day_summary/$date?fromCalendar=true")
                         },

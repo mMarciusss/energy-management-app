@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.viewmodel.DayStatus
+import com.example.energymanagementapp.viewmodel.Status
 import java.time.LocalDate
 import java.time.YearMonth
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -24,7 +26,7 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 
 @Composable
 fun PastDaysScreen(
-    datesWithPlans: List<LocalDate>,
+    dayStatuses: List<DayStatus>,
     onDateClick: (LocalDate) -> Unit,
     onGoHome: () -> Unit
 ) {
@@ -44,18 +46,24 @@ fun PastDaysScreen(
             state = state,
             dayContent = { calendarDay ->
 
-                val hasPlan = datesWithPlans.contains(calendarDay.date)
+                val status = dayStatuses.find { it.date == calendarDay.date }?.status
 
                 Box(
                     modifier = Modifier
                         .padding(4.dp)
                         .size(40.dp)
                         .background(
-                            if (hasPlan) Color.Green else Color.Transparent,
+                            when (status) {
+                                Status.COMPLETED -> Color.Green
+                                Status.PARTIAL -> Color.Yellow
+                                Status.NOT_COMPLETED -> Color.Red
+                                else -> Color.Transparent
+                            },
                             shape = CircleShape
+
                         )
                         .clickable {
-                            if (hasPlan) {
+                            if (status != null) {
                                 onDateClick(calendarDay.date)
                             }
                         },
