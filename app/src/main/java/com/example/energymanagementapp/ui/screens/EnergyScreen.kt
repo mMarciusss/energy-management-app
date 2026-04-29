@@ -41,6 +41,7 @@ import java.util.Date
 import java.util.Locale
 
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.components.CircleButton
 
 @Composable
 fun EnergyScreen(
@@ -207,33 +208,6 @@ fun EnergyScreen(
                     }
                     onConfirm(selectedTime)
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun CircleButton(
-    text: String,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(50),
-        modifier = Modifier.size(48.dp),
-        elevation = ButtonDefaults.buttonElevation(4.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF6C63FF)
-        ),
-        contentPadding = PaddingValues(0.dp)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleLarge
             )
         }
     }
