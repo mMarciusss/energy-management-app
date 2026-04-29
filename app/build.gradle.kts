@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.firebase.appdistribution)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -39,6 +41,12 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+firebaseAppDistributionDefault {
+    appId = "1:697881034445:android:67be00e2c6a33466357384"
+    groups = "testers"
+    releaseNotes = "CI build"
 }
 
 dependencies {
