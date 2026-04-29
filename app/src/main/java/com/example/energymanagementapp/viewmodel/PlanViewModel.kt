@@ -38,6 +38,9 @@ class PlanViewModel (
     var isAllCompleted by mutableStateOf(false)
         private set
 
+    var isTooLateToStart by mutableStateOf(false)
+        private set
+
     init {
         loadPlan()
     }
@@ -58,6 +61,9 @@ class PlanViewModel (
                 planState = PlanState.NOT_STARTED
                 return@launch
             }
+
+            val hour = SimpleDateFormat("HH", Locale.getDefault()).format(Date()).toInt()
+            isTooLateToStart = hour >= 21
 
             val activities = planActivityRepository.getPlanActivitiesWithBreaks(today)
 

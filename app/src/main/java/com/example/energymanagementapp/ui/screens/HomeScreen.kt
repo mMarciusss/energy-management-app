@@ -17,6 +17,7 @@ import com.example.energymanagementapp.core.state.PlanState
 @Composable
 fun HomeScreen(
     planState: PlanState,
+    isTooLateToStart: Boolean,
     onStartPlan: () -> Unit,
     onContinuePlan: () -> Unit,
     onViewPlan: () -> Unit,
@@ -31,8 +32,15 @@ fun HomeScreen(
     ) {
         when (planState) {
             PlanState.NOT_STARTED -> {
-                Button(onClick = onStartPlan) {
+                Button(
+                    onClick = onStartPlan,
+                    enabled = !isTooLateToStart
+                ) {
                     Text("Start plan")
+                }
+
+                if (isTooLateToStart) {
+                    Text("Wait for tomorrow morning to start a new plan")
                 }
             }
 

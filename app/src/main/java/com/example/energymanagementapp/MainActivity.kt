@@ -91,6 +91,7 @@ class MainActivity : ComponentActivity() {
 
                     HomeScreen(
                         planState = planViewModel.planState,
+                        isTooLateToStart = planViewModel.isTooLateToStart,
                         onStartPlan = {
                             navController.navigate("plan_creation_home")
                         },
