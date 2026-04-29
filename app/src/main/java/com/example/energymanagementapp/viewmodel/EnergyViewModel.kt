@@ -15,6 +15,8 @@ class EnergyViewModel (
     private val repository: PlanRepository
 ) : ViewModel(){
 
+    private val MIN_ENERGY = 3
+
     var energy by mutableStateOf(5)
         private set
 
@@ -52,7 +54,7 @@ class EnergyViewModel (
     }
 
     fun decreaseEnergy(){
-        if (energy > 0){
+        if (energy > MIN_ENERGY){
             energy--
         }
     }

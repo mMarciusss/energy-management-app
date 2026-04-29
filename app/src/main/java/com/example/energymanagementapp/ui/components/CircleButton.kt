@@ -16,21 +16,33 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CircleButton(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
+    val bgColor = if (enabled) {
+        Color(0xFF6C63FF)
+    } else {
+        Color(0xFFBDBDBD)
+    }
+
+    val textColor = if (enabled) Color.White else Color.White.copy(alpha = 0.6f)
+
     Box(
         modifier = Modifier
             .size(48.dp)
             .background(
-                color = Color(0xFF6C63FF),
+                color = bgColor,
                 shape = RoundedCornerShape(50)
             )
-            .clickable { onClick() },
+            .clickable(
+                enabled = enabled,
+                onClick = onClick
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            color = Color.White,
+            color = textColor,
             style = MaterialTheme.typography.titleMedium
         )
     }

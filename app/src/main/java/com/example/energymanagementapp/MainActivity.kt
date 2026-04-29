@@ -158,8 +158,12 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("energy") {
+
+                    val minRequiredEnergy = activitySelectionModel.getTotalSelectedEnergy()
+
                     EnergyScreen(
                         energy = energyViewModel.energy,
+                        minEnergy = maxOf(3, minRequiredEnergy),
                         endTime = planViewModel.planEndTime,
                         onIncrease = {energyViewModel.increaseEnergy()},
                         onDecrease = {energyViewModel.decreaseEnergy()},

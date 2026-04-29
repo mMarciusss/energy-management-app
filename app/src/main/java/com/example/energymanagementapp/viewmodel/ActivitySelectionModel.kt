@@ -74,6 +74,12 @@ class ActivitySelectionModel (
         loadSelectedActivitiesForToday()
     }
 
+    fun getTotalSelectedEnergy(): Int{
+        return activities
+            .filter { selectedActivities.contains(it.id) }
+            .sumOf { it.energyCost }
+    }
+
     fun toggleActivity(activity: ActivityEntity){
         if(selectedActivities.contains(activity.id)){
             selectedActivities.remove(activity.id)

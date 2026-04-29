@@ -46,6 +46,7 @@ import com.example.energymanagementapp.ui.components.CircleButton
 @Composable
 fun EnergyScreen(
     energy: Int,
+    minEnergy: Int,
     endTime: String,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
@@ -157,7 +158,7 @@ fun EnergyScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        CircleButton("-", onDecrease)
+                        CircleButton("-", onDecrease, energy > minEnergy)
                         CircleButton("+", onIncrease)
                     }
                 }
