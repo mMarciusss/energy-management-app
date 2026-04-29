@@ -286,6 +286,11 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 }
+                            },
+                            onGoHome = {
+                                navController.navigate("home") {
+                                    popUpTo("home") {inclusive = true}
+                                }
                             }
                         )
                     }

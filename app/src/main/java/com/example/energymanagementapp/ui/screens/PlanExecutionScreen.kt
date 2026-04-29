@@ -29,7 +29,8 @@ fun PlanExecutionScreen(
     weatherNow: Pair<Double, Int>?,
     weatherIn3Hours: Pair<Double, Int>?,
     weatherEvening: Pair<Double, Int>?,
-    onConfirmComplete: (List<Int>) -> Unit
+    onConfirmComplete: (List<Int>) -> Unit,
+    onGoHome: () -> Unit
 ) {
     val nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val in3hHour = (nowHour + 3) % 24
@@ -143,6 +144,11 @@ fun PlanExecutionScreen(
             Text("Take weather into consideration when choosing activities!")
         } else {
             Text("Loading today's weather...")
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = onGoHome) {
+            Text("Go home")
         }
     }
 }
