@@ -115,6 +115,10 @@ fun PlanCreationHomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
+                item {
+                    Spacer(Modifier.height(8.dp))
+                }
+
                 if (isEnergySet) {
                     item {
                         EnergySummaryCard(
@@ -163,7 +167,6 @@ fun PlanCreationHomeScreen(
                 }
 
                 if (hasActivities) {
-
                     item {
                         StepButton(
                             text = if (hasBreaks) "Breaks configured" else "Set breaks · Optional",
@@ -187,6 +190,10 @@ fun PlanCreationHomeScreen(
                         weatherTemperature = weatherTemperature,
                         weatherCode = weatherCode
                     )
+                }
+
+                item {
+                    Spacer(Modifier.height(36.dp))
                 }
             }
         }
