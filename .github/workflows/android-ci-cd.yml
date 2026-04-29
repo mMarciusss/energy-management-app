@@ -26,10 +26,14 @@ jobs:
 
       - run: chmod +x gradlew
 
+      - name: Create google-services.json
+        run: |
+          echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
+
       - run: ./gradlew build --stacktrace --info
 
       - name: Deploy to Firebase
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: ./gradlew assembleDebug appDistributionUploadDebug
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
