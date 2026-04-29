@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.firebase.appdistribution)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -33,10 +36,17 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures {
         compose = true
     }
+}
+
+firebaseAppDistributionDefault {
+    appId = "1:697881034445:android:67be00e2c6a33466357384"
+    groups = "testers"
+    releaseNotes = "CI build"
 }
 
 dependencies {
@@ -48,6 +58,16 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("com.kizitonwose.calendar:compose:2.10.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
