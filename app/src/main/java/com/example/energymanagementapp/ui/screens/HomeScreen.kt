@@ -152,7 +152,7 @@ fun HomeScreen(
 
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Day completed",
+                        "Day completed ✔",
                         color = primaryGreen
                     )
                 }
