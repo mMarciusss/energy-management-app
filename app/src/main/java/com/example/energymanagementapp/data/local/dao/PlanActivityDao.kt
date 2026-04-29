@@ -13,24 +13,11 @@ interface PlanActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(planActivity: PlanActivityEntity)
 
+    @Query("SELECT DISTINCT planDate FROM plan_activities ORDER BY planDate DESC")
+    suspend fun getAllDates(): List<String>
+
     @Query("SELECT * FROM plan_activities WHERE planDate = :planDate")
     suspend fun getPlanActivitiesByDate(planDate: String): List<PlanActivityEntity>
-
-    @Query("""
-        SELECT
-            pa.id,
-            pa.planDate,
-            pa.activityId,
-            pa.isCompleted,
-            pa.completionTime,
-            a.name as activityName,
-            a.energyCost
-        FROM plan_activities pa
-        INNER JOIN activities a
-        ON pa.activityId = a.id
-        WHERE pa.planDate = :planDate
-    """)
-    suspend fun getPlanActivitiesWithDetails(planDate: String): List<PlanActivityWithDetails>
 
     @Query("DELETE FROM plan_activities WHERE planDate = :date")
     suspend fun deleteByDate(date: String)
@@ -46,16 +33,15 @@ interface PlanActivityDao {
             pa.id,
             pa.planDate,
             pa.activityId,
+            pa.activityName,
+            pa.energyCost,
             pa.isCompleted,
             pa.completionTime,
-            a.name as activityName,
-            a.energyCost,
             b.durationMinutes as breakDuration,
             b.startTime,
             b.endTime,
             b.isCompleted as breakIsCompleted
         FROM plan_activities pa
-        INNER JOIN activities a ON pa.activityId = a.id
         LEFT JOIN breaks b ON b.planActivityId = pa.id
         WHERE pa.planDate = :planDate
     """)

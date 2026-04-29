@@ -25,11 +25,9 @@ class DaySummaryViewModel (
     var totalRestTimeMinutes by mutableStateOf(0)
         private set
 
-    fun loadSummary(){
+    fun loadSummary(date: String){
         viewModelScope.launch {
-            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-            val list = planActivityRepository.getPlanActivitiesWithBreaks(today)
+            val list = planActivityRepository.getPlanActivitiesWithBreaks(date)
 
             activities = list
 

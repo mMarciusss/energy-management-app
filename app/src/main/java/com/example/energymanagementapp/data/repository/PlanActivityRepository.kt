@@ -20,12 +20,12 @@ class PlanActivityRepository (
         planActivityDao.insertOrUpdate(planActivity)
     }
 
-    suspend fun getPlanActivities(planDate: String): List<PlanActivityEntity>{
-        return planActivityDao.getPlanActivitiesByDate(planDate)
+    suspend fun getAllDates(): List<String>{
+        return planActivityDao.getAllDates()
     }
 
-    suspend fun getPlanActivitiesWithDetails(planDate: String): List<PlanActivityWithDetails> {
-        return planActivityDao.getPlanActivitiesWithDetails(planDate)
+    suspend fun getPlanActivities(planDate: String): List<PlanActivityEntity>{
+        return planActivityDao.getPlanActivitiesByDate(planDate)
     }
 
     suspend fun deletePlanActivitiesByDate(date: String){
