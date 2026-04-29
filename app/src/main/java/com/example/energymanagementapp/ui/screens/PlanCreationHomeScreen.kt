@@ -331,9 +331,7 @@ fun SelectedActivitiesCard(
     selectedActivities: List<PlanActivityWithBreak>
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(115.dp),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
@@ -350,24 +348,22 @@ fun SelectedActivitiesCard(
 
             Spacer(Modifier.height(8.dp))
 
-            LazyColumn {
-                items(selectedActivities) { activity ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = activity.activityName,
-                            color = Color(0xFF333333)
-                        )
+            selectedActivities.forEach { activity ->
+                Row {
+                    Text(
+                        text = activity.activityName,
+                        color = Color(0xFF333333)
+                    )
 
-                        if (activity.breakDuration != null) {
-                            Text(
-                                text = " · Break ${activity.breakDuration} min",
-                                color = Color(0xFF6B6B6B)
-                            )
-                        }
+                    if (activity.breakDuration != null) {
+                        Text(
+                            text = " · Break ${activity.breakDuration} min",
+                            color = Color(0xFF6B6B6B)
+                        )
                     }
                 }
+
+                Spacer(Modifier.height(4.dp))
             }
         }
     }
