@@ -1,25 +1,36 @@
 package com.example.energymanagementapp.ui.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
-import com.example.energymanagementapp.utils.getWeatherDescription
-import com.example.energymanagementapp.utils.getWeatherIcon
+import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
+import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
 
 @Composable
@@ -32,6 +43,11 @@ fun PlanExecutionScreen(
     onConfirmComplete: (List<Int>) -> Unit,
     onGoHome: () -> Unit
 ) {
+
+    val primaryGreen = Color(0xFF6BCB9A)
+    val background = Color(0xFFF7F7F7)
+    val textGray = Color(0xFF6B6B6B)
+
     val nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val in3hHour = (nowHour + 3) % 24
 
@@ -44,111 +60,202 @@ fun PlanExecutionScreen(
 
     val checkedIds = remember { mutableStateListOf<Int>() }
 
-    Column {
-        Text("Remaining energy: $energy")
+    val pending = activities.filter { !it.isCompleted }
+    val completed = activities.filter { it.isCompleted }
 
-        LazyColumn {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(background)
+            .padding(24.dp)
+    ) {
 
-            val now = System.currentTimeMillis()
+        // 🔝 HEADER
+        Text(
+            text = "Your plan",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            )
+        )
 
-            val pendingActivities = activities.filter { activity ->
-                val breakRunning =
-                    (activity.startTime ?: 0L) > 0L &&
-                    activity.breakIsCompleted == false
+        Spacer(Modifier.height(6.dp))
 
-                !activity.isCompleted && !breakRunning
+        Text("Best of luck in completing your tasks!", color = textGray)
+
+        Spacer(Modifier.height(12.dp))
+
+        Box(
+            modifier = Modifier
+                .width(40.dp)
+                .height(4.dp)
+                .background(primaryGreen, RoundedCornerShape(50))
+        )
+
+        Spacer(Modifier.height(16.dp))
+        EnergyLeftIndicator(energy)
+
+        Spacer(Modifier.height(16.dp))
+
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+
+            item {
+                SectionTitle("To do")
             }
 
-            items(pendingActivities) {activity ->
+            items(pending) { activity ->
 
-                val alreadySelectedWithBreak = activities.any {
-                    checkedIds.contains(it.id) && it.breakDuration != null
-                }
+                val selected = checkedIds.contains(activity.id)
 
-                val isThisWithBreak = activity.breakDuration != null
-
-                val canSelect =
-                    if (isThisWithBreak) {
-                        !alreadySelectedWithBreak || checkedIds.contains(activity.id)
-                    } else {
-                        true
+                ExecutionItem(
+                    activity = activity,
+                    selected = selected,
+                    onToggle = {
+                        if (selected) checkedIds.remove(activity.id)
+                        else checkedIds.add(activity.id)
                     }
+                )
+            }
 
-                Row{
-                    Text(activity.activityName)
-
-                    if(activity.breakDuration != null){
-                        Text(" /Break: ${activity.breakDuration} min")
-                    }
-
-                    Checkbox(
-                        checked = checkedIds.contains(activity.id),
-                        enabled = canSelect,
-                        onCheckedChange = {
-                            if (checkedIds.contains(activity.id)) {
-                                checkedIds.remove(activity.id)
-                            } else {
-                                checkedIds.add(activity.id)
-                            }
+            if (checkedIds.isNotEmpty()) {
+                item {
+                    MainButton(
+                        text = "Confirm completed",
+                        color = primaryGreen,
+                        onClick = {
+                            onConfirmComplete(checkedIds.toList())
+                            checkedIds.clear()
                         }
                     )
                 }
             }
-        }
 
-        if (checkedIds.isNotEmpty()) {
-            Button(onClick = {
-                onConfirmComplete(checkedIds.toList())
-                checkedIds.clear()
-            }) {
-                Text("Confirm completed activities")
+            if (completed.isNotEmpty()) {
+                item {
+                    SectionTitle("Completed")
+                }
+
+                items(completed) { activity ->
+                    CompletedItem(activity)
+                }
             }
-        }
 
-        Text("Completed:")
-
-        LazyColumn {
-            items(activities.filter { it.isCompleted }) {
-                Text(it.activityName)
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-        if(weatherNow != null && weatherIn3Hours != null && weatherEvening != null) {
-            Text("Today's weather:")
-            Row(verticalAlignment = Alignment.CenterVertically){
-                Text("Current weather: ${weatherNow.first} °C, ${getWeatherDescription(weatherNow.second)} ")
-                Icon(
-                    imageVector = getWeatherIcon(weatherNow.second),
-                    contentDescription = null
+            item {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "Weather",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
                 )
-            }
-            if(showIn3h){
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Weather in 3 hours from now: ${weatherIn3Hours.first} °C, ${getWeatherDescription(weatherIn3Hours.second)} ")
-                    Icon(
-                        imageVector = getWeatherIcon(weatherIn3Hours.second),
-                        contentDescription = null
+
+                Spacer(Modifier.height(8.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                    WeatherMiniRow(
+                        label = "Now",
+                        weather = weatherNow
                     )
+
+                    if (showIn3h) {
+                        WeatherMiniRow(
+                            label = "In 3 hours",
+                            weather = weatherIn3Hours
+                        )
+                    }
+
+                    if (showEvening) {
+                        WeatherMiniRow(
+                            label = "Evening",
+                            weather = weatherEvening
+                        )
+                    }
                 }
+
+                Spacer(Modifier.height(16.dp))
             }
-            if(showEvening){
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Evening weather: ${weatherEvening.first} °C, ${getWeatherDescription(weatherEvening.second)} ")
-                    Icon(
-                        imageVector = getWeatherIcon(weatherEvening.second),
-                        contentDescription = null
-                    )
-                }
-            }
-            Text("Take weather into consideration when choosing activities!")
-        } else {
-            Text("Loading today's weather...")
         }
 
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onGoHome) {
-            Text("Go home")
+        SecondaryButton(
+            text = "Go home",
+            onClick = onGoHome
+        )
+    }
+}
+
+
+@Composable
+fun ExecutionItem(
+    activity: PlanActivityWithBreak,
+    selected: Boolean,
+    onToggle: () -> Unit
+) {
+    val primaryGreen = Color(0xFF6BCB9A)
+    val textGray = Color(0xFF6B6B6B)
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected) Color(0xFFE8F5EE) else Color.White
+        ),
+        elevation = CardDefaults.cardElevation(3.dp),
+        border = if (selected) BorderStroke(1.dp, primaryGreen) else null
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(activity.activityName, fontWeight = FontWeight.Medium)
+
+                if (activity.breakDuration != null) {
+                    Text(
+                        "Break: ${activity.breakDuration} min",
+                        color = textGray,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+
+            Checkbox(
+                checked = selected,
+                onCheckedChange = { onToggle() }
+            )
         }
     }
+}
+
+
+@Composable
+fun CompletedItem(activity: PlanActivityWithBreak) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF2F2F2)
+        ),
+        elevation = CardDefaults.cardElevation(1.dp)
+    ) {
+        Text(
+            text = activity.activityName,
+            modifier = Modifier.padding(16.dp),
+            color = Color.Gray
+        )
+    }
+}
+
+
+@Composable
+fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Bold
+        )
+    )
 }
