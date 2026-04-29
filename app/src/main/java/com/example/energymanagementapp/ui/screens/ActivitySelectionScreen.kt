@@ -42,6 +42,8 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
+import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
 
 @Composable
@@ -256,96 +258,6 @@ fun ActivityItem(
                     checkedColor = primaryGreen,
                     uncheckedColor = Color.Gray
                 )
-            )
-        }
-    }
-}
-
-
-@Composable
-fun EnergyLeftIndicator(energy: Int) {
-
-    Column {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "Energy left",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(Modifier.weight(1f))
-            Text("$energy", color = Color.Gray)
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        val columns = 5
-        val rows = (energy + columns - 1) / columns
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            repeat(rows) { rowIndex ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(0.dp)
-                ) {
-                    repeat(columns) { colIndex ->
-                        val index = rowIndex * columns + colIndex
-                        val filled = index < energy
-
-                        Image(
-                            painter = painterResource(id = R.drawable.spoon),
-                            contentDescription = null,
-                            modifier = Modifier.size(28.dp),
-                            alpha = if (filled) 1f else 0.2f
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun WeatherMiniRow(
-    label: String,
-    weather: Pair<Double, Int>?
-) {
-
-    if (weather == null) return
-
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(1.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Text(
-                text = label,
-                modifier = Modifier.width(60.dp),
-                color = Color(0xFF6B6B6B),
-                style = MaterialTheme.typography.bodySmall
-            )
-
-            Icon(
-                imageVector = getWeatherIcon(weather.second),
-                contentDescription = null,
-                tint = Color(0xFF6982B5)
-            )
-
-            Spacer(Modifier.width(8.dp))
-
-            Text(
-                "${weather.first}°C · ${getWeatherDescription(weather.second)}",
-                color = Color.Gray
             )
         }
     }
