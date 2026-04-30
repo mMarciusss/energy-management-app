@@ -3,7 +3,8 @@ name: Android CI/CD
 on:
   push:
     branches:
-      - '**'
+      - develop
+      - main
 
   pull_request:
     branches:
@@ -26,9 +27,12 @@ jobs:
 
       - run: chmod +x gradlew
 
+      - name: Set versionCode
+        run: echo "VERSION_CODE=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+
       - name: Create google-services.json
         run: |
-          echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
+          printf "%s" '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
 
       - run: ./gradlew build --stacktrace --info
 
@@ -37,3 +41,4 @@ jobs:
         run: ./gradlew assembleDebug appDistributionUploadDebug
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_RELEASE_NOTES: "Build ${{ github.run_number }} from ${{ github.ref_name }}"
