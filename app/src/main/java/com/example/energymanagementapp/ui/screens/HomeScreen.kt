@@ -108,9 +108,16 @@ fun HomeScreen(
 
                     if (isTooLateToStart) {
                         Spacer(Modifier.height(8.dp))
+
                         Text(
-                            text = "Wait for tomorrow morning",
+                            text = "Too late to start today",
                             color = Color(0xFF6B6B6B)
+                        )
+
+                        Text(
+                            text = "Come back tomorrow morning",
+                            color = Color(0xFF6B6B6B),
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
                 }
