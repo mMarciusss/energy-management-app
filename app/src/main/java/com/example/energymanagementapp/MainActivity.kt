@@ -69,8 +69,10 @@ class MainActivity : ComponentActivity() {
         val weatherViewModel = WeatherViewModel(weatherRepository)
 
         lifecycleScope.launch{
-            activityRepository.seedActivitiesIfEmpty()
-            activityManagementViewModel.refreshActivities()
+            activityRepository.seedActivitiesIfEmpty(){
+                activitySelectionModel.relaodActivities()
+                activityManagementViewModel.refreshActivities()
+            }
         }
 
         setContent {
