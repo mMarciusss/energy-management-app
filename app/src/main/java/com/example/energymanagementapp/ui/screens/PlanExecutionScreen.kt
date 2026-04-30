@@ -41,7 +41,8 @@ fun PlanExecutionScreen(
     weatherIn3Hours: Pair<Double, Int>?,
     weatherEvening: Pair<Double, Int>?,
     onConfirmComplete: (List<Int>) -> Unit,
-    onGoHome: () -> Unit
+    onGoHome: () -> Unit,
+    onCancelPlan: () -> Unit
 ) {
 
     val primaryGreen = Color(0xFF6BCB9A)
@@ -70,7 +71,6 @@ fun PlanExecutionScreen(
             .padding(24.dp)
     ) {
 
-        // 🔝 HEADER
         Text(
             text = "Your plan",
             style = MaterialTheme.typography.headlineMedium.copy(
@@ -176,6 +176,24 @@ fun PlanExecutionScreen(
 
                 Spacer(Modifier.height(16.dp))
             }
+        }
+
+        if (completed.isEmpty()) {
+
+            Spacer(Modifier.height(12.dp))
+
+            SecondaryButton(
+                text = "Cancel plan",
+                onClick = onCancelPlan
+            )
+
+            Spacer(Modifier.height(6.dp))
+
+            Text(
+                text = "Once you complete any activity, you won't be able to cancel the plan",
+                color = Color(0xFF6B6B6B),
+                style = MaterialTheme.typography.bodySmall
+            )
         }
 
         SecondaryButton(
