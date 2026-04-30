@@ -156,11 +156,12 @@ fun PastDaysScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 LegendItem(Color(0xFF6BCB9A), "Completed")
-                LegendItem(Color(0xFFFFD54F), "Partial")
-                LegendItem(Color(0xFFEF5350), "Missed")
+                LegendItem(Color(0xFFFFD54F), "Partially\ncompleted")
+                LegendItem(Color(0xFFEF5350), "Not completed")
             }
         }
 
