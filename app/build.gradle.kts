@@ -18,8 +18,11 @@ android {
         applicationId = "com.example.energymanagementapp"
         minSdk = 23
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+
+        val buildNumber = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+
+        versionCode = buildNumber
+        versionName = "1.0.$buildNumber"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
