@@ -69,8 +69,10 @@ class MainActivity : ComponentActivity() {
         val weatherViewModel = WeatherViewModel(weatherRepository)
 
         lifecycleScope.launch{
-            activityRepository.seedActivitiesIfEmpty()
-            activityManagementViewModel.refreshActivities()
+            activityRepository.seedActivitiesIfEmpty(){
+                activitySelectionModel.relaodActivities()
+                activityManagementViewModel.refreshActivities()
+            }
         }
 
         setContent {
@@ -295,7 +297,18 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate("home") {
                                     popUpTo("home") {inclusive = true}
                                 }
-                            }
+                            },
+                            onCancelPlan = {
+                                planViewModel.resetPlan {
+                                    energyViewModel.reloadEnergy()
+                                    breakViewModel.reloadPlanActivities()
+                                    activitySelectionModel.loadSelectedActivitiesForToday()
+                                }
+
+                                navController.navigate("plan_creation_home") {
+                                    popUpTo("home") { inclusive = true }
+                                }
+                            },
                         )
                     }
                 }

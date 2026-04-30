@@ -18,7 +18,7 @@ class ActivityRepository (
         activityDao.deleteActivity(activity)
     }
 
-    suspend fun seedActivitiesIfEmpty() {
+    suspend fun seedActivitiesIfEmpty(onDone: () -> Unit) {
         val existing = getActivityList()
 
         if(existing.isNotEmpty()) return
@@ -37,6 +37,8 @@ class ActivityRepository (
                 energyCost = it.second
             )
         }
+
+        onDone()
     }
 
     suspend fun getActivityList(): List<ActivityEntity>{

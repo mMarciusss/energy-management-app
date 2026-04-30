@@ -52,6 +52,10 @@ class ActivitySelectionModel (
         }
     }
 
+    fun relaodActivities(){
+        loadActivities()
+    }
+
     fun initEnergy(energy: Int){
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 

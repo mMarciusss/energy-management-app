@@ -57,13 +57,14 @@ class PlanViewModel (
             val now = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val plan = planRepository.getPlan(today)
 
+            val hour = SimpleDateFormat("HH", Locale.getDefault()).format(Date()).toInt()
+            isTooLateToStart = hour >= 21
+
             if (plan == null) {
                 planState = PlanState.NOT_STARTED
                 return@launch
             }
 
-            val hour = SimpleDateFormat("HH", Locale.getDefault()).format(Date()).toInt()
-            isTooLateToStart = hour >= 21
 
             val activities = planActivityRepository.getPlanActivitiesWithBreaks(today)
 
