@@ -75,7 +75,7 @@ fun ManageActivitiesScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text("Create and edit your activities", color = textGray)
+            Text("Create new activities or delete existing ones", color = textGray)
 
             Spacer(Modifier.height(12.dp))
 
