@@ -196,6 +196,10 @@ class MainActivity : ComponentActivity() {
 
                     activitySelectionModel.initEnergy(energyViewModel.energy)
 
+                    LaunchedEffect(Unit) {
+                        activitySelectionModel.relaodActivities()
+                    }
+
                     // veiklų pasirinkimo ekrano sukūrimas
                     ActivitySelectionScreen(
                         activities = activitySelectionModel.activities,
