@@ -21,25 +21,32 @@ class BreakViewModel (
     private val breakRepository: BreakRepository,
 ) : ViewModel() {
 
+    // plano veiklos kartu su priskirtomis pertraukomis
     var planActivities by mutableStateOf<List<PlanActivityWithBreak>>(emptyList())
 
+    // nustatyta pertraukos trukmė
     var breakDuration by mutableIntStateOf(30)
         private set
 
+    // likęs energijos kiekis vykdant planą
     var remainingEnergy by mutableStateOf(0)
         private set
 
+    // bendras vartotojo nustatytas energijos kiekis
     var totalEnergy by mutableStateOf(0)
         private set
 
+    // ar pasirinkta veikla turi pertrauką
     var hasBreak by mutableStateOf(false)
         private set
 
 
     init {
+        // užkraunamos plano veiklos paleidimo metu
         loadPlanActivities()
     }
 
+    // visų plano veiklų užkrovimas
     private fun loadPlanActivities() {
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -47,6 +54,7 @@ class BreakViewModel (
         }
     }
 
+    // plano veiklų perkrovimas
     fun reloadPlanActivities() {
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -62,20 +70,24 @@ class BreakViewModel (
         }
     }
 
+    // nustatomas bendras energijos kiekis
     fun setEnergy(energy: Int){
         totalEnergy = energy
     }
 
+    // pertraukos trukmės didinimas
     fun increaseBreakDuration(){
         if(breakDuration <=175)
             breakDuration += 5
     }
 
+    // pertraukos trukmės mažinimas
     fun decreaseBreakDuration(){
         if(breakDuration > 5)
             breakDuration -= 5
     }
 
+    // pertraukos pasirinktai veiklai išsaugojimas DB
     fun createBreak(planActivityId: Int){
         viewModelScope.launch {
             breakRepository.saveBreak(
@@ -88,6 +100,7 @@ class BreakViewModel (
         }
     }
 
+    // pertraukos pasirinktai veiklai ištrynimas DB
     fun removeBreak(planActivityId: Int) {
         viewModelScope.launch {
             breakRepository.deleteBreak(planActivityId)
@@ -95,6 +108,7 @@ class BreakViewModel (
         }
     }
 
+    // veiklai priskirtos pertraukos užkrovimas
     fun loadBreak(planActivityId: Int){
         viewModelScope.launch {
             val existing = breakRepository.getBreak(planActivityId)
@@ -109,6 +123,7 @@ class BreakViewModel (
         }
     }
 
+    // veiklų žymėjimas kaip atliktos veiklos
     fun completeActivities(ids: List<Int>, onBreakNeeded: (Int?) -> Unit) {
         viewModelScope.launch {
 
@@ -139,6 +154,7 @@ class BreakViewModel (
         }
     }
 
+    // veiklai priskirtos pertraukos laikmačio inicijavimas
     fun startBreakTimer(planActivityId: Int, onDone: () -> Unit){
         viewModelScope.launch {
             val existing = breakRepository.getBreak(planActivityId)
@@ -160,6 +176,7 @@ class BreakViewModel (
         }
     }
 
+    // einamos pertraukos ID grąžinimas
     fun getRunningBreakActivityId(): Int?{
         return planActivities
             .firstOrNull{ activity ->
@@ -170,6 +187,7 @@ class BreakViewModel (
             ?.id
     }
 
+    // veiklos su priskirta pertrauka užbaigimas
     fun completeAfterBreak(planActivityId: Int, onDone: () -> Unit){
         viewModelScope.launch {
 
@@ -203,6 +221,7 @@ class BreakViewModel (
         }
     }
 
+    // visų plano veiklų atlikimo tikrinimas
     fun areAllActivitiesCompleted(): Boolean {
         return planActivities.isNotEmpty() && planActivities.all {it.isCompleted}
     }

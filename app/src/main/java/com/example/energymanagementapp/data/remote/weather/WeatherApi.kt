@@ -5,6 +5,7 @@ import retrofit2.http.Query
 
 interface WeatherApi {
 
+    // API metodas orų duomenims gauti
     @GET("v1/forecast")
     suspend fun getWeather(
         @Query("latitude") latitude: Double,

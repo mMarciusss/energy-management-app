@@ -14,6 +14,7 @@ data class DayStatus(
     val status: Status
 )
 
+// galimos dienos plano būsenos
 enum class Status {
     COMPLETED,
     PARTIAL,
@@ -24,9 +25,11 @@ class PastDaysViewModel (
     private val repository: PlanActivityRepository
 ) : ViewModel() {
 
+    // ansktesnių dienų būsenų sąrašas
     var dayStatuses by mutableStateOf<List<DayStatus>>(emptyList())
         private set
 
+    // užkraunamos visų dienų būsenos
     fun loadDayStatuses() {
         viewModelScope.launch {
             val dates = repository.getAllDates()

@@ -13,23 +13,28 @@ class ActivityManagementViewModel (
     private val activityRepository: ActivityRepository
 ) : ViewModel() {
 
+    // veiklų sąrašas, rodomas veiklų valdymo ekrane
     var activities by mutableStateOf<List<ActivityEntity>>(emptyList())
         private set
 
     init {
+        // užkraunamas veiklų sąrašas paleidimo metu
         loadActivities()
     }
 
+    // visų veiklų užkrovimas
     private fun loadActivities(){
         viewModelScope.launch {
             activities = activityRepository.getActivityList()
         }
     }
 
+    // veiklų sąrašo atnaujinimas
     fun refreshActivities(){
         loadActivities()
     }
 
+    // veiklos išsaugojimas DB
     fun addActivity(name: String, energyCost: Int) {
         if (energyCost !in 1..5) return
 
@@ -39,6 +44,7 @@ class ActivityManagementViewModel (
         }
     }
 
+    // veiklos pašalinimas iš DB
     fun deleteActivity(activity: ActivityEntity) {
         viewModelScope.launch {
             activityRepository.deleteActivity(activity)

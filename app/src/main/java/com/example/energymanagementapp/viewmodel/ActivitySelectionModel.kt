@@ -20,26 +20,34 @@ class ActivitySelectionModel (
     private val planActivityRepository: PlanActivityRepository
 ) : ViewModel() {
 
+    // visų galimų veiklų sarašas
     var activities by mutableStateOf<List<ActivityEntity>>(emptyList())
         private set
 
+    // pasirinktų veiklų ID sąrašas
     var selectedActivities = mutableStateListOf<Int>()
 
+    // pradinis vartotojo energijos kiekis
     var initialEnergy by mutableIntStateOf(0)
         private set
 
+    // likęs energijos kiekis po veiklų pasirinkimo
     var remainingEnergy by mutableIntStateOf(0)
         private set
 
+    // ar energijos reikšmė inicijuota
     var isIntialized by mutableStateOf(false)
         private set
 
+    // dabartinė plano diena
     var currentDay by mutableStateOf("")
 
     init {
+        // veiklų užkrovimas paleidimo metu
         loadActivities()
     }
 
+    // visų veiklų užkrovimas
     private fun loadActivities() {
         viewModelScope.launch {
             var list = activityRepository.getActivityList()
@@ -52,10 +60,12 @@ class ActivitySelectionModel (
         }
     }
 
+    // veiklų perkrovimas
     fun relaodActivities(){
         loadActivities()
     }
 
+    // energijos reikšmės inicijavimas
     fun initEnergy(energy: Int){
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
@@ -78,12 +88,14 @@ class ActivitySelectionModel (
         loadSelectedActivitiesForToday()
     }
 
+    // bendra pasirinktų veiklų energijos kaina
     fun getTotalSelectedEnergy(): Int{
         return activities
             .filter { selectedActivities.contains(it.id) }
             .sumOf { it.energyCost }
     }
 
+    // veiklos pažymėjimas arba atžymėjimas
     fun toggleActivity(activity: ActivityEntity){
         if(selectedActivities.contains(activity.id)){
             selectedActivities.remove(activity.id)
@@ -96,6 +108,7 @@ class ActivitySelectionModel (
         }
     }
 
+    // išsaugomos pasirinktos plano veiklos DB
     fun savePlanActivities(onDone: () -> Unit){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -125,6 +138,8 @@ class ActivitySelectionModel (
             onDone()
         }
     }
+
+    // užkraunamos šiandien jau pasirinktos veiklos
     fun loadSelectedActivitiesForToday(){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

@@ -1,6 +1,7 @@
 package com.example.energymanagementapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
@@ -36,12 +37,12 @@ import com.example.energymanagementapp.viewmodel.PastDaysViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
 import com.example.energymanagementapp.viewmodel.WeatherViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // sukuriama lokali Room duomenų bazė
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
@@ -50,24 +51,26 @@ class MainActivity : ComponentActivity() {
         .fallbackToDestructiveMigration(false)
         .build()
 
+        // sukuriami repository objektai darbui su DB
         val activityRepository = ActivityRepository(db.activityDao())
         val planActivityRepository = PlanActivityRepository(db.planActivityDao())
+        val breakRepository = BreakRepository(db.breakDao())
+        val planRepository = PlanRepository(db.planDao())
+
+        // sukuriami viewmodel objektai pogramėlės būsenai valdyti
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
         val daySummaryViewModel = DaySummaryViewModel(planActivityRepository)
         val pastDaysViewModel = PastDaysViewModel(planActivityRepository)
         val activityManagementViewModel = ActivityManagementViewModel(activityRepository)
-
-        val breakRepository = BreakRepository(db.breakDao())
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
-
-        val planRepository = PlanRepository(db.planDao())
         val planViewModel = PlanViewModel(planRepository, breakRepository, planActivityRepository)
         val energyViewModel = EnergyViewModel(planRepository)
 
-
+        // sukuriamas orų API repository ir viewmodel
         val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
         val weatherViewModel = WeatherViewModel(weatherRepository)
 
+        // pradinių veiklų įrašymas į DB jeigu jų nėra
         lifecycleScope.launch{
             activityRepository.seedActivitiesIfEmpty(){
                 activitySelectionModel.relaodActivities()
@@ -78,12 +81,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
+            // pagrindinė navigacijos struktūra
             NavHost(
                 navController = navController,
                 startDestination = "home"
             ) {
                 composable("home") {
 
+                    // užkraunami visi reikalingi duomenys prieš atidarant pagrindinį ekraną
                     LaunchedEffect(Unit) {
                         planViewModel.reloadPlan()
                         activitySelectionModel.initEnergy(energyViewModel.energy)
@@ -91,6 +96,7 @@ class MainActivity : ComponentActivity() {
                         weatherViewModel.loadWeather()
                     }
 
+                    // pagrindinio ekrano sukūrimas
                     HomeScreen(
                         planState = planViewModel.planState,
                         isTooLateToStart = planViewModel.isTooLateToStart,
@@ -116,6 +122,8 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("plan_creation_home") {
+
+                    // plano kūrimo ekrano sukūrimas
                     PlanCreationHomeScreen(
                         energy = energyViewModel.energy,
                         isEnergySet = energyViewModel.isEnergySet,
@@ -149,7 +157,10 @@ class MainActivity : ComponentActivity() {
                             navController.navigate("assign_break")
                         },
                         onConfirmPlan = {
+                            val start = System.currentTimeMillis()
                             planViewModel.confirmPlan {
+                                val end = System.currentTimeMillis()
+                                Log.d("PERF", "Plan creation time: ${end - start} ms")
                                 navController.navigate("plan_execution") {
                                     popUpTo("home") { inclusive = true }
                                 }
@@ -163,6 +174,7 @@ class MainActivity : ComponentActivity() {
 
                     val minRequiredEnergy = activitySelectionModel.getTotalSelectedEnergy()
 
+                    // energijos nustatymo ekrano sukūrimas
                     EnergyScreen(
                         energy = energyViewModel.energy,
                         minEnergy = maxOf(3, minRequiredEnergy),
@@ -184,6 +196,7 @@ class MainActivity : ComponentActivity() {
 
                     activitySelectionModel.initEnergy(energyViewModel.energy)
 
+                    // veiklų pasirinkimo ekrano sukūrimas
                     ActivitySelectionScreen(
                         activities = activitySelectionModel.activities,
                         selectedActivities = activitySelectionModel.selectedActivities,
@@ -204,6 +217,7 @@ class MainActivity : ComponentActivity() {
                 composable("assign_break"){
                     breakViewModel.reloadPlanActivities()
 
+                    // pertaukų priskyrimo veikloms ekrano sukūrimas
                     ActivityBreakListScreen(
                         planActivities = breakViewModel.planActivities,
                         onActivityClick = { planActivityId, planActivityName ->
@@ -221,6 +235,7 @@ class MainActivity : ComponentActivity() {
                     val planActivityId = backStackEntry.arguments?.getString("planActivityId")?.toInt() ?: 0
                     val planActivityName = backStackEntry.arguments?.getString("planActivityName") ?: ""
 
+                    // pertraukų nustatymo ekrano sukūrimas
                     BreakSetupScreen(
                         activityName = planActivityName,
                         breakDuration = breakViewModel.breakDuration,
@@ -244,6 +259,8 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("plan_execution") {
+
+                    // užkraunami plano vykdymo duomenys
                     breakViewModel.setEnergy(energyViewModel.energy)
                     breakViewModel.reloadPlanActivities()
 
@@ -251,6 +268,7 @@ class MainActivity : ComponentActivity() {
                     val allCompleted = planViewModel.isAllCompleted
                     val isExpired = planViewModel.isExpired
 
+                    // jei plano laikas pasibaigė, rodoma dienos apžvalga
                     LaunchedEffect(isExpired) {
                         if(isExpired) {
                             navController.navigate("day_summary") {
@@ -259,6 +277,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    // jei visos veiklos atliktos, rodoma dienos apžvalga
                     LaunchedEffect(allCompleted) {
                         if(allCompleted) {
                             navController.navigate("day_summary") {
@@ -267,12 +286,15 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    // jei yra pradėta pertrauka, atidaromas laikmatis
                     LaunchedEffect(runningBreakId) {
                         if (runningBreakId != null) {
                             navController.navigate("timer/$runningBreakId")
                         }
                     }
                     if (runningBreakId == null && !allCompleted) {
+
+                        // plano vykdymo ekrano sukūrimas
                         PlanExecutionScreen(
                             energy = breakViewModel.remainingEnergy,
                             activities = breakViewModel.planActivities,
@@ -318,6 +340,7 @@ class MainActivity : ComponentActivity() {
 
                     val activity = breakViewModel.planActivities.find {it.id == id}
 
+                    // pertraukos laikmačio ekrano sukūrimas
                     BreakTimerScreen(
                         endTime = activity?.endTime ?: 0L,
                         onFinish = {
@@ -333,10 +356,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("day_summary") {
+
+                    // užkraunami dienos ataskaitos duomenys
                     LaunchedEffect(Unit) {
                         daySummaryViewModel.loadSummary(planViewModel.getToday())
                     }
 
+                    // dienos ataskaitos ekrano sukūrimas
                     DaySummaryScreen(
                         activities = daySummaryViewModel.activities,
                         totalEnergy = energyViewModel.energy,
@@ -352,10 +378,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("past_days") {
+
+                    // užkraunami ankstesnių dienų ataskaitų duomenys
                     LaunchedEffect(Unit) {
                         pastDaysViewModel.loadDayStatuses()
                     }
 
+                    // ankstesnių dienos ataskaitų ekrano sukūrimas
                     PastDaysScreen(
                         dayStatuses = pastDaysViewModel.dayStatuses,
                         onDateClick = { date ->
@@ -373,11 +402,12 @@ class MainActivity : ComponentActivity() {
                     val date = backStackEntry.arguments?.getString("date") ?: ""
                     val fromCalendar = backStackEntry.arguments?.getString("fromCalendar") == "true"
 
-
+                    // užkraunami dienos ataskaitos duomenys
                     LaunchedEffect(date) {
                         daySummaryViewModel.loadSummary(date)
                     }
 
+                    // dienos ataskaitos ekrano sukūrimas
                     DaySummaryScreen(
                         activities = daySummaryViewModel.activities,
                         totalEnergy = energyViewModel.energy,
@@ -397,6 +427,8 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("manage_activities") {
+
+                    // veiklų redagavimo ekrano sukūrimas
                     ManageActivitiesScreen(
                         activities = activityManagementViewModel.activities,
                         onBackToHome = {

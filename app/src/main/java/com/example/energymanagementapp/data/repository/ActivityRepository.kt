@@ -6,6 +6,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 class ActivityRepository (
     private val activityDao: ActivityDao
 ){
+    // veiklos įrašymas į DB
     suspend fun saveActivity(name: String, energyCost: Int){
         val activity = ActivityEntity(
             name = name,
@@ -14,10 +15,12 @@ class ActivityRepository (
         activityDao.insertOrUpdateActivity(activity)
     }
 
+    // veiklos ištrynimas iš DB
     suspend fun deleteActivity(activity: ActivityEntity){
         activityDao.deleteActivity(activity)
     }
 
+    // veiklų užkrovimas į DB jeigu jų nėra
     suspend fun seedActivitiesIfEmpty(onDone: () -> Unit) {
         val existing = getActivityList()
 
@@ -41,6 +44,7 @@ class ActivityRepository (
         onDone()
     }
 
+    // veiklų nuskaitymas iš DB
     suspend fun getActivityList(): List<ActivityEntity>{
         return activityDao.getActivities()
     }

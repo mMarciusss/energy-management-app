@@ -16,15 +16,19 @@ class DaySummaryViewModel (
     private val planActivityRepository: PlanActivityRepository
 ) : ViewModel() {
 
+    // dienos veiklų sąrašas su papildoma informacija
     var activities by mutableStateOf<List<PlanActivityWithBreak>>(emptyList())
         private set
 
+    // bendra sunaudota energija
     var totalEnergyUsed by mutableStateOf(0)
         private set
 
+    // bendras poilsio laikas minutėmis
     var totalRestTimeMinutes by mutableStateOf(0)
         private set
 
+    // užkraunama dienos veiklų ataskaita
     fun loadSummary(date: String){
         viewModelScope.launch {
             val list = planActivityRepository.getPlanActivitiesWithBreaks(date)
