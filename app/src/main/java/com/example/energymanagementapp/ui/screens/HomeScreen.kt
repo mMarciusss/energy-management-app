@@ -25,20 +25,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.energymanagementapp.core.state.PlanState
+import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
 
 @Composable
 fun HomeScreen(
     planState: PlanState,
     isTooLateToStart: Boolean,
+    accessibilityMode: Boolean,
     onStartPlan: () -> Unit,
     onContinuePlan: () -> Unit,
     onViewPlan: () -> Unit,
     onViewSummary: () -> Unit,
     onViewPastDays: () -> Unit,
-    onManageActivities: () -> Unit
+    onManageActivities: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
 
     val primaryGreen = Color(0xFF6BCB9A)
@@ -63,7 +69,12 @@ fun HomeScreen(
                 ),
                 color = Color.Black
             )
-
+//---
+            SecondaryButton(
+                text = if (accessibilityMode) "Accessibility: ON" else "Accessibility: OFF",
+                onClick = onToggleAccessibility
+            )
+//---
             Spacer(Modifier.height(6.dp))
 
             Text(
@@ -202,6 +213,8 @@ fun MainButton(
         label = ""
     )
 
+    val accessibility = LocalAccessibilitySettings.current
+
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -213,17 +226,19 @@ fun MainButton(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
+            .height(accessibility.buttonHeight.dp)
+            .semantics {
+                contentDescription = text
             },
         colors = ButtonDefaults.buttonColors(
             containerColor = color,
             disabledContainerColor = color.copy(alpha = 0.3f)
         )
     ) {
-        Text(text)
+        Text(
+            text = text,
+            fontSize = (16 * accessibility.fontMultiplier).sp
+        )
     }
 }
 
@@ -242,6 +257,8 @@ fun SecondaryButton(
         label = ""
     )
 
+    val accessibility = LocalAccessibilitySettings.current
+
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -259,11 +276,14 @@ fun SecondaryButton(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
+            .height(accessibility.buttonHeight.dp)
+            .semantics {
+                contentDescription = text
+            },
     ) {
-        Text(text)
+        Text(
+            text = text,
+            fontSize = (16 * accessibility.fontMultiplier).sp
+        )
     }
 }
