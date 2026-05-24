@@ -40,6 +40,7 @@ import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.components.AppText
 
 @Composable
 fun PlanCreationHomeScreen(
@@ -80,7 +81,7 @@ fun PlanCreationHomeScreen(
     ) {
 
         Column {
-            Text(
+            AppText(
                 text = "Create plan",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -90,7 +91,7 @@ fun PlanCreationHomeScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "Set your energy, choose activities and start your day",
                 style = MaterialTheme.typography.bodyMedium,
                 color = textGray
@@ -241,7 +242,7 @@ fun EnergySummaryCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                AppText(
                     text = "Energy",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
@@ -250,7 +251,7 @@ fun EnergySummaryCard(
 
                 Spacer(Modifier.weight(1f))
 
-                Text(
+                AppText(
                     text = "$energy / 20",
                     color = textGray
                 )
@@ -303,7 +304,7 @@ fun EnergySummaryCard(
 
                 Spacer(Modifier.width(8.dp))
 
-                Text(
+                AppText(
                     text = "Plan ends at $endTime",
                     color = textGray
                 )
@@ -346,7 +347,7 @@ fun SelectedActivitiesCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
+            AppText(
                 text = "Selected activities",
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold
@@ -357,13 +358,13 @@ fun SelectedActivitiesCard(
 
             selectedActivities.forEach { activity ->
                 Row {
-                    Text(
+                    AppText(
                         text = activity.activityName,
                         color = Color(0xFF333333)
                     )
 
                     if (activity.breakDuration != null) {
-                        Text(
+                        AppText(
                             text = " · Break ${activity.breakDuration} min",
                             color = Color(0xFF6B6B6B)
                         )
@@ -402,14 +403,14 @@ fun WeatherMiniCard(
                 Spacer(Modifier.width(12.dp))
 
                 Column {
-                    Text(
+                    AppText(
                         text = "Today's weather",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
 
-                    Text(
+                    AppText(
                         text = "$weatherTemperature °C · ${getWeatherDescription(weatherCode)}",
                         color = Color(0xFF6B6B6B)
                     )
@@ -424,7 +425,7 @@ fun WeatherMiniCard(
 
                 Spacer(Modifier.width(12.dp))
 
-                Text(
+                AppText(
                     text = "Loading today's weather...",
                     color = Color(0xFF6B6B6B)
                 )

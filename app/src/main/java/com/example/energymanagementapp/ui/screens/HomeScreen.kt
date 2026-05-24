@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energymanagementapp.core.state.PlanState
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
+import com.example.energymanagementapp.ui.components.AppText
 
 @Composable
 fun HomeScreen(
@@ -62,22 +63,22 @@ fun HomeScreen(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
+            AppText(
                 text = "Welcome",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 color = Color.Black
             )
-//---
+
             SecondaryButton(
                 text = if (accessibilityMode) "Accessibility: ON" else "Accessibility: OFF",
                 onClick = onToggleAccessibility
             )
-//---
+
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "Let's manage your day",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color(0xFF6B6B6B)
@@ -100,7 +101,7 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
+            AppText(
                 text = "Energy Manager",
                 style = MaterialTheme.typography.headlineMedium
             )
@@ -120,12 +121,12 @@ fun HomeScreen(
                     if (isTooLateToStart) {
                         Spacer(Modifier.height(8.dp))
 
-                        Text(
+                        AppText(
                             text = "Too late to start today",
                             color = Color(0xFF6B6B6B)
                         )
 
-                        Text(
+                        AppText(
                             text = "Come back tomorrow morning",
                             color = Color(0xFF6B6B6B),
                             style = MaterialTheme.typography.bodySmall
@@ -141,7 +142,7 @@ fun HomeScreen(
                     )
 
                     Spacer(Modifier.height(8.dp))
-                    Text(
+                    AppText(
                         "Cancel plan to manage activities",
                         color = Color(0xFF6B6B6B)
                     )
@@ -155,7 +156,7 @@ fun HomeScreen(
                     )
 
                     Spacer(Modifier.height(8.dp))
-                    Text(
+                    AppText(
                         "Finish plan to manage activities",
                         color = Color(0xFF6B6B6B)
                     )
@@ -169,7 +170,7 @@ fun HomeScreen(
                     )
 
                     Spacer(Modifier.height(8.dp))
-                    Text(
+                    AppText(
                         "Day completed ✔",
                         color = primaryGreen
                     )

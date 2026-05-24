@@ -36,7 +36,7 @@ fun WeatherMiniRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text(
+            AppText(
                 text = label,
                 modifier = Modifier.width(60.dp),
                 color = Color(0xFF6B6B6B),
@@ -51,7 +51,7 @@ fun WeatherMiniRow(
 
             Spacer(Modifier.width(8.dp))
 
-            Text(
+            AppText(
                 "${weather.first}°C · ${getWeatherDescription(weather.second)}",
                 color = Color.Gray
             )

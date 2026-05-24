@@ -26,14 +26,14 @@ fun EnergyLeftIndicator(energy: Int) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 "Energy left",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(Modifier.weight(1f))
-            Text("$energy", color = Color.Gray)
+            AppText("$energy", color = Color.Gray)
         }
 
         Spacer(Modifier.height(8.dp))

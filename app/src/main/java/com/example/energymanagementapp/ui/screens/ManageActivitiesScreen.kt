@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.components.AppText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -234,7 +235,7 @@ fun ActivityManageItem(
                     .weight(1f)
                     .padding(end = 12.dp)
             ) {
-                Text(
+                AppText(
                     text = activity.name,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1
@@ -256,7 +257,7 @@ fun ActivityManageItem(
 
                     Spacer(Modifier.width(6.dp))
 
-                    Text(
+                    AppText(
                         text = "${activity.energyCost}",
                         color = textGray,
                         style = MaterialTheme.typography.bodySmall

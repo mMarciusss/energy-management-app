@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.viewmodel.DayStatus
 import com.example.energymanagementapp.viewmodel.Status
 import java.time.LocalDate
@@ -62,7 +63,7 @@ fun PastDaysScreen(
     ) {
 
         Column {
-            Text(
+            AppText(
                 "Your progress",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -71,7 +72,7 @@ fun PastDaysScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text("Track your past days", color = textGray)
+            AppText("Track your past days", color = textGray)
 
             Spacer(Modifier.height(12.dp))
 
@@ -134,7 +135,7 @@ fun PastDaysScreen(
                                 },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            AppText(
                                 calendarDay.date.dayOfMonth.toString(),
                                 color = if (status == null) textGray else Color.Black,
                                 style = MaterialTheme.typography.bodyMedium
@@ -188,6 +189,6 @@ fun LegendItem(color: Color, text: String) {
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Text(text)
+        AppText(text)
     }
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
+import com.example.energymanagementapp.ui.components.AppText
 
 @Composable
 fun DaySummaryScreen(
@@ -56,7 +57,7 @@ fun DaySummaryScreen(
 
         Column {
 
-            Text(
+            AppText(
                 text = "Day summary",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -65,7 +66,7 @@ fun DaySummaryScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "How your day went",
                 color = textGray
             )
@@ -89,14 +90,14 @@ fun DaySummaryScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
 
-                    Text(
+                    AppText(
                         "Energy used",
                         fontWeight = FontWeight.Medium
                     )
 
                     Spacer(Modifier.height(4.dp))
 
-                    Text(
+                    AppText(
                         "$totalEnergyUsed / $totalEnergy",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
@@ -104,14 +105,14 @@ fun DaySummaryScreen(
 
                     Spacer(Modifier.height(12.dp))
 
-                    Text(
+                    AppText(
                         "Total rest time",
                         fontWeight = FontWeight.Medium
                     )
 
                     Spacer(Modifier.height(4.dp))
 
-                    Text(
+                    AppText(
                         "$totalRestTimeMinutes min",
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -122,7 +123,7 @@ fun DaySummaryScreen(
 
             if (completedActivities.isNotEmpty()) {
 
-                Text(
+                AppText(
                     "Completed",
                     fontWeight = FontWeight.Bold
                 )
@@ -144,7 +145,7 @@ fun DaySummaryScreen(
 
             if (notCompletedActivities.isNotEmpty()) {
 
-                Text(
+                AppText(
                     "Not completed",
                     fontWeight = FontWeight.Bold
                 )
@@ -208,10 +209,10 @@ fun ActivitySummaryItem(
 
             Column(modifier = Modifier.weight(1f)) {
 
-                Text(name, fontWeight = FontWeight.Medium)
+                AppText(name, fontWeight = FontWeight.Medium)
 
                 if (time != null) {
-                    Text(
+                    AppText(
                         "Completed at $time",
                         color = textGray,
                         style = MaterialTheme.typography.bodySmall

@@ -42,6 +42,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
@@ -84,7 +85,7 @@ fun ActivitySelectionScreen(
     ) {
 
         Column {
-            Text(
+            AppText(
                 "Choose activities",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -93,7 +94,7 @@ fun ActivitySelectionScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 "Pick what you want to do today",
                 color = textGray
             )
@@ -116,7 +117,7 @@ fun ActivitySelectionScreen(
             EnergyLeftIndicator(remainingEnergy)
 
             Spacer(Modifier.height(16.dp))
-            Text(
+            AppText(
                 "Weather",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
@@ -189,17 +190,17 @@ fun ActivitySelectionScreen(
                         showDialog = false
                         onConfirm()
                     }) {
-                        Text("Continue")
+                        AppText("Continue")
                     }
                 },
                 dismissButton = {
                     Button(onClick = { showDialog = false }) {
-                        Text("Cancel")
+                        AppText("Cancel")
                     }
                 },
-                title = { Text("Unused energy") },
+                title = { AppText("Unused energy") },
                 text = {
-                    Text("You still have $remainingEnergy energy left.")
+                    AppText("You still have $remainingEnergy energy left.")
                 }
             )
         }
@@ -238,12 +239,12 @@ fun ActivityItem(
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
+                AppText(
                     text = activity.name,
                     fontWeight = FontWeight.Medium
                 )
 
-                Text(
+                AppText(
                     text = "${activity.energyCost} energy",
                     color = Color.Gray,
                     style = MaterialTheme.typography.bodySmall

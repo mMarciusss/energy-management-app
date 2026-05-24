@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
+import com.example.energymanagementapp.ui.components.AppText
 
 @Composable
 fun ActivityBreakListScreen(
@@ -53,7 +54,7 @@ fun ActivityBreakListScreen(
     ) {
 
         Column {
-            Text(
+            AppText(
                 text = "Set breaks",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -62,7 +63,7 @@ fun ActivityBreakListScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "Assign breaks to your activities",
                 color = textGray
             )
@@ -135,19 +136,19 @@ fun ActivityBreakItem(
 
             Column(modifier = Modifier.weight(1f)) {
 
-                Text(
+                AppText(
                     text = activity.activityName,
                     fontWeight = FontWeight.Medium
                 )
 
                 if (hasBreak) {
-                    Text(
+                    AppText(
                         text = "Break: ${activity.breakDuration} min",
                         color = primaryGreen,
                         style = MaterialTheme.typography.bodySmall
                     )
                 } else {
-                    Text(
+                    AppText(
                         text = "No break set",
                         color = Color.Gray,
                         style = MaterialTheme.typography.bodySmall

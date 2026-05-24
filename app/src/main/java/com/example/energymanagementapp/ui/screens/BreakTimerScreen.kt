@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.components.AppText
 import kotlinx.coroutines.delay
 
 @Composable
@@ -80,7 +81,7 @@ fun BreakTimerScreen(
                 ),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Text("Skip")
+                AppText("Skip")
             }
         }
 
@@ -88,7 +89,7 @@ fun BreakTimerScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
+            AppText(
                 text = "Break time",
                 color = textGray,
                 style = MaterialTheme.typography.bodyMedium
@@ -96,7 +97,7 @@ fun BreakTimerScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            Text(
+            AppText(
                 text = String.format("%02d:%02d", minutes, seconds),
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.Bold
@@ -105,7 +106,7 @@ fun BreakTimerScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text(
+            AppText(
                 text = "Relax and recover",
                 color = textGray
             )

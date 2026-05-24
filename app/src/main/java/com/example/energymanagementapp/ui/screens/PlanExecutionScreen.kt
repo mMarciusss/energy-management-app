@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
@@ -71,7 +72,7 @@ fun PlanExecutionScreen(
             .padding(24.dp)
     ) {
 
-        Text(
+        AppText(
             text = "Your plan",
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold
@@ -80,7 +81,7 @@ fun PlanExecutionScreen(
 
         Spacer(Modifier.height(6.dp))
 
-        Text("Best of luck in completing your tasks!", color = textGray)
+        AppText("Best of luck in completing your tasks!", color = textGray)
 
         Spacer(Modifier.height(12.dp))
 
@@ -144,7 +145,7 @@ fun PlanExecutionScreen(
 
             item {
                 Spacer(Modifier.height(16.dp))
-                Text(
+                AppText(
                     "Weather",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
@@ -189,7 +190,7 @@ fun PlanExecutionScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "Once you complete any activity, you won't be able to cancel the plan",
                 color = Color(0xFF6B6B6B),
                 style = MaterialTheme.typography.bodySmall
@@ -229,10 +230,10 @@ fun ExecutionItem(
         ) {
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(activity.activityName, fontWeight = FontWeight.Medium)
+                AppText(activity.activityName, fontWeight = FontWeight.Medium)
 
                 if (activity.breakDuration != null) {
-                    Text(
+                    AppText(
                         "Break: ${activity.breakDuration} min",
                         color = textGray,
                         style = MaterialTheme.typography.bodySmall
@@ -259,7 +260,7 @@ fun CompletedItem(activity: PlanActivityWithBreak) {
         ),
         elevation = CardDefaults.cardElevation(1.dp)
     ) {
-        Text(
+        AppText(
             text = activity.activityName,
             modifier = Modifier.padding(16.dp),
             color = Color.Gray
@@ -270,7 +271,7 @@ fun CompletedItem(activity: PlanActivityWithBreak) {
 
 @Composable
 fun SectionTitle(text: String) {
-    Text(
+    AppText(
         text = text,
         style = MaterialTheme.typography.titleMedium.copy(
             fontWeight = FontWeight.Bold

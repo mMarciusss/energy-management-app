@@ -40,7 +40,7 @@ fun CircleButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        AppText(
             text = text,
             color = textColor,
             style = MaterialTheme.typography.titleMedium

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
 
 @Composable
@@ -48,7 +49,7 @@ fun BreakSetupScreen(
     ) {
 
         Column {
-            Text(
+            AppText(
                 text = activityName,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -57,7 +58,7 @@ fun BreakSetupScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "Set break duration",
                 color = textGray
             )
@@ -96,13 +97,13 @@ fun BreakSetupScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        AppText(
                             text = "$breakDuration min",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
 
-                        Text(
+                        AppText(
                             text = "Break",
                             color = textGray,
                             style = MaterialTheme.typography.bodySmall
@@ -117,7 +118,7 @@ fun BreakSetupScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            Text(
+            AppText(
                 text = "Optional — helps with recovery",
                 color = textGray,
                 style = MaterialTheme.typography.bodySmall
