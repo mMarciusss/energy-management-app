@@ -68,27 +68,32 @@ fun PastDaysScreen(
             .background(background)
             .padding(24.dp)
     ) {
-
         Column {
-            AppText(
-                "Your progress",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-
-            IconButton(
-                onClick = onToggleAccessibility
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Accessibility,
-                    contentDescription = "Toggle accessibility mode",
-                    tint = if (accessibilityMode)
-                        Color(0xFF6BCB9A)
-                    else
-                        Color.Gray,
-                    modifier = Modifier.size(32.dp)
+                AppText(
+                    "Your progress",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            Color(0xFF6BCB9A)
+                        else
+                            Color.Gray,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
             }
 
             Spacer(Modifier.height(6.dp))

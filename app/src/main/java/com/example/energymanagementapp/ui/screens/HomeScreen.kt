@@ -197,7 +197,8 @@ fun HomeScreen(
                     Spacer(Modifier.height(8.dp))
                     AppText(
                         "Day completed ✔",
-                        color = primaryGreen
+                        color = primaryGreen,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
