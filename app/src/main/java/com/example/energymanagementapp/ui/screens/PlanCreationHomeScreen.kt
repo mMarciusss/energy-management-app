@@ -43,6 +43,8 @@ import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
 import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun PlanCreationHomeScreen(
@@ -282,23 +284,28 @@ fun EnergySummaryCard(
                 )
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(14.dp))
 
-            Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(32.dp)
+                ) {
+                    repeat(2) { rowIndex ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
+                            repeat(10) { colIndex ->
+                                val index = rowIndex * 10 + colIndex
+                                val filled = index < energy
 
-                repeat(4) { rowIndex ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
-
-                        repeat(5) { colIndex ->
-                            val index = rowIndex * 5 + colIndex
-                            val filled = index < energy
-
-                            Image(
-                                painter = painterResource(id = R.drawable.spoon),
-                                contentDescription = null,
-                                modifier = Modifier.size(28.dp),
-                                alpha = if (filled) 1f else 0.2f
-                            )
+                                Image(
+                                    painter = painterResource(id = R.drawable.spoon),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(30.dp),
+                                    alpha = if (filled) 1f else 0.2f
+                                )
+                            }
                         }
                     }
                 }

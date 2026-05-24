@@ -47,6 +47,7 @@ import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
+import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
 
@@ -55,6 +56,7 @@ fun ActivitySelectionScreen(
     activities: List<ActivityEntity>,
     selectedActivities: List<Int>,
     remainingEnergy: Int,
+    totalEnergy: Int,
     weatherNow: Pair<Double, Int>?,
     weatherIn3Hours: Pair<Double, Int>?,
     weatherEvening: Pair<Double, Int>?,
@@ -140,8 +142,10 @@ fun ActivitySelectionScreen(
         ) {
 
             Spacer(Modifier.height(16.dp))
-            EnergyLeftIndicator(remainingEnergy)
-
+            EnergyLeftIndicator(
+                remainingEnergy = remainingEnergy,
+                totalEnergy = totalEnergy
+            )
             Spacer(Modifier.height(16.dp))
             AppText(
                 "Weather",

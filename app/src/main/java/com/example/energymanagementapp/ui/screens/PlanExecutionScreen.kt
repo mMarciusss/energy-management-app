@@ -36,12 +36,15 @@ import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
 
 @Composable
 fun PlanExecutionScreen(
     energy: Int,
+    totalEnergy: Int,
     activities: List<PlanActivityWithBreak>,
     weatherNow: Pair<Double, Int>?,
     weatherIn3Hours: Pair<Double, Int>?,
@@ -120,7 +123,10 @@ fun PlanExecutionScreen(
         )
 
         Spacer(Modifier.height(16.dp))
-        EnergyLeftIndicator(energy)
+        EnergyLeftIndicator(
+            remainingEnergy = energy,
+            totalEnergy = totalEnergy
+        )
 
         Spacer(Modifier.height(16.dp))
 

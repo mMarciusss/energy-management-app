@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun ActivityBreakListScreen(

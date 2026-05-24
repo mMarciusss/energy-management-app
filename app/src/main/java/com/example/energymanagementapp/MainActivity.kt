@@ -229,6 +229,7 @@ class MainActivity : ComponentActivity() {
                             activities = activitySelectionModel.activities,
                             selectedActivities = activitySelectionModel.selectedActivities,
                             remainingEnergy = activitySelectionModel.remainingEnergy,
+                            totalEnergy = energyViewModel.energy,
                             weatherNow = weatherViewModel.weatherNow,
                             weatherIn3Hours = weatherViewModel.weatherIn3Hours,
                             weatherEvening = weatherViewModel.weatherEvening,
@@ -339,6 +340,7 @@ class MainActivity : ComponentActivity() {
                             // plano vykdymo ekrano sukūrimas
                             PlanExecutionScreen(
                                 energy = breakViewModel.remainingEnergy,
+                                totalEnergy = energyViewModel.energy,
                                 activities = breakViewModel.planActivities,
                                 weatherNow = weatherViewModel.weatherNow,
                                 weatherIn3Hours = weatherViewModel.weatherIn3Hours,

@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import com.example.energymanagementapp.core.state.PlanState
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
 import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun HomeScreen(
@@ -218,96 +220,5 @@ fun HomeScreen(
         }
 
         Spacer(modifier = Modifier.height(1.dp))
-    }
-}
-
-
-@Composable
-fun MainButton(
-    text: String,
-    color: Color,
-    enabled: Boolean = true,
-    onClick: () -> Unit
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
-
-    val scale by animateFloatAsState(
-        targetValue = if (pressed) 0.96f else 1f,
-        label = ""
-    )
-
-    val accessibility = LocalAccessibilitySettings.current
-
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        interactionSource = interactionSource,
-        shape = RoundedCornerShape(20.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 6.dp,
-            pressedElevation = 2.dp
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(accessibility.buttonHeight.dp)
-            .semantics {
-                contentDescription = text
-            },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = color,
-            disabledContainerColor = color.copy(alpha = 0.3f)
-        )
-    ) {
-        Text(
-            text = text,
-            fontSize = (16 * accessibility.fontMultiplier).sp
-        )
-    }
-}
-
-
-@Composable
-fun SecondaryButton(
-    text: String,
-    enabled: Boolean = true,
-    onClick: () -> Unit
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
-
-    val scale by animateFloatAsState(
-        targetValue = if (pressed) 0.97f else 1f,
-        label = ""
-    )
-
-    val accessibility = LocalAccessibilitySettings.current
-
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        interactionSource = interactionSource,
-        shape = RoundedCornerShape(20.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = if (enabled) 4.dp else 0.dp,
-            pressedElevation = 1.dp
-        ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF6982B5),
-            contentColor = Color.White,
-            disabledContainerColor = Color(0xFFF0F0F0),
-            disabledContentColor = Color.Gray
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(accessibility.buttonHeight.dp)
-            .semantics {
-                contentDescription = text
-            },
-    ) {
-        Text(
-            text = text,
-            fontSize = (16 * accessibility.fontMultiplier).sp
-        )
     }
 }

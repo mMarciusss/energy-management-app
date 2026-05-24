@@ -47,6 +47,8 @@ import java.util.Locale
 import com.example.energymanagementapp.R
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun EnergyScreen(
@@ -187,7 +189,7 @@ fun EnergyScreen(
                     ) {
 
                         CircleButton("-", onDecrease, energy > minEnergy)
-                        CircleButton("+", onIncrease)
+                        CircleButton("+", onIncrease, energy < 20)
                     }
                 }
             }

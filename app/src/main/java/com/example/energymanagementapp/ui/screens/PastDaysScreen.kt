@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.components.SecondaryButton
 import com.example.energymanagementapp.viewmodel.DayStatus
 import com.example.energymanagementapp.viewmodel.Status
 import java.time.LocalDate

@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun BreakSetupScreen(
@@ -116,7 +118,7 @@ fun BreakSetupScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
 
-                    CircleButton("-", onDecrease)
+                    CircleButton("-", onDecrease, breakDuration > 5)
 
                     Spacer(Modifier.width(20.dp))
 
@@ -140,7 +142,7 @@ fun BreakSetupScreen(
 
                     Spacer(Modifier.width(20.dp))
 
-                    CircleButton("+", onIncrease)
+                    CircleButton("+", onIncrease, breakDuration < 180)
                 }
             }
 
