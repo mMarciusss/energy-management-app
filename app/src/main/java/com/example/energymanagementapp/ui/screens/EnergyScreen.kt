@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,9 +53,11 @@ fun EnergyScreen(
     energy: Int,
     minEnergy: Int,
     endTime: String,
+    accessibilityMode: Boolean,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
     val primaryGreen = Color(0xFF6BCB9A)
     val accentPurple = Color(0xFF6C63FF)
@@ -80,12 +86,33 @@ fun EnergyScreen(
     ) {
 
         Column {
-            AppText(
-                text = "Set energy",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    text = "Set energy",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            Color(0xFF6BCB9A)
+                        else
+                            Color.Gray,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 

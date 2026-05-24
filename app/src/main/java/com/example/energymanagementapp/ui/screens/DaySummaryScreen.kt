@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,8 +39,10 @@ fun DaySummaryScreen(
     totalEnergyUsed: Int,
     totalRestTimeMinutes: Int,
     isFromCalendar: Boolean,
+    accessibilityMode: Boolean,
     onGoHome: () -> Unit,
-    onGoBack: (() -> Unit)? = null
+    onGoBack: (() -> Unit)? = null,
+    onToggleAccessibility: () -> Unit
 ) {
     val primaryGreen = Color(0xFF6BCB9A)
     val secondaryBlue = Color(0xFF6982B5)
@@ -57,12 +62,32 @@ fun DaySummaryScreen(
 
         Column {
 
-            AppText(
-                text = "Day summary",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    text = "Day summary",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            Color(0xFF6BCB9A)
+                        else
+                            Color.Gray,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 

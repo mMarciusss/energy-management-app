@@ -11,13 +11,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,9 +46,11 @@ fun PlanExecutionScreen(
     weatherNow: Pair<Double, Int>?,
     weatherIn3Hours: Pair<Double, Int>?,
     weatherEvening: Pair<Double, Int>?,
+    accessibilityMode: Boolean,
     onConfirmComplete: (List<Int>) -> Unit,
     onGoHome: () -> Unit,
-    onCancelPlan: () -> Unit
+    onCancelPlan: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
 
     val primaryGreen = Color(0xFF6BCB9A)
@@ -72,12 +79,32 @@ fun PlanExecutionScreen(
             .padding(24.dp)
     ) {
 
-        AppText(
-            text = "Your plan",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AppText(
+                text = "Your plan",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
-        )
+
+            IconButton(
+                onClick = onToggleAccessibility
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Accessibility,
+                    contentDescription = "Toggle accessibility mode",
+                    tint = if (accessibilityMode)
+                        Color(0xFF6BCB9A)
+                    else
+                        Color.Gray,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+        }
 
         Spacer(Modifier.height(6.dp))
 

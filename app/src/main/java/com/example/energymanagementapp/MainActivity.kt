@@ -147,6 +147,7 @@ class MainActivity : ComponentActivity() {
                             planState = planViewModel.planState,
                             weatherTemperature = weatherViewModel.weatherNow?.first,
                             weatherCode = weatherViewModel.weatherNow?.second,
+                            accessibilityMode = accessibilityMode,
                             onGoHome = {
                                 navController.navigate("home") {
                                     popUpTo("home") { inclusive = true }
@@ -182,6 +183,9 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
+                            },
                             selectedActivities = breakViewModel.planActivities
                         )
                     }
@@ -195,6 +199,7 @@ class MainActivity : ComponentActivity() {
                             energy = energyViewModel.energy,
                             minEnergy = maxOf(3, minRequiredEnergy),
                             endTime = planViewModel.planEndTime,
+                            accessibilityMode = accessibilityMode,
                             onIncrease = { energyViewModel.increaseEnergy() },
                             onDecrease = { energyViewModel.decreaseEnergy() },
                             onConfirm = { endTime ->
@@ -204,6 +209,9 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 navController.popBackStack()
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -224,12 +232,16 @@ class MainActivity : ComponentActivity() {
                             weatherNow = weatherViewModel.weatherNow,
                             weatherIn3Hours = weatherViewModel.weatherIn3Hours,
                             weatherEvening = weatherViewModel.weatherEvening,
+                            accessibilityMode = accessibilityMode,
                             onToggle = { activitySelectionModel.toggleActivity(it) },
                             onConfirm = {
                                 activitySelectionModel.savePlanActivities {
                                     breakViewModel.reloadPlanActivities()
                                     navController.popBackStack()
                                 }
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -240,12 +252,16 @@ class MainActivity : ComponentActivity() {
                         // pertaukų priskyrimo veikloms ekrano sukūrimas
                         ActivityBreakListScreen(
                             planActivities = breakViewModel.planActivities,
+                            accessibilityMode = accessibilityMode,
                             onActivityClick = { planActivityId, planActivityName ->
                                 breakViewModel.loadBreak(planActivityId)
                                 navController.navigate("break_setup/$planActivityId/$planActivityName")
                             },
                             onBackToPlanCreation = {
                                 navController.popBackStack("plan_creation_home", false)
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -262,6 +278,7 @@ class MainActivity : ComponentActivity() {
                             activityName = planActivityName,
                             breakDuration = breakViewModel.breakDuration,
                             hasBreak = breakViewModel.hasBreak,
+                            accessibilityMode = accessibilityMode,
 
                             onIncrease = { breakViewModel.increaseBreakDuration() },
                             onDecrease = { breakViewModel.decreaseBreakDuration() },
@@ -276,6 +293,9 @@ class MainActivity : ComponentActivity() {
                             onRemove = {
                                 breakViewModel.removeBreak(planActivityId)
                                 navController.popBackStack()
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -323,6 +343,7 @@ class MainActivity : ComponentActivity() {
                                 weatherNow = weatherViewModel.weatherNow,
                                 weatherIn3Hours = weatherViewModel.weatherIn3Hours,
                                 weatherEvening = weatherViewModel.weatherEvening,
+                                accessibilityMode = accessibilityMode,
                                 onConfirmComplete = { ids ->
                                     breakViewModel.completeActivities(ids) { breakActivityId ->
 
@@ -353,6 +374,9 @@ class MainActivity : ComponentActivity() {
                                         popUpTo("home") { inclusive = true }
                                     }
                                 },
+                                onToggleAccessibility = {
+                                    accessibilityMode = !accessibilityMode
+                                }
                             )
                         }
                     }
@@ -367,6 +391,7 @@ class MainActivity : ComponentActivity() {
                         // pertraukos laikmačio ekrano sukūrimas
                         BreakTimerScreen(
                             endTime = activity?.endTime ?: 0L,
+                            accessibilityMode = accessibilityMode,
                             onFinish = {
                                 breakViewModel.completeAfterBreak(id) {
                                     if (breakViewModel.areAllActivitiesCompleted()) {
@@ -375,6 +400,9 @@ class MainActivity : ComponentActivity() {
                                         navController.popBackStack()
                                     }
                                 }
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -393,10 +421,14 @@ class MainActivity : ComponentActivity() {
                             totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                             totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
                             isFromCalendar = false,
+                            accessibilityMode = accessibilityMode,
                             onGoHome = {
                                 navController.navigate("home") {
                                     popUpTo("home") { inclusive = true }
                                 }
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -411,6 +443,7 @@ class MainActivity : ComponentActivity() {
                         // ankstesnių dienos ataskaitų ekrano sukūrimas
                         PastDaysScreen(
                             dayStatuses = pastDaysViewModel.dayStatuses,
+                            accessibilityMode = accessibilityMode,
                             onDateClick = { date ->
                                 navController.navigate("day_summary/$date?fromCalendar=true")
                             },
@@ -418,6 +451,9 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate("home") {
                                     popUpTo("home") { inclusive = true }
                                 }
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }
@@ -439,6 +475,7 @@ class MainActivity : ComponentActivity() {
                             totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                             totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
                             isFromCalendar = fromCalendar,
+                            accessibilityMode = accessibilityMode,
                             onGoHome = {
                                 navController.navigate("home") {
                                     popUpTo("home") { inclusive = true }
@@ -446,6 +483,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onGoBack = {
                                 navController.popBackStack()
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
 
@@ -456,6 +496,7 @@ class MainActivity : ComponentActivity() {
                         // veiklų redagavimo ekrano sukūrimas
                         ManageActivitiesScreen(
                             activities = activityManagementViewModel.activities,
+                            accessibilityMode = accessibilityMode,
                             onBackToHome = {
                                 navController.navigate("home") {
                                     popUpTo("home") { inclusive = true }
@@ -466,6 +507,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onDelete = { activity ->
                                 activityManagementViewModel.deleteActivity(activity)
+                            },
+                            onToggleAccessibility = {
+                                accessibilityMode = !accessibilityMode
                             }
                         )
                     }

@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,8 +42,10 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 @Composable
 fun PastDaysScreen(
     dayStatuses: List<DayStatus>,
+    accessibilityMode: Boolean,
     onDateClick: (LocalDate) -> Unit,
-    onGoHome: () -> Unit
+    onGoHome: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
     val primaryGreen = Color(0xFF6BCB9A)
     val background = Color(0xFFF7F7F7)
@@ -69,6 +75,20 @@ fun PastDaysScreen(
                     fontWeight = FontWeight.Bold
                 )
             )
+
+            IconButton(
+                onClick = onToggleAccessibility
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Accessibility,
+                    contentDescription = "Toggle accessibility mode",
+                    tint = if (accessibilityMode)
+                        Color(0xFF6BCB9A)
+                    else
+                        Color.Gray,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
 
             Spacer(Modifier.height(6.dp))
 

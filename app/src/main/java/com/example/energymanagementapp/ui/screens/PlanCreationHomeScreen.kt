@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Restaurant
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,12 +52,14 @@ fun PlanCreationHomeScreen(
     planState: PlanState,
     weatherTemperature: Double?,
     weatherCode: Int?,
+    accessibilityMode: Boolean,
     onGoHome: () -> Unit,
     onCancelPlan: () -> Unit,
     onGoToEnergyScreen: () -> Unit,
     onGoToActivitySelection: () -> Unit,
     onGoToBreakScreen: () -> Unit,
     onConfirmPlan: () -> Unit,
+    onToggleAccessibility: () -> Unit,
     selectedActivities: List<PlanActivityWithBreak>
 ) {
     val primaryGreen = Color(0xFF6BCB9A)
@@ -81,13 +85,34 @@ fun PlanCreationHomeScreen(
     ) {
 
         Column {
-            AppText(
-                text = "Create plan",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = Color.Black
-            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    text = "Create plan",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Color.Black
+                )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            Color(0xFF6BCB9A)
+                        else
+                            Color.Gray,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 

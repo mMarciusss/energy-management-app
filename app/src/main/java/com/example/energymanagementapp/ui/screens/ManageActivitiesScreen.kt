@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,6 +26,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,9 +50,11 @@ import com.example.energymanagementapp.ui.components.AppText
 @Composable
 fun ManageActivitiesScreen(
     activities: List<ActivityEntity>,
+    accessibilityMode: Boolean,
     onBackToHome: () -> Unit,
     onAdd: (String, Int) -> Unit,
-    onDelete: (ActivityEntity) -> Unit
+    onDelete: (ActivityEntity) -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
     val primaryGreen = Color(0xFF6BCB9A)
     val background = Color(0xFFF7F7F7)
@@ -67,16 +73,36 @@ fun ManageActivitiesScreen(
 
         Column(modifier = Modifier.weight(1f)) {
 
-            Text(
-                "Manage activities",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    "Manage activities",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            Color(0xFF6BCB9A)
+                        else
+                            Color.Gray,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 
-            Text("Create new activities or delete existing ones", color = textGray)
+            AppText("Create new activities or delete existing ones", color = textGray)
 
             Spacer(Modifier.height(12.dp))
 
@@ -97,14 +123,14 @@ fun ManageActivitiesScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
 
-                    Text("New activity", fontWeight = FontWeight.Medium)
+                    AppText("New activity", fontWeight = FontWeight.Medium)
 
                     Spacer(Modifier.height(12.dp))
 
                     TextField(
                         value = name,
                         onValueChange = { name = it },
-                        placeholder = { Text("Activity name") },
+                        placeholder = { AppText("Activity name") },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -118,7 +144,7 @@ fun ManageActivitiesScreen(
                             value = selectedEnergy?.let { "$it energy" } ?: "",
                             onValueChange = {},
                             readOnly = true,
-                            placeholder = { Text("Energy cost") },
+                            placeholder = { AppText("Energy cost") },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded)
                             },
@@ -151,7 +177,7 @@ fun ManageActivitiesScreen(
 
                                             Spacer(Modifier.weight(1f))
 
-                                            Text("$value")
+                                            AppText("$value")
                                         }
                                     },
                                     onClick = {
@@ -183,7 +209,7 @@ fun ManageActivitiesScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            Text("Your activities", fontWeight = FontWeight.Bold)
+            AppText("Your activities", fontWeight = FontWeight.Bold)
 
             Spacer(Modifier.height(10.dp))
 
@@ -269,7 +295,7 @@ fun ActivityManageItem(
                 onClick = onDelete,
                 modifier = Modifier.width(100.dp)
             ) {
-                Text("Delete")
+                AppText("Delete")
             }
         }
     }

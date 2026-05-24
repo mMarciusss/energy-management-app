@@ -9,9 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +36,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun BreakTimerScreen(
     endTime: Long,
-    onFinish: () -> Unit
+    accessibilityMode: Boolean,
+    onFinish: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
     val primaryGreen = Color(0xFF6BCB9A)
     val background = Color(0xFFF7F7F7)
@@ -68,7 +75,7 @@ fun BreakTimerScreen(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
                 onClick = {
@@ -82,6 +89,20 @@ fun BreakTimerScreen(
                 shape = RoundedCornerShape(20.dp)
             ) {
                 AppText("Skip")
+            }
+
+            IconButton(
+                onClick = onToggleAccessibility
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Accessibility,
+                    contentDescription = "Toggle accessibility mode",
+                    tint = if (accessibilityMode)
+                        Color(0xFF6BCB9A)
+                    else
+                        Color.Gray,
+                    modifier = Modifier.size(32.dp)
+                )
             }
         }
 
