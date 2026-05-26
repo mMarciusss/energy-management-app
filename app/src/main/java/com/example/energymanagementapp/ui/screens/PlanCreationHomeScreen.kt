@@ -172,6 +172,7 @@ fun PlanCreationHomeScreen(
                 if (isEnergySet) {
 
                     if (hasActivities) {
+
                         item {
                             SelectedActivitiesCard(
                                 selectedActivities = selectedActivities
@@ -179,14 +180,41 @@ fun PlanCreationHomeScreen(
                         }
 
                         item {
-                            StepButton(
-                                text = "Activities selected",
-                                completed = true,
-                                color = secondaryBlue,
-                                onClick = onGoToActivitySelection
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+
+                                Box(modifier = Modifier.weight(1f)) {
+                                    StepButton(
+                                        text = "Activities",
+                                        completed = true,
+                                        color = secondaryBlue,
+                                        onClick = onGoToActivitySelection
+                                    )
+                                }
+
+                                Box(modifier = Modifier.weight(1f)) {
+                                    StepButton(
+                                        text = "Breaks",
+                                        completed = hasBreaks,
+                                        color = secondaryBlue,
+                                        onClick = onGoToBreakScreen
+                                    )
+                                }
+                            }
+                        }
+
+                        item {
+                            MainButton(
+                                text = "Confirm plan",
+                                color = primaryGreen,
+                                onClick = onConfirmPlan
                             )
                         }
+
                     } else {
+
                         item {
                             StepButton(
                                 text = "Choose activities",
@@ -195,25 +223,6 @@ fun PlanCreationHomeScreen(
                                 onClick = onGoToActivitySelection
                             )
                         }
-                    }
-                }
-
-                if (hasActivities) {
-                    item {
-                        StepButton(
-                            text = if (hasBreaks) "Breaks configured" else "Set breaks · Optional",
-                            completed = hasBreaks,
-                            color = secondaryBlue,
-                            onClick = onGoToBreakScreen
-                        )
-                    }
-
-                    item {
-                        MainButton(
-                            text = "Confirm plan",
-                            color = primaryGreen,
-                            onClick = onConfirmPlan
-                        )
                     }
                 }
 
