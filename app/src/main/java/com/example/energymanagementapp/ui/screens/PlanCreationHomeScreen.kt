@@ -196,7 +196,11 @@ fun PlanCreationHomeScreen(
 
                                 Box(modifier = Modifier.weight(1f)) {
                                     StepButton(
-                                        text = "Breaks",
+                                        text = if (hasBreaks) {
+                                            "Breaks"
+                                        } else {
+                                            if (accessibilityMode) "Breaks · Opt" else "Breaks · Optional"
+                                        },
                                         completed = hasBreaks,
                                         color = secondaryBlue,
                                         onClick = onGoToBreakScreen

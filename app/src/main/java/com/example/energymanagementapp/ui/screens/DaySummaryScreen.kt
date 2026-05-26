@@ -54,7 +54,9 @@ fun DaySummaryScreen(
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
 
-    val completedActivities = activities.filter { it.isCompleted }
+    val completedActivities = activities
+        .filter { it.isCompleted }
+        .sortedBy { it.completionTime ?: "99:99" }
     val notCompletedActivities = activities.filter { !it.isCompleted }
 
     Column(
