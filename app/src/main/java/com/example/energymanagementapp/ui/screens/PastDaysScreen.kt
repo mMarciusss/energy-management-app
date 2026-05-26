@@ -39,6 +39,8 @@ import java.time.LocalDate
 import java.time.YearMonth
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
+import java.time.format.TextStyle
+import java.util.Locale
 
 
 @Composable
@@ -127,6 +129,21 @@ fun PastDaysScreen(
 
                 HorizontalCalendar(
                     state = state,
+
+                    monthHeader = { month ->
+                        val monthName = month.yearMonth.month
+                            .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+
+                        AppText(
+                            text = "$monthName ${month.yearMonth.year}",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = titleColor,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                    },
+
                     dayContent = { calendarDay ->
 
                         val status = dayStatuses
