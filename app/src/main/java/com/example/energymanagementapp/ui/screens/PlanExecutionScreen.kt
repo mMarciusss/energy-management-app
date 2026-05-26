@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
+import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -39,7 +40,10 @@ import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.components.WeatherLoadingRow
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
+import com.example.energymanagementapp.utils.getWeatherDescription
+import com.example.energymanagementapp.utils.getWeatherIcon
 import java.util.Calendar
 
 @Composable
@@ -73,6 +77,10 @@ fun PlanExecutionScreen(
         nowHour < 19 -> true
         else -> false
     }
+
+    val hasAnyWeather = weatherNow != null ||
+            weatherIn3Hours != null ||
+            weatherEvening != null
 
     val checkedIds = remember { mutableStateListOf<Int>() }
 
@@ -193,23 +201,27 @@ fun PlanExecutionScreen(
 
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                    WeatherMiniRow(
-                        label = "Now",
-                        weather = weatherNow
-                    )
-
-                    if (showIn3h) {
+                    if (hasAnyWeather) {
                         WeatherMiniRow(
-                            label = "In 3 hours",
-                            weather = weatherIn3Hours
+                            label = "Now",
+                            weather = weatherNow
                         )
-                    }
 
-                    if (showEvening) {
-                        WeatherMiniRow(
-                            label = "Evening",
-                            weather = weatherEvening
-                        )
+                        if (showIn3h) {
+                            WeatherMiniRow(
+                                label = "In 3 hours",
+                                weather = weatherIn3Hours
+                            )
+                        }
+
+                        if (showEvening) {
+                            WeatherMiniRow(
+                                label = "Evening",
+                                weather = weatherEvening
+                            )
+                        }
+                    } else {
+                        WeatherLoadingRow()
                     }
                 }
 

@@ -49,6 +49,7 @@ import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
 import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.WeatherLoadingRow
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
 import java.util.Calendar
 
@@ -83,6 +84,10 @@ fun ActivitySelectionScreen(
         nowHour < 19 -> true
         else -> false
     }
+
+    val hasAnyWeather = weatherNow != null ||
+            weatherIn3Hours != null ||
+            weatherEvening != null
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -161,23 +166,27 @@ fun ActivitySelectionScreen(
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                WeatherMiniRow(
-                    label = "Now",
-                    weather = weatherNow
-                )
-
-                if (showIn3h) {
+                if (hasAnyWeather) {
                     WeatherMiniRow(
-                        label = "In 3 hours",
-                        weather = weatherIn3Hours
+                        label = "Now",
+                        weather = weatherNow
                     )
-                }
 
-                if (showEvening) {
-                    WeatherMiniRow(
-                        label = "Evening",
-                        weather = weatherEvening
-                    )
+                    if (showIn3h) {
+                        WeatherMiniRow(
+                            label = "In 3 hours",
+                            weather = weatherIn3Hours
+                        )
+                    }
+
+                    if (showEvening) {
+                        WeatherMiniRow(
+                            label = "Evening",
+                            weather = weatherEvening
+                        )
+                    }
+                } else {
+                    WeatherLoadingRow()
                 }
             }
 
