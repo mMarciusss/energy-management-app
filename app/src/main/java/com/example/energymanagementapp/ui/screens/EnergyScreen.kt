@@ -45,6 +45,7 @@ import java.util.Date
 import java.util.Locale
 
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
 import com.example.energymanagementapp.ui.components.MainButton
@@ -61,10 +62,13 @@ fun EnergyScreen(
     onConfirm: (String) -> Unit,
     onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val accentPurple = Color(0xFF6C63FF)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val accentPurple = colors.accent
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     var selectedTime by remember { mutableStateOf(endTime) }
     val context = LocalContext.current
@@ -98,7 +102,8 @@ fun EnergyScreen(
                     text = "Set energy",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    color = titleColor
                 )
 
                 IconButton(
@@ -108,9 +113,9 @@ fun EnergyScreen(
                         imageVector = Icons.Outlined.Accessibility,
                         contentDescription = "Toggle accessibility mode",
                         tint = if (accessibilityMode)
-                            Color(0xFF6BCB9A)
+                            colors.primary
                         else
-                            Color.Gray,
+                            colors.textSecondary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -139,7 +144,7 @@ fun EnergyScreen(
 
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = colors.card),
                 elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -154,7 +159,8 @@ fun EnergyScreen(
                         "Energy",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        color = titleColor
                     )
 
                     Spacer(Modifier.height(12.dp))

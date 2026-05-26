@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
 import com.example.energymanagementapp.ui.components.MainButton
@@ -46,9 +47,12 @@ fun BreakSetupScreen(
     onToggleAccessibility: () -> Unit
 ) {
 
-    val primaryGreen = Color(0xFF6BCB9A)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     Column(
         modifier = Modifier
@@ -68,7 +72,8 @@ fun BreakSetupScreen(
                     text = activityName,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    color = titleColor
                 )
 
                 IconButton(
@@ -78,9 +83,9 @@ fun BreakSetupScreen(
                         imageVector = Icons.Outlined.Accessibility,
                         contentDescription = "Toggle accessibility mode",
                         tint = if (accessibilityMode)
-                            Color(0xFF6BCB9A)
+                            colors.primary
                         else
-                            Color.Gray,
+                            colors.textSecondary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -109,7 +114,7 @@ fun BreakSetupScreen(
 
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = colors.card),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Row(

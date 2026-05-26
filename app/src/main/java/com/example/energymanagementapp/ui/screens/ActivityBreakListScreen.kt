@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.SecondaryButton
 
@@ -46,10 +47,12 @@ fun ActivityBreakListScreen(
     onToggleAccessibility: () -> Unit
 ) {
 
-    val primaryGreen = Color(0xFF6BCB9A)
-    val secondaryBlue = Color(0xFF6982B5)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     Column(
         modifier = Modifier
@@ -70,7 +73,8 @@ fun ActivityBreakListScreen(
                     text = "Set breaks",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    color = titleColor
                 )
 
                 IconButton(
@@ -80,9 +84,9 @@ fun ActivityBreakListScreen(
                         imageVector = Icons.Outlined.Accessibility,
                         contentDescription = "Toggle accessibility mode",
                         tint = if (accessibilityMode)
-                            Color(0xFF6BCB9A)
+                            colors.primary
                         else
-                            Color.Gray,
+                            colors.textSecondary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -139,12 +143,14 @@ fun ActivityBreakItem(
     hasBreak: Boolean,
     onClick: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
 
     val bgColor = if (hasBreak) {
-        Color(0xFFF2F2F2)
+        colors.successBackground
     } else {
-        Color.White
+        colors.card
     }
 
     Card(
@@ -154,7 +160,7 @@ fun ActivityBreakItem(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = bgColor),
         elevation = CardDefaults.cardElevation(3.dp),
-        border = if (hasBreak) BorderStroke(1.dp, primaryGreen) else null
+        border = if (hasBreak) BorderStroke(1.dp, colors.border) else null
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -177,7 +183,7 @@ fun ActivityBreakItem(
                 } else {
                     AppText(
                         text = "No break set",
-                        color = Color.Gray,
+                        color = colors.textSecondary,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -189,7 +195,7 @@ fun ActivityBreakItem(
                 else
                     Icons.Outlined.Schedule,
                 contentDescription = null,
-                tint = if (hasBreak) primaryGreen else Color.Gray
+                tint = if (hasBreak) primaryGreen else colors.textSecondary
             )
         }
     }

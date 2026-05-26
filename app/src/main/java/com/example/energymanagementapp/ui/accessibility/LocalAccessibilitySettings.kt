@@ -5,3 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 val LocalAccessibilitySettings = staticCompositionLocalOf {
     AccessibilitySettings()
 }
+
+val LocalAppColors = staticCompositionLocalOf {
+    AppColorPalettes.Default
+}

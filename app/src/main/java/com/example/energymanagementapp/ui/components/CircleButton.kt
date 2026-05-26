@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 
 @Composable
 fun CircleButton(
@@ -18,9 +19,20 @@ fun CircleButton(
     onClick: () -> Unit,
     enabled: Boolean = true
 ) {
-    val bgColor = if (enabled) Color(0xFF6C63FF) else Color(0xFFBDBDBD)
-    val textColor = if (enabled) Color.White else Color.White.copy(alpha = 0.6f)
     val accessibility = LocalAccessibilitySettings.current
+    val colors = LocalAppColors.current
+
+    val textColor = if (enabled) {
+        Color.White
+    } else {
+        colors.disabledText
+    }
+
+    val bgColor = if (enabled) {
+        colors.accent
+    } else {
+        colors.disabledBackground
+    }
 
     Surface(
         onClick = onClick,

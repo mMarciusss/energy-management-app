@@ -45,6 +45,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
 import com.example.energymanagementapp.ui.components.MainButton
@@ -66,10 +67,12 @@ fun ActivitySelectionScreen(
     onToggleAccessibility: () -> Unit
 ) {
 
-    val primaryGreen = Color(0xFF6BCB9A)
-    val secondaryBlue = Color(0xFF6982B5)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     val nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val in3hHour = (nowHour + 3) % 24
@@ -102,7 +105,8 @@ fun ActivitySelectionScreen(
                     "Choose activities",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    color = titleColor
                 )
 
                 IconButton(
@@ -112,9 +116,9 @@ fun ActivitySelectionScreen(
                         imageVector = Icons.Outlined.Accessibility,
                         contentDescription = "Toggle accessibility mode",
                         tint = if (accessibilityMode)
-                            Color(0xFF6BCB9A)
+                            colors.primary
                         else
-                            Color.Gray,
+                            colors.textSecondary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -245,13 +249,14 @@ fun ActivityItem(
     enabled: Boolean,
     onClick: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val disabledColor = Color(0xFFEAEAEA)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
 
     val bgColor = when {
-        selected -> Color(0xFFE8F5EE)
-        !enabled -> Color(0xFFF2F2F2)
-        else -> Color.White
+        selected -> colors.successBackground
+        !enabled -> colors.disabledBackground
+        else -> colors.card
     }
 
     Card(
@@ -260,7 +265,7 @@ fun ActivityItem(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = bgColor),
         elevation = CardDefaults.cardElevation(3.dp),
-        border = if (selected) BorderStroke(1.dp, primaryGreen) else null
+        border = if (selected) BorderStroke(1.dp, colors.border) else null
     ) {
         Row(
             modifier = Modifier
@@ -276,7 +281,7 @@ fun ActivityItem(
 
                 AppText(
                     text = "${activity.energyCost} energy",
-                    color = Color.Gray,
+                    color = colors.textSecondary,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -286,8 +291,10 @@ fun ActivityItem(
                 enabled = enabled,
                 onCheckedChange = { onClick() },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = primaryGreen,
-                    uncheckedColor = Color.Gray
+                    checkedColor = colors.primary,
+                    uncheckedColor = colors.textSecondary,
+                    disabledCheckedColor = colors.disabledText,
+                    disabledUncheckedColor = colors.disabledText
                 )
             )
         }

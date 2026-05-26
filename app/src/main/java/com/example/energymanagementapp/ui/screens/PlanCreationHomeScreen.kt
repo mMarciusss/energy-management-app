@@ -42,6 +42,7 @@ import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
@@ -64,10 +65,13 @@ fun PlanCreationHomeScreen(
     onToggleAccessibility: () -> Unit,
     selectedActivities: List<PlanActivityWithBreak>
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val secondaryBlue = Color(0xFF6982B5)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val secondaryBlue = colors.secondary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     val hasActivities = selectedActivities.isNotEmpty()
     val hasBreaks = selectedActivities.any { it.breakDuration != null }
@@ -98,7 +102,7 @@ fun PlanCreationHomeScreen(
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
-                    color = Color.Black
+                    color = titleColor
                 )
 
                 IconButton(
@@ -108,9 +112,9 @@ fun PlanCreationHomeScreen(
                         imageVector = Icons.Outlined.Accessibility,
                         contentDescription = "Toggle accessibility mode",
                         tint = if (accessibilityMode)
-                            Color(0xFF6BCB9A)
+                            colors.primary
                         else
-                            Color.Gray,
+                            colors.textSecondary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -254,13 +258,16 @@ fun EnergySummaryCard(
     energy: Int,
     endTime: String
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colors.card),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -318,8 +325,8 @@ fun EnergySummaryCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp),
-                color = Color(0xFF6BCB9A),
-                trackColor = Color(0xFFE0E0E0)
+                color = colors.primary,
+                trackColor = colors.disabledBackground
             )
 
             Spacer(Modifier.height(14.dp))
@@ -370,10 +377,13 @@ fun StepButton(
 fun SelectedActivitiesCard(
     selectedActivities: List<PlanActivityWithBreak>
 ) {
+
+    val colors = LocalAppColors.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colors.card),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Column(
@@ -392,13 +402,13 @@ fun SelectedActivitiesCard(
                 Row {
                     AppText(
                         text = activity.activityName,
-                        color = Color(0xFF333333)
+                        color = colors.textPrimary
                     )
 
                     if (activity.breakDuration != null) {
                         AppText(
                             text = " · Break ${activity.breakDuration} min",
-                            color = Color(0xFF6B6B6B)
+                            color = colors.textSecondary
                         )
                     }
                 }
@@ -414,10 +424,13 @@ fun WeatherMiniCard(
     weatherTemperature: Double?,
     weatherCode: Int?
 ) {
+
+    val colors = LocalAppColors.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colors.card),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -428,7 +441,7 @@ fun WeatherMiniCard(
                 Icon(
                     imageVector = getWeatherIcon(weatherCode),
                     contentDescription = null,
-                    tint = Color(0xFF6982B5),
+                    tint = colors.secondary,
                     modifier = Modifier.size(28.dp)
                 )
 
@@ -444,14 +457,14 @@ fun WeatherMiniCard(
 
                     AppText(
                         text = "$weatherTemperature °C · ${getWeatherDescription(weatherCode)}",
-                        color = Color(0xFF6B6B6B)
+                        color = colors.textSecondary
                     )
                 }
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Cloud,
                     contentDescription = null,
-                    tint = Color(0xFF6982B5),
+                    tint = colors.secondary,
                     modifier = Modifier.size(28.dp)
                 )
 
@@ -459,7 +472,7 @@ fun WeatherMiniCard(
 
                 AppText(
                     text = "Loading today's weather...",
-                    color = Color(0xFF6B6B6B)
+                    color = colors.textSecondary
                 )
             }
         }

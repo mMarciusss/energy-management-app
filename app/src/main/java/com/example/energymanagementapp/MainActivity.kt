@@ -23,7 +23,10 @@ import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import com.example.energymanagementapp.data.repository.PlanRepository
 import com.example.energymanagementapp.data.repository.WeatherRepository
 import com.example.energymanagementapp.ui.accessibility.AccessibilitySettings
+import com.example.energymanagementapp.ui.accessibility.AppColorPalettes
+import com.example.energymanagementapp.ui.accessibility.AppColors
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
@@ -87,10 +90,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+
             var accessibilityMode by remember { mutableStateOf(false) }
+            val accessibilitySettings = AccessibilitySettings(
+                enabled = accessibilityMode
+            )
+
+            val appColors = if (accessibilityMode) {
+                AppColorPalettes.Accessible
+            } else {
+                AppColorPalettes.Default
+            }
 
             CompositionLocalProvider(
-                LocalAccessibilitySettings provides AccessibilitySettings(accessibilityMode)
+                LocalAccessibilitySettings provides accessibilitySettings,
+                LocalAppColors provides appColors
             ) {
 
                 // pagrindinė navigacijos struktūra

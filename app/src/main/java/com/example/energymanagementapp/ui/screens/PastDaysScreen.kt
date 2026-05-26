@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.SecondaryButton
 import com.example.energymanagementapp.viewmodel.DayStatus
@@ -48,9 +49,12 @@ fun PastDaysScreen(
     onGoHome: () -> Unit,
     onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     val currentMonth = YearMonth.now()
 
@@ -78,7 +82,8 @@ fun PastDaysScreen(
                     "Your progress",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    color = titleColor
                 )
 
                 IconButton(
@@ -88,9 +93,9 @@ fun PastDaysScreen(
                         imageVector = Icons.Outlined.Accessibility,
                         contentDescription = "Toggle accessibility mode",
                         tint = if (accessibilityMode)
-                            Color(0xFF6BCB9A)
+                            colors.primary
                         else
-                            Color.Gray,
+                            colors.textSecondary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -114,7 +119,7 @@ fun PastDaysScreen(
 
         Card(
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = colors.card),
             elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -149,7 +154,7 @@ fun PastDaysScreen(
                                     if (isToday) {
                                         Modifier.border(
                                             width = 2.dp,
-                                            color = Color.Black,
+                                            color = colors.textPrimary,
                                             shape = CircleShape
                                         )
                                     } else Modifier
@@ -176,7 +181,7 @@ fun PastDaysScreen(
 
         Card(
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = colors.card),
             elevation = CardDefaults.cardElevation(2.dp)
         ) {
             Row(

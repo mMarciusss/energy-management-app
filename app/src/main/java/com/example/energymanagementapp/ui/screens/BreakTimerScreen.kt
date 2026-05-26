@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import kotlinx.coroutines.delay
 
@@ -40,9 +41,13 @@ fun BreakTimerScreen(
     onFinish: () -> Unit,
     onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val accent = colors.accent
+    val titleColor = colors.textPrimary
 
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
     var isRunning by remember { mutableStateOf(true) }
@@ -83,8 +88,8 @@ fun BreakTimerScreen(
                     onFinish()
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF6C63FF).copy(alpha = 0.2f),
-                    contentColor = Color(0xFF6C63FF)
+                    containerColor = accent.copy(alpha = 0.18f),
+                    contentColor = accent
                 ),
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -98,9 +103,9 @@ fun BreakTimerScreen(
                     imageVector = Icons.Outlined.Accessibility,
                     contentDescription = "Toggle accessibility mode",
                     tint = if (accessibilityMode)
-                        Color(0xFF6BCB9A)
+                        colors.primary
                     else
-                        Color.Gray,
+                        colors.textSecondary,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -122,7 +127,8 @@ fun BreakTimerScreen(
                 text = String.format("%02d:%02d", minutes, seconds),
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.Bold
-                )
+                ),
+                color = titleColor
             )
 
             Spacer(Modifier.height(12.dp))

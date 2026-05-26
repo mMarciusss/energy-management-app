@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 
 @Composable
 fun SecondaryButton(
@@ -35,6 +36,7 @@ fun SecondaryButton(
     )
 
     val accessibility = LocalAccessibilitySettings.current
+    val appColors = LocalAppColors.current
 
     Button(
         onClick = onClick,
@@ -46,10 +48,10 @@ fun SecondaryButton(
             pressedElevation = 1.dp
         ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF6982B5),
+            containerColor = appColors.secondary,
             contentColor = Color.White,
-            disabledContainerColor = Color(0xFFF0F0F0),
-            disabledContentColor = Color.Gray
+            disabledContainerColor = appColors.disabledBackground,
+            disabledContentColor = appColors.disabledText
         ),
         modifier = Modifier
             .fillMaxWidth()
