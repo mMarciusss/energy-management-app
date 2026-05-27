@@ -178,7 +178,7 @@ fun ManageActivitiesScreen(
                                                     Image(
                                                         painter = painterResource(id = R.drawable.spoon),
                                                         contentDescription = null,
-                                                        modifier = Modifier.size(24.dp)
+                                                        modifier = Modifier.size(28.dp)
                                                     )
                                                 }
                                             }
@@ -285,7 +285,7 @@ fun ActivityManageItem(
                             Image(
                                 painter = painterResource(id = R.drawable.spoon),
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(28.dp)
                             )
                         }
                     }

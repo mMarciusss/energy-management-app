@@ -162,7 +162,7 @@ fun PlanCreationHomeScreen(
 
                 item {
                     StepButton(
-                        text = if (isEnergySet) "Energy set" else "Set energy and end time",
+                        text = if (isEnergySet) "Energy and time" else "Set energy and end time",
                         completed = isEnergySet,
                         color = if (isEnergySet) secondaryBlue else primaryGreen,
                         onClick = onGoToEnergyScreen
