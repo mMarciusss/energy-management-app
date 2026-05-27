@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
@@ -67,133 +69,116 @@ fun DaySummaryScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Column {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AppText(
-                    text = "Day summary",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = titleColor
-                )
-
-                IconButton(
-                    onClick = onToggleAccessibility
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
-                        tint = if (accessibilityMode)
-                            colors.primary
-                        else
-                            colors.textSecondary,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(6.dp))
-
-            AppText(
-                text = "How your day went",
-                color = textGray
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            Box(
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(4.dp)
-                    .background(primaryGreen, RoundedCornerShape(50))
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            Card(
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = colors.card),
-                elevation = CardDefaults.cardElevation(4.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(18.dp)) {
-
                     AppText(
-                        "Energy used",
-                        fontWeight = FontWeight.Medium
+                        text = "Day summary",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = titleColor
                     )
 
-                    Spacer(Modifier.height(4.dp))
-
-                    AppText(
-                        "$totalEnergyUsed / $totalEnergy",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    AppText(
-                        "Total rest time",
-                        fontWeight = FontWeight.Medium
-                    )
-
-                    Spacer(Modifier.height(4.dp))
-
-                    AppText(
-                        "$totalRestTimeMinutes min",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(20.dp))
-
-            if (completedActivities.isNotEmpty()) {
-
-                AppText(
-                    "Completed",
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    completedActivities.forEach {
-                        ActivitySummaryItem(
-                            name = it.activityName,
-                            time = it.completionTime,
-                            completed = true
+                    IconButton(onClick = onToggleAccessibility) {
+                        Icon(
+                            imageVector = Icons.Outlined.Accessibility,
+                            contentDescription = "Toggle accessibility mode",
+                            tint = if (accessibilityMode) colors.primary else colors.textSecondary,
+                            modifier = Modifier.size(32.dp)
                         )
                     }
                 }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(6.dp))
+
+                AppText(
+                    text = "How your day went",
+                    color = textGray
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                Box(
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(4.dp)
+                        .background(primaryGreen, RoundedCornerShape(50))
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                Card(
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = colors.card),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(18.dp)) {
+                        AppText("Energy used", fontWeight = FontWeight.Medium)
+
+                        Spacer(Modifier.height(4.dp))
+
+                        AppText(
+                            "$totalEnergyUsed / $totalEnergy",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        AppText("Total rest time", fontWeight = FontWeight.Medium)
+
+                        Spacer(Modifier.height(4.dp))
+
+                        AppText(
+                            "$totalRestTimeMinutes min",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(12.dp))
+            }
+
+            if (completedActivities.isNotEmpty()) {
+                item {
+                    AppText("Completed", fontWeight = FontWeight.Bold)
+                }
+
+                items(completedActivities) {
+                    ActivitySummaryItem(
+                        name = it.activityName,
+                        time = it.completionTime,
+                        completed = true
+                    )
+                }
             }
 
             if (notCompletedActivities.isNotEmpty()) {
-
-                AppText(
-                    "Not completed",
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    notCompletedActivities.forEach {
-                        ActivitySummaryItem(
-                            name = it.activityName,
-                            time = null,
-                            completed = false
-                        )
-                    }
+                item {
+                    Spacer(Modifier.height(8.dp))
+                    AppText("Not completed", fontWeight = FontWeight.Bold)
                 }
+
+                items(notCompletedActivities) {
+                    ActivitySummaryItem(
+                        name = it.activityName,
+                        time = null,
+                        completed = false
+                    )
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(16.dp))
             }
         }
 

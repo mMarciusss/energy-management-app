@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -301,7 +302,10 @@ fun ActivityManageItem(
 
             Button(
                 onClick = onDelete,
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.width(100.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colors.accent
+                )
             ) {
                 AppText("Delete")
             }
