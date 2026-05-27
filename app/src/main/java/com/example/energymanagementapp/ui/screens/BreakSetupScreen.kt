@@ -7,12 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,23 +27,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun BreakSetupScreen(
     activityName: String,
     breakDuration: Int,
     hasBreak: Boolean,
+    accessibilityMode: Boolean,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    onRemove: () -> Unit
+    onRemove: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
 
-    val primaryGreen = Color(0xFF6BCB9A)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     Column(
         modifier = Modifier
@@ -48,16 +63,37 @@ fun BreakSetupScreen(
     ) {
 
         Column {
-            Text(
-                text = activityName,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    text = activityName,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = titleColor
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            colors.primary
+                        else
+                            colors.textSecondary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "Set break duration",
                 color = textGray
             )
@@ -78,7 +114,7 @@ fun BreakSetupScreen(
 
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = colors.card),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Row(
@@ -87,7 +123,7 @@ fun BreakSetupScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
 
-                    CircleButton("-", onDecrease)
+                    CircleButton("-", onDecrease, breakDuration > 5)
 
                     Spacer(Modifier.width(20.dp))
 
@@ -96,13 +132,13 @@ fun BreakSetupScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        AppText(
                             text = "$breakDuration min",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
 
-                        Text(
+                        AppText(
                             text = "Break",
                             color = textGray,
                             style = MaterialTheme.typography.bodySmall
@@ -111,13 +147,13 @@ fun BreakSetupScreen(
 
                     Spacer(Modifier.width(20.dp))
 
-                    CircleButton("+", onIncrease)
+                    CircleButton("+", onIncrease, breakDuration < 180)
                 }
             }
 
             Spacer(Modifier.height(16.dp))
 
-            Text(
+            AppText(
                 text = "Optional — helps with recovery",
                 color = textGray,
                 style = MaterialTheme.typography.bodySmall

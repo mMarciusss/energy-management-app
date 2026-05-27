@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,21 +45,30 @@ import java.util.Date
 import java.util.Locale
 
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
 
 @Composable
 fun EnergyScreen(
     energy: Int,
     minEnergy: Int,
     endTime: String,
+    accessibilityMode: Boolean,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val accentPurple = Color(0xFF6C63FF)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val accentPurple = colors.accent
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     var selectedTime by remember { mutableStateOf(endTime) }
     val context = LocalContext.current
@@ -79,16 +92,38 @@ fun EnergyScreen(
     ) {
 
         Column {
-            Text(
-                text = "Set energy",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    text = "Set energy",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = titleColor
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            colors.primary
+                        else
+                            colors.textSecondary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            AppText(
                 text = "How much energy do you have today?",
                 color = textGray
             )
@@ -109,7 +144,7 @@ fun EnergyScreen(
 
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = colors.card),
                 elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -120,11 +155,12 @@ fun EnergyScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Text(
+                    AppText(
                         "Energy",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        color = titleColor
                     )
 
                     Spacer(Modifier.height(12.dp))
@@ -149,7 +185,7 @@ fun EnergyScreen(
 
                     Spacer(Modifier.height(12.dp))
 
-                    Text("$energy / 20", color = textGray)
+                    AppText("$energy / 20", color = textGray)
 
                     Spacer(Modifier.height(16.dp))
 
@@ -159,7 +195,7 @@ fun EnergyScreen(
                     ) {
 
                         CircleButton("-", onDecrease, energy > minEnergy)
-                        CircleButton("+", onIncrease)
+                        CircleButton("+", onIncrease, energy < 20)
                     }
                 }
             }
@@ -171,7 +207,7 @@ fun EnergyScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
 
-                Text(
+                AppText(
                     "Ends at $selectedTime",
                     color = textGray
                 )

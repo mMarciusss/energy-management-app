@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,23 +30,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.components.SecondaryButton
 import com.example.energymanagementapp.viewmodel.DayStatus
 import com.example.energymanagementapp.viewmodel.Status
 import java.time.LocalDate
 import java.time.YearMonth
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
+import java.time.format.TextStyle
+import java.util.Locale
 
 
 @Composable
 fun PastDaysScreen(
     dayStatuses: List<DayStatus>,
+    accessibilityMode: Boolean,
     onDateClick: (LocalDate) -> Unit,
-    onGoHome: () -> Unit
+    onGoHome: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
 
     val currentMonth = YearMonth.now()
 
@@ -60,18 +74,38 @@ fun PastDaysScreen(
             .background(background)
             .padding(24.dp)
     ) {
-
         Column {
-            Text(
-                "Your progress",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    "Your progress",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = titleColor
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = "Toggle accessibility mode",
+                        tint = if (accessibilityMode)
+                            colors.primary
+                        else
+                            colors.textSecondary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 
-            Text("Track your past days", color = textGray)
+            AppText("Track your past days", color = textGray)
 
             Spacer(Modifier.height(12.dp))
 
@@ -87,7 +121,7 @@ fun PastDaysScreen(
 
         Card(
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = colors.card),
             elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -95,6 +129,21 @@ fun PastDaysScreen(
 
                 HorizontalCalendar(
                     state = state,
+
+                    monthHeader = { month ->
+                        val monthName = month.yearMonth.month
+                            .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+
+                        AppText(
+                            text = "$monthName ${month.yearMonth.year}",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = titleColor,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                    },
+
                     dayContent = { calendarDay ->
 
                         val status = dayStatuses
@@ -122,7 +171,7 @@ fun PastDaysScreen(
                                     if (isToday) {
                                         Modifier.border(
                                             width = 2.dp,
-                                            color = Color.Black,
+                                            color = colors.textPrimary,
                                             shape = CircleShape
                                         )
                                     } else Modifier
@@ -134,7 +183,7 @@ fun PastDaysScreen(
                                 },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            AppText(
                                 calendarDay.date.dayOfMonth.toString(),
                                 color = if (status == null) textGray else Color.Black,
                                 style = MaterialTheme.typography.bodyMedium
@@ -149,7 +198,7 @@ fun PastDaysScreen(
 
         Card(
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = colors.card),
             elevation = CardDefaults.cardElevation(2.dp)
         ) {
             Row(
@@ -188,6 +237,6 @@ fun LegendItem(color: Color, text: String) {
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Text(text)
+        AppText(text)
     }
 }

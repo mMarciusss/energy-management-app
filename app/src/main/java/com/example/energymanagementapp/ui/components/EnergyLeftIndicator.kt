@@ -19,27 +19,33 @@ import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.R
 
 @Composable
-fun EnergyLeftIndicator(energy: Int) {
+fun EnergyLeftIndicator(
+    remainingEnergy: Int,
+    totalEnergy: Int
+) {
 
     Column {
-
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            AppText(
                 "Energy left",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(Modifier.weight(1f))
-            Text("$energy", color = Color.Gray)
+
+            AppText(
+                "$remainingEnergy",
+                color = Color.Gray
+            )
         }
 
         Spacer(Modifier.height(8.dp))
 
         val columns = 5
-        val rows = (energy + columns - 1) / columns
+        val rows = (totalEnergy + columns - 1) / columns
 
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -50,14 +56,17 @@ fun EnergyLeftIndicator(energy: Int) {
                 ) {
                     repeat(columns) { colIndex ->
                         val index = rowIndex * columns + colIndex
-                        val filled = index < energy
 
-                        Image(
-                            painter = painterResource(id = R.drawable.spoon),
-                            contentDescription = null,
-                            modifier = Modifier.size(28.dp),
-                            alpha = if (filled) 1f else 0.2f
-                        )
+                        if (index < totalEnergy) {
+                            val filled = index < remainingEnergy
+
+                            Image(
+                                painter = painterResource(id = R.drawable.spoon),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                                alpha = if (filled) 1f else 0.2f
+                            )
+                        }
                     }
                 }
             }
