@@ -84,14 +84,6 @@ class MainActivity : ComponentActivity() {
         val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
         val weatherViewModel = WeatherViewModel(weatherRepository)
 
-        // pradinių veiklų įrašymas į DB jeigu jų nėra
-        lifecycleScope.launch{
-            activityRepository.seedActivitiesIfEmpty(){
-                activitySelectionModel.relaodActivities()
-                activityManagementViewModel.refreshActivities()
-            }
-        }
-
         setContent {
             val navController = rememberNavController()
 
@@ -209,11 +201,17 @@ class MainActivity : ComponentActivity() {
                             },
                             onConfirmPlan = {
                                 val start = System.currentTimeMillis()
-                                planViewModel.confirmPlan {
-                                    val end = System.currentTimeMillis()
-                                    Log.d("PERF", "Plan creation time: ${end - start} ms")
-                                    navController.navigate("plan_execution") {
-                                        popUpTo("home") { inclusive = true }
+
+                                activityManagementViewModel.persistPresetActivities(selectedLanguage) {
+                                    activitySelectionModel.relaodActivities(selectedLanguage)
+
+                                    planViewModel.confirmPlan {
+                                        val end = System.currentTimeMillis()
+                                        Log.d("PERF", "Plan creation time: ${end - start} ms")
+
+                                        navController.navigate("plan_execution") {
+                                            popUpTo("home") { inclusive = true }
+                                        }
                                     }
                                 }
                             },
@@ -254,8 +252,8 @@ class MainActivity : ComponentActivity() {
 
                         activitySelectionModel.initEnergy(energyViewModel.energy)
 
-                        LaunchedEffect(Unit) {
-                            activitySelectionModel.relaodActivities()
+                        LaunchedEffect(selectedLanguage) {
+                            activitySelectionModel.relaodActivities(selectedLanguage)
                         }
 
                         // veiklų pasirinkimo ekrano sukūrimas
@@ -270,7 +268,7 @@ class MainActivity : ComponentActivity() {
                             accessibilityMode = accessibilityMode,
                             onToggle = { activitySelectionModel.toggleActivity(it) },
                             onConfirm = {
-                                activitySelectionModel.savePlanActivities {
+                                activitySelectionModel.savePlanActivities(selectedLanguage) {
                                     breakViewModel.reloadPlanActivities()
                                     navController.popBackStack()
                                 }
@@ -529,6 +527,10 @@ class MainActivity : ComponentActivity() {
 
                     composable("manage_activities") {
 
+                        LaunchedEffect(selectedLanguage) {
+                            activityManagementViewModel.refreshActivities(selectedLanguage)
+                        }
+
                         // veiklų redagavimo ekrano sukūrimas
                         ManageActivitiesScreen(
                             activities = activityManagementViewModel.activities,
@@ -539,10 +541,17 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             onAdd = { name, energyCost ->
-                                activityManagementViewModel.addActivity(name, energyCost)
+                                activityManagementViewModel.addActivity(
+                                    name = name,
+                                    energyCost = energyCost,
+                                    language = selectedLanguage
+                                )
                             },
                             onDelete = { activity ->
-                                activityManagementViewModel.deleteActivity(activity)
+                                activityManagementViewModel.deleteActivity(
+                                    activity = activity,
+                                    language = selectedLanguage
+                                )
                             },
                             onToggleAccessibility = {
                                 accessibilityMode = !accessibilityMode
