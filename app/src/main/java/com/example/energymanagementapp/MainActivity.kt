@@ -27,6 +27,9 @@ import com.example.energymanagementapp.ui.accessibility.AppColorPalettes
 import com.example.energymanagementapp.ui.accessibility.AppColors
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.localization.AppLanguage
+import com.example.energymanagementapp.ui.localization.AppStringResources
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
@@ -92,6 +95,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             var accessibilityMode by remember { mutableStateOf(false) }
+            var selectedLanguage by remember { mutableStateOf(AppLanguage.EN) }
+
             val accessibilitySettings = AccessibilitySettings(
                 enabled = accessibilityMode
             )
@@ -104,7 +109,12 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(
                 LocalAccessibilitySettings provides accessibilitySettings,
-                LocalAppColors provides appColors
+                LocalAppColors provides appColors,
+                LocalAppStrings provides if (selectedLanguage == AppLanguage.LT) {
+                    AppStringResources.LT
+                } else {
+                    AppStringResources.EN
+                }
             ) {
 
                 // pagrindinė navigacijos struktūra
@@ -127,6 +137,7 @@ class MainActivity : ComponentActivity() {
                             planState = planViewModel.planState,
                             isTooLateToStart = planViewModel.isTooLateToStart,
                             accessibilityMode = accessibilityMode,
+                            selectedLanguage = selectedLanguage,
                             onStartPlan = {
                                 navController.navigate("plan_creation_home")
                             },
@@ -147,6 +158,13 @@ class MainActivity : ComponentActivity() {
                             },
                             onToggleAccessibility = {
                                 accessibilityMode = !accessibilityMode
+                            },
+                            onToggleLanguage = {
+                                selectedLanguage = if (selectedLanguage == AppLanguage.EN) {
+                                    AppLanguage.LT
+                                } else {
+                                    AppLanguage.EN
+                                }
                             }
                         )
                     }
