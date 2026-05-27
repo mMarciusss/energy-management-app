@@ -24,6 +24,9 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlanViewModelTest {
@@ -126,11 +129,13 @@ class PlanViewModelTest {
 
     @Test
     fun `loadPlan should set CONFIRMED state`() = runTest {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
         val fakePlan = PlanEntity(
-            date = "2025-01-01",
+            date = today,
             energyLevel = 10,
             isConfirmed = true,
-            endTime = "23:00"
+            endTime = "23:59"
         )
 
         coEvery { planRepository.getPlan(any()) } returns fakePlan
