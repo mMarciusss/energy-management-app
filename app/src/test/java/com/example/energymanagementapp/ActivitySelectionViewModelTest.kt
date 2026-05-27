@@ -4,6 +4,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
 import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
+import com.example.energymanagementapp.ui.localization.AppLanguage
 import com.example.energymanagementapp.viewmodel.ActivitySelectionModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -128,6 +129,7 @@ class ActivitySelectionViewModelTest {
         coEvery { activityRepository.getActivityList() } returns listOf(activity)
         coEvery { planActivityRepository.getPlanActivities(any()) } returns emptyList()
         coEvery { planActivityRepository.savePlanActivity(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { activityRepository.persistPresetActivities(any()) } just Runs
 
         viewModel = ActivitySelectionModel(activityRepository, planActivityRepository)
 
@@ -141,7 +143,7 @@ class ActivitySelectionViewModelTest {
 
         var callbackCalled = false
 
-        viewModel.savePlanActivities {
+        viewModel.savePlanActivities(AppLanguage.EN) {
             callbackCalled = true
         }
 

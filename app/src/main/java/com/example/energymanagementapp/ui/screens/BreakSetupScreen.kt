@@ -32,6 +32,7 @@ import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun BreakSetupScreen(
@@ -53,6 +54,8 @@ fun BreakSetupScreen(
     val background = colors.background
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     Column(
         modifier = Modifier
@@ -81,7 +84,7 @@ fun BreakSetupScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
+                        contentDescription = strings.toggleAccessibilityMode,
                         tint = if (accessibilityMode)
                             colors.primary
                         else
@@ -94,7 +97,7 @@ fun BreakSetupScreen(
             Spacer(Modifier.height(6.dp))
 
             AppText(
-                text = "Set break duration",
+                text = strings.setBreakDuration,
                 color = textGray
             )
 
@@ -139,7 +142,7 @@ fun BreakSetupScreen(
                         )
 
                         AppText(
-                            text = "Break",
+                            text = strings.breakLabel,
                             color = textGray,
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -154,7 +157,7 @@ fun BreakSetupScreen(
             Spacer(Modifier.height(16.dp))
 
             AppText(
-                text = "Optional — helps with recovery",
+                text = strings.optionalHelpsWithRecovery,
                 color = textGray,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -163,7 +166,7 @@ fun BreakSetupScreen(
         Column {
 
             MainButton(
-                text = if (hasBreak) "Update break" else "Confirm break",
+                text = if (hasBreak) strings.updateBreak else strings.confirmBreak,
                 color = primaryGreen,
                 onClick = onConfirm
             )
@@ -172,12 +175,12 @@ fun BreakSetupScreen(
 
             if (hasBreak) {
                 SecondaryButton(
-                    text = "Remove break",
+                    text = strings.removeBreak,
                     onClick = onRemove
                 )
             } else {
                 SecondaryButton(
-                    text = "Skip",
+                    text = strings.skip,
                     onClick = onCancel
                 )
             }

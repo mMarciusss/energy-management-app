@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import kotlinx.coroutines.delay
 
 @Composable
@@ -48,6 +49,8 @@ fun BreakTimerScreen(
     val textGray = colors.textSecondary
     val accent = colors.accent
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
     var isRunning by remember { mutableStateOf(true) }
@@ -93,7 +96,7 @@ fun BreakTimerScreen(
                 ),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                AppText("Skip")
+                AppText(strings.skip)
             }
 
             IconButton(
@@ -101,7 +104,7 @@ fun BreakTimerScreen(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Accessibility,
-                    contentDescription = "Toggle accessibility mode",
+                    contentDescription = strings.toggleAccessibilityMode,
                     tint = if (accessibilityMode)
                         colors.primary
                     else
@@ -116,7 +119,7 @@ fun BreakTimerScreen(
         ) {
 
             AppText(
-                text = "Break time",
+                text = strings.breakTime,
                 color = textGray,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -134,7 +137,7 @@ fun BreakTimerScreen(
             Spacer(Modifier.height(12.dp))
 
             AppText(
-                text = "Relax and recover",
+                text = strings.relaxAndRecover,
                 color = textGray
             )
         }

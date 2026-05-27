@@ -4,6 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.energymanagementapp.data.local.database.AppDatabase
 import com.example.energymanagementapp.data.repository.ActivityRepository
+import com.example.energymanagementapp.ui.localization.AppLanguage
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
@@ -58,28 +59,21 @@ class ActivityRepositoryIntegrationTest {
     }
 
     @Test
-    fun `seedActivitiesIfEmpty should insert default activities`() = runBlocking {
-        var callbackCalled = false
-
-        repository.seedActivitiesIfEmpty {
-            callbackCalled = true
-        }
+    fun `persistPresetActivities should insert default activities`() = runBlocking {
+        repository.persistPresetActivities(AppLanguage.EN)
 
         val list = repository.getActivityList()
 
-        assertTrue(callbackCalled)
         assertEquals(5, list.size)
     }
 
     @Test
-    fun `seedActivitiesIfEmpty should not override existing data`() = runBlocking {
-        repository.saveActivity("Custom", 4)
-
-        repository.seedActivitiesIfEmpty {}
+    fun `persistPresetActivities should not override existing preset data`() = runBlocking {
+        repository.persistPresetActivities(AppLanguage.EN)
+        repository.persistPresetActivities(AppLanguage.LT)
 
         val list = repository.getActivityList()
 
-        assertEquals(1, list.size)
-        assertEquals("Custom", list.first().name)
+        assertEquals(5, list.size)
     }
 }

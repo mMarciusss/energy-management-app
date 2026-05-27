@@ -2,6 +2,7 @@ package com.example.energymanagementapp.ui.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
@@ -42,19 +44,23 @@ import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.AppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun HomeScreen(
     planState: PlanState,
     isTooLateToStart: Boolean,
     accessibilityMode: Boolean,
+    selectedLanguage: AppLanguage,
     onStartPlan: () -> Unit,
     onContinuePlan: () -> Unit,
     onViewPlan: () -> Unit,
     onViewSummary: () -> Unit,
     onViewPastDays: () -> Unit,
     onManageActivities: () -> Unit,
-    onToggleAccessibility: () -> Unit
+    onToggleAccessibility: () -> Unit,
+    onToggleLanguage: () -> Unit
 ) {
 
     val colors = LocalAppColors.current
@@ -64,6 +70,8 @@ fun HomeScreen(
     val accent = colors.accent
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     Column(
         modifier = Modifier
@@ -84,32 +92,60 @@ fun HomeScreen(
             ) {
 
                 AppText(
-                    text = "Welcome",
+                    text = strings.welcome,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = titleColor
                 )
 
-                IconButton(
-                    onClick = onToggleAccessibility
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
-                        tint = if (accessibilityMode)
-                            colors.primary
-                        else
-                            colors.textSecondary,
-                        modifier = Modifier.size(32.dp)
-                    )
+
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .background(
+                                color = colors.background,
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                onToggleLanguage()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        AppText(
+                            text = if (selectedLanguage == AppLanguage.EN)
+                                "🇬🇧"
+                            else
+                                "🇱🇹",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onToggleAccessibility
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Accessibility,
+                            contentDescription = strings.toggleAccessibilityMode,
+                            tint = if (accessibilityMode)
+                                colors.primary
+                            else
+                                colors.textSecondary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
                 }
             }
 
             Spacer(Modifier.height(6.dp))
 
             AppText(
-                text = "Let's manage your day",
+                text = strings.letsManageYourDay,
                 style = MaterialTheme.typography.bodyMedium,
                 color = textGray
             )
@@ -132,7 +168,7 @@ fun HomeScreen(
         ) {
 
             AppText(
-                text = "Energy Manager",
+                text = strings.energyManager,
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -142,7 +178,7 @@ fun HomeScreen(
 
                 PlanState.NOT_STARTED -> {
                     MainButton(
-                        text = "Start Plan",
+                        text = strings.startPlan,
                         color = primaryGreen,
                         enabled = !isTooLateToStart,
                         onClick = onStartPlan
@@ -152,12 +188,12 @@ fun HomeScreen(
                         Spacer(Modifier.height(8.dp))
 
                         AppText(
-                            text = "Too late to start today",
+                            text = strings.tooLateToStartToday,
                             color = textGray
                         )
 
                         AppText(
-                            text = "Come back tomorrow morning",
+                            text = strings.comeBackTomorrowMorning,
                             color = textGray,
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -166,42 +202,42 @@ fun HomeScreen(
 
                 PlanState.CREATING -> {
                     MainButton(
-                        text = "Continue Plan",
+                        text = strings.continuePlan,
                         color = accent,
                         onClick = onContinuePlan
                     )
 
                     Spacer(Modifier.height(8.dp))
                     AppText(
-                        "Cancel plan to manage activities",
+                        strings.cancelPlanToManageActivities,
                         color = textGray
                     )
                 }
 
                 PlanState.CONFIRMED -> {
                     MainButton(
-                        text = "View Today Plan",
+                        text = strings.viewTodayPlan,
                         color = primaryGreen,
                         onClick = onViewPlan
                     )
 
                     Spacer(Modifier.height(8.dp))
                     AppText(
-                        "Finish plan to manage activities",
+                        strings.finishPlanToManageActivities,
                         color = textGray
                     )
                 }
 
                 PlanState.COMPLETED -> {
                     MainButton(
-                        text = "View Summary",
+                        text = strings.viewSummary,
                         color = accent,
                         onClick = onViewSummary
                     )
 
                     Spacer(Modifier.height(8.dp))
                     AppText(
-                        "Day completed ✔",
+                        strings.dayCompleted,
                         color = primaryGreen,
                         fontWeight = FontWeight.Bold
                     )
@@ -211,14 +247,14 @@ fun HomeScreen(
             Spacer(Modifier.height(32.dp))
 
             SecondaryButton(
-                text = "Past days",
+                text = strings.pastDays,
                 onClick = onViewPastDays
             )
 
             Spacer(Modifier.height(12.dp))
 
             SecondaryButton(
-                text = "Manage activities",
+                text = strings.manageActivities,
                 enabled = planState == PlanState.NOT_STARTED ||
                         planState == PlanState.COMPLETED,
                 onClick = onManageActivities

@@ -1,7 +1,6 @@
 package com.example.energymanagementapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,6 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,20 +35,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.local.entities.ActivityEntity
-import com.example.energymanagementapp.utils.getWeatherDescription
-import com.example.energymanagementapp.utils.getWeatherIcon
-import com.example.energymanagementapp.R
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.EnergyLeftIndicator
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.WeatherLoadingRow
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import java.util.Calendar
 
 @Composable
@@ -65,7 +59,7 @@ fun ActivitySelectionScreen(
     accessibilityMode: Boolean,
     onToggle: (ActivityEntity) -> Unit,
     onConfirm: () -> Unit,
-    onToggleAccessibility: () -> Unit
+    onToggleAccessibility: () -> Unit,
 ) {
 
     val colors = LocalAppColors.current
@@ -74,6 +68,8 @@ fun ActivitySelectionScreen(
     val background = colors.background
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     val nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val in3hHour = (nowHour + 3) % 24
@@ -107,7 +103,7 @@ fun ActivitySelectionScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppText(
-                    "Choose activities",
+                    strings.chooseActivities,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -119,7 +115,7 @@ fun ActivitySelectionScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
+                        contentDescription = strings.toggleAccessibilityMode,
                         tint = if (accessibilityMode)
                             colors.primary
                         else
@@ -132,7 +128,7 @@ fun ActivitySelectionScreen(
             Spacer(Modifier.height(6.dp))
 
             AppText(
-                "Pick what you want to do today",
+                strings.pickWhatYouWantToDoToday,
                 color = textGray
             )
 
@@ -157,7 +153,7 @@ fun ActivitySelectionScreen(
             )
             Spacer(Modifier.height(16.dp))
             AppText(
-                "Weather",
+                strings.weather,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -168,20 +164,20 @@ fun ActivitySelectionScreen(
 
                 if (hasAnyWeather) {
                     WeatherMiniRow(
-                        label = "Now",
+                        label = strings.now,
                         weather = weatherNow
                     )
 
                     if (showIn3h) {
                         WeatherMiniRow(
-                            label = "In 3 hours",
+                            label = strings.inThreeHours,
                             weather = weatherIn3Hours
                         )
                     }
 
                     if (showEvening) {
                         WeatherMiniRow(
-                            label = "Evening",
+                            label = strings.evening,
                             weather = weatherEvening
                         )
                     }
@@ -214,7 +210,7 @@ fun ActivitySelectionScreen(
         }
 
         MainButton(
-            text = "Confirm",
+            text = strings.confirm,
             color = primaryGreen,
             onClick = {
                 if (remainingEnergy > 0) {
@@ -233,17 +229,17 @@ fun ActivitySelectionScreen(
                         showDialog = false
                         onConfirm()
                     }) {
-                        AppText("Continue")
+                        AppText(strings.continueText)
                     }
                 },
                 dismissButton = {
                     Button(onClick = { showDialog = false }) {
-                        AppText("Cancel")
+                        AppText(strings.cancel)
                     }
                 },
-                title = { AppText("Unused energy") },
+                title = { AppText(strings.unusedEnergy) },
                 text = {
-                    AppText("You still have $remainingEnergy energy left.")
+                    AppText(strings.youStillHaveEnergyLeft(remainingEnergy))
                 }
             )
         }
@@ -268,6 +264,8 @@ fun ActivityItem(
         else -> colors.card
     }
 
+    val strings = LocalAppStrings.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -289,7 +287,7 @@ fun ActivityItem(
                 )
 
                 AppText(
-                    text = "${activity.energyCost} energy",
+                    text = "${activity.energyCost} ${strings.spoons}",
                     color = colors.textSecondary,
                     style = MaterialTheme.typography.bodySmall
                 )

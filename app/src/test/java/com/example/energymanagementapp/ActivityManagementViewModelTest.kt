@@ -2,6 +2,7 @@ package com.example.energymanagementapp
 
 import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.data.repository.ActivityRepository
+import com.example.energymanagementapp.ui.localization.AppLanguage
 import com.example.energymanagementapp.viewmodel.ActivityManagementViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -53,10 +54,11 @@ class ActivityManagementViewModelTest {
     fun `addActivity should call repository and refresh list`() = runTest {
         coEvery { repository.saveActivity(any(), any()) } just Runs
         coEvery { repository.getActivityList() } returns listOf(ActivityEntity(1, "A", 3))
+        coEvery { repository.persistPresetActivities(any()) } just Runs
 
         viewModel = ActivityManagementViewModel(repository)
 
-        viewModel.addActivity("Test", 3)
+        viewModel.addActivity("Test", 3, AppLanguage.EN)
 
         advanceUntilIdle()
 
@@ -68,7 +70,7 @@ class ActivityManagementViewModelTest {
     fun `addActivity should NOT call repository if energy invalid`() = runTest {
         viewModel = ActivityManagementViewModel(repository)
 
-        viewModel.addActivity("Bad", 10)
+        viewModel.addActivity("Bad", 10, AppLanguage.EN)
 
         advanceUntilIdle()
 
@@ -81,10 +83,11 @@ class ActivityManagementViewModelTest {
 
         coEvery { repository.deleteActivity(any()) } just Runs
         coEvery { repository.getActivityList() } returns emptyList()
+        coEvery { repository.persistPresetActivities(any()) } just Runs
 
         viewModel = ActivityManagementViewModel(repository)
 
-        viewModel.deleteActivity(activity)
+        viewModel.deleteActivity(activity, AppLanguage.EN)
 
         advanceUntilIdle()
 

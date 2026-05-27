@@ -27,6 +27,10 @@ import com.example.energymanagementapp.ui.accessibility.AppColorPalettes
 import com.example.energymanagementapp.ui.accessibility.AppColors
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.localization.AppLanguage
+import com.example.energymanagementapp.ui.localization.AppStringResources
+import com.example.energymanagementapp.ui.localization.LocalAppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
 import com.example.energymanagementapp.ui.screens.BreakSetupScreen
@@ -80,18 +84,12 @@ class MainActivity : ComponentActivity() {
         val weatherRepository = WeatherRepository(WeatherRetrofitInstance.api)
         val weatherViewModel = WeatherViewModel(weatherRepository)
 
-        // pradinių veiklų įrašymas į DB jeigu jų nėra
-        lifecycleScope.launch{
-            activityRepository.seedActivitiesIfEmpty(){
-                activitySelectionModel.relaodActivities()
-                activityManagementViewModel.refreshActivities()
-            }
-        }
-
         setContent {
             val navController = rememberNavController()
 
             var accessibilityMode by remember { mutableStateOf(false) }
+            var selectedLanguage by remember { mutableStateOf(AppLanguage.EN) }
+
             val accessibilitySettings = AccessibilitySettings(
                 enabled = accessibilityMode
             )
@@ -104,7 +102,13 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(
                 LocalAccessibilitySettings provides accessibilitySettings,
-                LocalAppColors provides appColors
+                LocalAppColors provides appColors,
+                LocalAppLanguage provides selectedLanguage,
+                LocalAppStrings provides
+                        if (selectedLanguage == AppLanguage.LT)
+                            AppStringResources.LT
+                        else
+                            AppStringResources.EN
             ) {
 
                 // pagrindinė navigacijos struktūra
@@ -127,6 +131,7 @@ class MainActivity : ComponentActivity() {
                             planState = planViewModel.planState,
                             isTooLateToStart = planViewModel.isTooLateToStart,
                             accessibilityMode = accessibilityMode,
+                            selectedLanguage = selectedLanguage,
                             onStartPlan = {
                                 navController.navigate("plan_creation_home")
                             },
@@ -147,6 +152,13 @@ class MainActivity : ComponentActivity() {
                             },
                             onToggleAccessibility = {
                                 accessibilityMode = !accessibilityMode
+                            },
+                            onToggleLanguage = {
+                                selectedLanguage = if (selectedLanguage == AppLanguage.EN) {
+                                    AppLanguage.LT
+                                } else {
+                                    AppLanguage.EN
+                                }
                             }
                         )
                     }
@@ -189,11 +201,17 @@ class MainActivity : ComponentActivity() {
                             },
                             onConfirmPlan = {
                                 val start = System.currentTimeMillis()
-                                planViewModel.confirmPlan {
-                                    val end = System.currentTimeMillis()
-                                    Log.d("PERF", "Plan creation time: ${end - start} ms")
-                                    navController.navigate("plan_execution") {
-                                        popUpTo("home") { inclusive = true }
+
+                                activityManagementViewModel.persistPresetActivities(selectedLanguage) {
+                                    activitySelectionModel.relaodActivities(selectedLanguage)
+
+                                    planViewModel.confirmPlan {
+                                        val end = System.currentTimeMillis()
+                                        Log.d("PERF", "Plan creation time: ${end - start} ms")
+
+                                        navController.navigate("plan_execution") {
+                                            popUpTo("home") { inclusive = true }
+                                        }
                                     }
                                 }
                             },
@@ -234,8 +252,8 @@ class MainActivity : ComponentActivity() {
 
                         activitySelectionModel.initEnergy(energyViewModel.energy)
 
-                        LaunchedEffect(Unit) {
-                            activitySelectionModel.relaodActivities()
+                        LaunchedEffect(selectedLanguage) {
+                            activitySelectionModel.relaodActivities(selectedLanguage)
                         }
 
                         // veiklų pasirinkimo ekrano sukūrimas
@@ -250,7 +268,7 @@ class MainActivity : ComponentActivity() {
                             accessibilityMode = accessibilityMode,
                             onToggle = { activitySelectionModel.toggleActivity(it) },
                             onConfirm = {
-                                activitySelectionModel.savePlanActivities {
+                                activitySelectionModel.savePlanActivities(selectedLanguage) {
                                     breakViewModel.reloadPlanActivities()
                                     navController.popBackStack()
                                 }
@@ -509,6 +527,10 @@ class MainActivity : ComponentActivity() {
 
                     composable("manage_activities") {
 
+                        LaunchedEffect(selectedLanguage) {
+                            activityManagementViewModel.refreshActivities(selectedLanguage)
+                        }
+
                         // veiklų redagavimo ekrano sukūrimas
                         ManageActivitiesScreen(
                             activities = activityManagementViewModel.activities,
@@ -519,10 +541,17 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             onAdd = { name, energyCost ->
-                                activityManagementViewModel.addActivity(name, energyCost)
+                                activityManagementViewModel.addActivity(
+                                    name = name,
+                                    energyCost = energyCost,
+                                    language = selectedLanguage
+                                )
                             },
                             onDelete = { activity ->
-                                activityManagementViewModel.deleteActivity(activity)
+                                activityManagementViewModel.deleteActivity(
+                                    activity = activity,
+                                    language = selectedLanguage
+                                )
                             },
                             onToggleAccessibility = {
                                 accessibilityMode = !accessibilityMode

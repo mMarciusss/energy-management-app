@@ -11,7 +11,7 @@ import com.example.energymanagementapp.data.local.entities.ActivityEntity
 interface ActivityDao {
     // įrašomas arba atnaujinamas veiklos įrašas
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdateActivity(activity: ActivityEntity)
+    suspend fun insertOrUpdateActivity(activity: ActivityEntity): Long
 
     // veiklos ištrynimas
     @Delete

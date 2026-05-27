@@ -49,6 +49,7 @@ import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +67,8 @@ fun ManageActivitiesScreen(
     val background = colors.background
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     var name by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
@@ -86,7 +89,7 @@ fun ManageActivitiesScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppText(
-                    "Manage activities",
+                    strings.manageActivitiesTitle,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -98,7 +101,7 @@ fun ManageActivitiesScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
+                        contentDescription = strings.toggleAccessibilityMode,
                         tint = if (accessibilityMode)
                             colors.primary
                         else
@@ -110,7 +113,7 @@ fun ManageActivitiesScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            AppText("Create new activities or delete existing ones", color = textGray)
+            AppText(strings.createNewActivitiesOrDeleteExistingOnes, color = textGray)
 
             Spacer(Modifier.height(12.dp))
 
@@ -131,14 +134,14 @@ fun ManageActivitiesScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
 
-                    AppText("New activity", fontWeight = FontWeight.Medium)
+                    AppText(strings.newActivity, fontWeight = FontWeight.Medium)
 
                     Spacer(Modifier.height(12.dp))
 
                     TextField(
                         value = name,
                         onValueChange = { name = it },
-                        placeholder = { AppText("Activity name") },
+                        placeholder = { AppText(strings.activityName) },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -149,10 +152,10 @@ fun ManageActivitiesScreen(
                         onExpandedChange = { expanded = !expanded }
                     ) {
                         TextField(
-                            value = selectedEnergy?.let { "$it energy" } ?: "",
+                            value = selectedEnergy?.let { "$it ${strings.spoons}" } ?: "",
                             onValueChange = {},
                             readOnly = true,
-                            placeholder = { AppText("Energy cost") },
+                            placeholder = { AppText(strings.energyCost) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded)
                             },
@@ -200,7 +203,7 @@ fun ManageActivitiesScreen(
                     Spacer(Modifier.height(14.dp))
 
                     MainButton(
-                        text = "Add activity",
+                        text = strings.addActivity,
                         color = primaryGreen,
                         onClick = {
                             val energy = selectedEnergy ?: return@MainButton
@@ -217,7 +220,7 @@ fun ManageActivitiesScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            AppText("Your activities", fontWeight = FontWeight.Bold)
+            AppText(strings.yourActivities, fontWeight = FontWeight.Bold)
 
             Spacer(Modifier.height(10.dp))
 
@@ -237,7 +240,7 @@ fun ManageActivitiesScreen(
         Spacer(Modifier.height(12.dp))
 
         SecondaryButton(
-            text = "Back to home",
+            text = strings.backToHome,
             onClick = onBackToHome
         )
     }
@@ -250,6 +253,8 @@ fun ActivityManageItem(
 ) {
     val colors = LocalAppColors.current
     val textGray = colors.textSecondary
+
+    val strings = LocalAppStrings.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -307,7 +312,7 @@ fun ActivityManageItem(
                     containerColor = colors.accent
                 )
             ) {
-                AppText("Delete")
+                AppText(strings.delete)
             }
         }
     }

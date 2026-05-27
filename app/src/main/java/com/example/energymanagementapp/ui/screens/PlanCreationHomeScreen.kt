@@ -46,6 +46,7 @@ import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun PlanCreationHomeScreen(
@@ -73,6 +74,8 @@ fun PlanCreationHomeScreen(
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
 
+    val strings = LocalAppStrings.current
+
     val hasActivities = selectedActivities.isNotEmpty()
     val hasBreaks = selectedActivities.any { it.breakDuration != null }
 
@@ -98,7 +101,7 @@ fun PlanCreationHomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppText(
-                    text = "Create plan",
+                    text = strings.createPlan,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -110,7 +113,7 @@ fun PlanCreationHomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
+                        contentDescription = strings.toggleAccessibilityMode,
                         tint = if (accessibilityMode)
                             colors.primary
                         else
@@ -123,7 +126,7 @@ fun PlanCreationHomeScreen(
             Spacer(Modifier.height(6.dp))
 
             AppText(
-                text = "Set your energy, choose activities and start your day",
+                text = strings.setEnergyChooseActivitiesAndStartYourDay,
                 style = MaterialTheme.typography.bodyMedium,
                 color = textGray
             )
@@ -162,7 +165,7 @@ fun PlanCreationHomeScreen(
 
                 item {
                     StepButton(
-                        text = if (isEnergySet) "Energy and time" else "Set energy and end time",
+                        text = if (isEnergySet) strings.energyAndTime else strings.setEnergyAndEndTime,
                         completed = isEnergySet,
                         color = if (isEnergySet) secondaryBlue else primaryGreen,
                         onClick = onGoToEnergyScreen
@@ -187,7 +190,7 @@ fun PlanCreationHomeScreen(
 
                                 Box(modifier = Modifier.weight(1f)) {
                                     StepButton(
-                                        text = "Activities",
+                                        text = strings.activities,
                                         completed = true,
                                         color = secondaryBlue,
                                         onClick = onGoToActivitySelection
@@ -197,9 +200,9 @@ fun PlanCreationHomeScreen(
                                 Box(modifier = Modifier.weight(1f)) {
                                     StepButton(
                                         text = if (hasBreaks) {
-                                            "Breaks"
+                                            strings.breaks
                                         } else {
-                                            if (accessibilityMode) "Breaks · Opt" else "Breaks · Optional"
+                                            if (accessibilityMode) strings.breaksOptionalShort else strings.breaksOptional
                                         },
                                         completed = hasBreaks,
                                         color = secondaryBlue,
@@ -211,7 +214,7 @@ fun PlanCreationHomeScreen(
 
                         item {
                             MainButton(
-                                text = "Confirm plan",
+                                text = strings.confirmPlan,
                                 color = primaryGreen,
                                 onClick = onConfirmPlan
                             )
@@ -221,7 +224,7 @@ fun PlanCreationHomeScreen(
 
                         item {
                             StepButton(
-                                text = "Choose activities",
+                                text = strings.chooseActivities,
                                 completed = false,
                                 color = primaryGreen,
                                 onClick = onGoToActivitySelection
@@ -249,7 +252,7 @@ fun PlanCreationHomeScreen(
         ) {
             Box(modifier = Modifier.weight(1f)) {
                 SecondaryButton(
-                    text = "Go home",
+                    text = strings.goHome,
                     onClick = onGoHome
                 )
             }
@@ -257,7 +260,7 @@ fun PlanCreationHomeScreen(
             if (planState != PlanState.NOT_STARTED) {
                 Box(modifier = Modifier.weight(1f)) {
                     SecondaryButton(
-                        text = "Cancel plan",
+                        text = strings.cancelPlan,
                         onClick = onCancelPlan
                     )
                 }
@@ -277,6 +280,8 @@ fun EnergySummaryCard(
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
 
+    val strings = LocalAppStrings.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -290,7 +295,7 @@ fun EnergySummaryCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppText(
-                    text = "Energy",
+                    text = strings.energy.replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -357,7 +362,7 @@ fun EnergySummaryCard(
                 Spacer(Modifier.width(8.dp))
 
                 AppText(
-                    text = "Plan ends at $endTime",
+                    text = strings.planEndsAt(endTime),
                     color = textGray
                 )
             }
@@ -393,6 +398,8 @@ fun SelectedActivitiesCard(
 
     val colors = LocalAppColors.current
 
+    val strings = LocalAppStrings.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -403,7 +410,7 @@ fun SelectedActivitiesCard(
             modifier = Modifier.padding(16.dp)
         ) {
             AppText(
-                text = "Selected activities",
+                text = strings.selectedActivities,
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold
                 )
@@ -420,7 +427,7 @@ fun SelectedActivitiesCard(
 
                     if (activity.breakDuration != null) {
                         AppText(
-                            text = " · Break ${activity.breakDuration} min",
+                            text = " · ${strings.breakLabel}: ${activity.breakDuration} min",
                             color = colors.textSecondary
                         )
                     }
@@ -439,6 +446,8 @@ fun WeatherMiniCard(
 ) {
 
     val colors = LocalAppColors.current
+
+    val strings = LocalAppStrings.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -462,14 +471,14 @@ fun WeatherMiniCard(
 
                 Column {
                     AppText(
-                        text = "Today's weather",
+                        text = strings.todaysWeather,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
 
                     AppText(
-                        text = "$weatherTemperature °C · ${getWeatherDescription(weatherCode)}",
+                        text = "$weatherTemperature °C · ${getWeatherDescription(weatherCode, strings)}",
                         color = colors.textSecondary
                     )
                 }
@@ -484,7 +493,7 @@ fun WeatherMiniCard(
                 Spacer(Modifier.width(12.dp))
 
                 AppText(
-                    text = "Loading today's weather...",
+                    text = strings.loadingTodaysWeather,
                     color = colors.textSecondary
                 )
             }

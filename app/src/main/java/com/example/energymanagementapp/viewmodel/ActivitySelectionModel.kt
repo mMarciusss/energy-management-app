@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.energymanagementapp.data.local.entities.ActivityEntity
 import com.example.energymanagementapp.data.repository.ActivityRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
+import com.example.energymanagementapp.ui.localization.AppLanguage
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -17,7 +18,7 @@ import java.util.Locale
 
 class ActivitySelectionModel (
     private val activityRepository: ActivityRepository,
-    private val planActivityRepository: PlanActivityRepository
+    private val planActivityRepository: PlanActivityRepository,
 ) : ViewModel() {
 
     // visų galimų veiklų sarašas
@@ -42,6 +43,9 @@ class ActivitySelectionModel (
     // dabartinė plano diena
     var currentDay by mutableStateOf("")
 
+    // dabartinė kalba
+    private var currentLanguage: AppLanguage = AppLanguage.EN
+
     init {
         // veiklų užkrovimas paleidimo metu
         loadActivities()
@@ -50,18 +54,19 @@ class ActivitySelectionModel (
     // visų veiklų užkrovimas
     private fun loadActivities() {
         viewModelScope.launch {
-            var list = activityRepository.getActivityList()
+            val dbActivities = activityRepository.getActivityList()
 
-            if (list.isEmpty()) {
-                list = activityRepository.getActivityList()
+            activities = if (dbActivities.isEmpty()) {
+                activityRepository.getPresetActivities(currentLanguage)
+            } else {
+                dbActivities
             }
-
-            activities = list
         }
     }
 
     // veiklų perkrovimas
-    fun relaodActivities(){
+    fun relaodActivities(language: AppLanguage = currentLanguage) {
+        currentLanguage = language
         loadActivities()
     }
 
@@ -109,32 +114,60 @@ class ActivitySelectionModel (
     }
 
     // išsaugomos pasirinktos plano veiklos DB
-    fun savePlanActivities(onDone: () -> Unit){
+    fun savePlanActivities(
+        language: AppLanguage,
+        onDone: () -> Unit
+    ) {
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-            val existing = planActivityRepository.getPlanActivities(today).map { it.activityId }
+            // pirmiausia į DB įrašomos visos preset veiklos
+            activityRepository.persistPresetActivities(language)
 
-            val toAdd = selectedActivities - existing
-            val toRemove = existing - selectedActivities
+            // po seed paimamos realios DB veiklos su tikrais ID
+            val dbActivities = activityRepository.getActivityList()
+
+            val selectedRealActivities = selectedActivities.mapNotNull { selectedId ->
+                val uiActivity = activities.find { it.id == selectedId }
+
+                if (uiActivity == null) {
+                    null
+                } else {
+                    dbActivities.find {
+                        it.name == uiActivity.name && it.energyCost == uiActivity.energyCost
+                    }
+                }
+            }
+
+            val existing = planActivityRepository
+                .getPlanActivities(today)
+                .map { it.activityId }
+
+            val selectedRealIds = selectedRealActivities.map { it.id }
+
+            val toRemove = existing - selectedRealIds
+            val toAdd = selectedRealActivities.filter { it.id !in existing }
 
             toRemove.forEach { id ->
                 planActivityRepository.deletePlanActivityByDateAndActivityId(today, id)
             }
 
-            toAdd.forEach { id ->
-
-                val activity = activities.find {it.id == id} ?: return@forEach
-
+            toAdd.forEach { activity ->
                 planActivityRepository.savePlanActivity(
                     planDate = today,
-                    activityId = id,
+                    activityId = activity.id,
                     activityName = activity.name,
                     energyCost = activity.energyCost,
                     isCompleted = false,
                     completionTime = null
                 )
             }
+
+            activities = dbActivities
+
+            selectedActivities.clear()
+            selectedActivities.addAll(selectedRealIds)
+
             onDone()
         }
     }
