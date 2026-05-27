@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun EnergyLeftIndicator(
@@ -24,12 +25,14 @@ fun EnergyLeftIndicator(
     totalEnergy: Int
 ) {
 
+    val strings = LocalAppStrings.current
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AppText(
-                "Energy left",
+                strings.energyLeft,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )

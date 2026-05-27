@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.AppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import com.example.energymanagementapp.viewmodel.DayStatus
 import com.example.energymanagementapp.viewmodel.Status
 import java.time.LocalDate
@@ -58,6 +61,9 @@ fun PastDaysScreen(
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
 
+    val strings = LocalAppStrings.current
+    val appLanguage = LocalAppLanguage.current
+
     val currentMonth = YearMonth.now()
 
     val state = rememberCalendarState(
@@ -81,7 +87,7 @@ fun PastDaysScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppText(
-                    "Your progress",
+                    strings.yourProgress,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -93,7 +99,7 @@ fun PastDaysScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
+                        contentDescription = strings.toggleAccessibilityMode,
                         tint = if (accessibilityMode)
                             colors.primary
                         else
@@ -105,7 +111,7 @@ fun PastDaysScreen(
 
             Spacer(Modifier.height(6.dp))
 
-            AppText("Track your past days", color = textGray)
+            AppText(strings.trackYourPastDays, color = textGray)
 
             Spacer(Modifier.height(12.dp))
 
@@ -131,8 +137,14 @@ fun PastDaysScreen(
                     state = state,
 
                     monthHeader = { month ->
+                        val locale = when (appLanguage) {
+                            AppLanguage.LT -> Locale("lt")
+                            AppLanguage.EN -> Locale.ENGLISH
+                        }
+
                         val monthName = month.yearMonth.month
-                            .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                            .getDisplayName(TextStyle.FULL, locale)
+                            .replaceFirstChar { it.uppercase(locale) }
 
                         AppText(
                             text = "$monthName ${month.yearMonth.year}",
@@ -208,16 +220,16 @@ fun PastDaysScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LegendItem(Color(0xFF6BCB9A), "Completed")
-                LegendItem(Color(0xFFFFD54F), "Partially\ncompleted")
-                LegendItem(Color(0xFFEF5350), "Not completed")
+                LegendItem(Color(0xFF6BCB9A), strings.completedStatus)
+                LegendItem(Color(0xFFFFD54F), strings.partiallyCompleted)
+                LegendItem(Color(0xFFEF5350), strings.notCompletedStatus)
             }
         }
 
         Spacer(Modifier.weight(1f))
 
         SecondaryButton(
-            text = "Back to home",
+            text = strings.backToHome,
             onClick = onGoHome
         )
     }

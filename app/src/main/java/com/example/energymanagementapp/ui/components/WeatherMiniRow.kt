@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 
@@ -27,6 +28,8 @@ fun WeatherMiniRow(
     if (weather == null) return
 
     val colors = LocalAppColors.current
+
+    val strings = LocalAppStrings.current
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -54,7 +57,7 @@ fun WeatherMiniRow(
             Spacer(Modifier.width(8.dp))
 
             AppText(
-                "${weather.first}°C · ${getWeatherDescription(weather.second)}",
+                "${weather.first}°C · ${getWeatherDescription(weather.second, strings)}",
                 color = colors.textSecondary
             )
         }

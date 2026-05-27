@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
@@ -37,6 +38,8 @@ import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.AppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun ActivityBreakListScreen(
@@ -44,7 +47,7 @@ fun ActivityBreakListScreen(
     accessibilityMode: Boolean,
     onActivityClick: (Int, String) -> Unit,
     onBackToPlanCreation: () -> Unit,
-    onToggleAccessibility: () -> Unit
+    onToggleAccessibility: () -> Unit,
 ) {
 
     val colors = LocalAppColors.current
@@ -53,6 +56,8 @@ fun ActivityBreakListScreen(
     val background = colors.background
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     Column(
         modifier = Modifier
@@ -70,7 +75,7 @@ fun ActivityBreakListScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppText(
-                    text = "Set breaks",
+                    text = strings.setBreaks,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -82,7 +87,7 @@ fun ActivityBreakListScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Accessibility,
-                        contentDescription = "Toggle accessibility mode",
+                        contentDescription = strings.toggleAccessibilityMode,
                         tint = if (accessibilityMode)
                             colors.primary
                         else
@@ -95,7 +100,7 @@ fun ActivityBreakListScreen(
             Spacer(Modifier.height(6.dp))
 
             AppText(
-                text = "Assign breaks to your activities",
+                text = strings.assignBreaksToActivities,
                 color = textGray
             )
 
@@ -130,7 +135,7 @@ fun ActivityBreakListScreen(
         }
 
         SecondaryButton(
-            text = "Back to plan",
+            text = strings.backToPlan,
             onClick = onBackToPlanCreation
         )
     }
@@ -152,6 +157,8 @@ fun ActivityBreakItem(
     } else {
         colors.card
     }
+
+    val strings = LocalAppStrings.current
 
     Card(
         modifier = Modifier
@@ -176,13 +183,13 @@ fun ActivityBreakItem(
 
                 if (hasBreak) {
                     AppText(
-                        text = "Break: ${activity.breakDuration} min",
+                        text = "${strings.breakLabel}: ${activity.breakDuration} min",
                         color = primaryGreen,
                         style = MaterialTheme.typography.bodySmall
                     )
                 } else {
                     AppText(
-                        text = "No break set",
+                        text = strings.noBreakSet,
                         color = colors.textSecondary,
                         style = MaterialTheme.typography.bodySmall
                     )

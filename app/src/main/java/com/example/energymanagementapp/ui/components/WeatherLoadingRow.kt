@@ -17,10 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun WeatherLoadingRow() {
+
     val colors = LocalAppColors.current
+
+    val strings = LocalAppStrings.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -42,7 +46,7 @@ fun WeatherLoadingRow() {
             Spacer(Modifier.width(12.dp))
 
             AppText(
-                text = "Loading today's weather...",
+                text = strings.loadingTodaysWeather,
                 color = colors.textSecondary
             )
         }

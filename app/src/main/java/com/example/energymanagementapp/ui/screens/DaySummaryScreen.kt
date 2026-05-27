@@ -36,6 +36,7 @@ import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
 @Composable
 fun DaySummaryScreen(
@@ -55,6 +56,8 @@ fun DaySummaryScreen(
     val background = colors.background
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     val completedActivities = activities
         .filter { it.isCompleted }
@@ -80,7 +83,7 @@ fun DaySummaryScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AppText(
-                        text = "Day summary",
+                        text = strings.daySummary,
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -90,7 +93,7 @@ fun DaySummaryScreen(
                     IconButton(onClick = onToggleAccessibility) {
                         Icon(
                             imageVector = Icons.Outlined.Accessibility,
-                            contentDescription = "Toggle accessibility mode",
+                            contentDescription = strings.toggleAccessibilityMode,
                             tint = if (accessibilityMode) colors.primary else colors.textSecondary,
                             modifier = Modifier.size(32.dp)
                         )
@@ -100,7 +103,7 @@ fun DaySummaryScreen(
                 Spacer(Modifier.height(6.dp))
 
                 AppText(
-                    text = "How your day went",
+                    text = strings.howYourDayWent,
                     color = textGray
                 )
 
@@ -122,7 +125,7 @@ fun DaySummaryScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
-                        AppText("Energy used", fontWeight = FontWeight.Medium)
+                        AppText(strings.energyUsed, fontWeight = FontWeight.Medium)
 
                         Spacer(Modifier.height(4.dp))
 
@@ -134,7 +137,7 @@ fun DaySummaryScreen(
 
                         Spacer(Modifier.height(12.dp))
 
-                        AppText("Total rest time", fontWeight = FontWeight.Medium)
+                        AppText(strings.totalRestTime, fontWeight = FontWeight.Medium)
 
                         Spacer(Modifier.height(4.dp))
 
@@ -150,13 +153,13 @@ fun DaySummaryScreen(
 
             if (completedActivities.isNotEmpty()) {
                 item {
-                    AppText("Completed", fontWeight = FontWeight.Bold)
+                    AppText(strings.completed, fontWeight = FontWeight.Bold)
                 }
 
                 items(completedActivities) {
                     ActivitySummaryItem(
                         name = it.activityName,
-                        time = it.completionTime,
+                        timeText = it.completionTime?.let { time -> strings.completedAt(time) },
                         completed = true
                     )
                 }
@@ -165,13 +168,13 @@ fun DaySummaryScreen(
             if (notCompletedActivities.isNotEmpty()) {
                 item {
                     Spacer(Modifier.height(8.dp))
-                    AppText("Not completed", fontWeight = FontWeight.Bold)
+                    AppText(strings.notCompleted, fontWeight = FontWeight.Bold)
                 }
 
                 items(notCompletedActivities) {
                     ActivitySummaryItem(
                         name = it.activityName,
-                        time = null,
+                        timeText = null,
                         completed = false
                     )
                 }
@@ -186,13 +189,13 @@ fun DaySummaryScreen(
 
             if (isFromCalendar && onGoBack != null) {
                 SecondaryButton(
-                    text = "Go back",
+                    text = strings.goBack,
                     onClick = onGoBack
                 )
             }
 
             MainButton(
-                text = "Go home",
+                text = strings.goHome,
                 color = primaryGreen,
                 onClick = onGoHome
             )
@@ -204,7 +207,7 @@ fun DaySummaryScreen(
 @Composable
 fun ActivitySummaryItem(
     name: String,
-    time: String?,
+    timeText: String?,
     completed: Boolean
 ) {
     val colors = LocalAppColors.current
@@ -230,9 +233,9 @@ fun ActivitySummaryItem(
 
                 AppText(name, fontWeight = FontWeight.Medium)
 
-                if (time != null) {
+                if (timeText != null) {
                     AppText(
-                        "Completed at $time",
+                        timeText,
                         color = textGray,
                         style = MaterialTheme.typography.bodySmall
                     )

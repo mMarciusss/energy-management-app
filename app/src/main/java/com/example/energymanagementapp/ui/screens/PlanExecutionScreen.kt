@@ -18,20 +18,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
-import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
@@ -42,8 +39,7 @@ import com.example.energymanagementapp.ui.components.MainButton
 import com.example.energymanagementapp.ui.components.SecondaryButton
 import com.example.energymanagementapp.ui.components.WeatherLoadingRow
 import com.example.energymanagementapp.ui.components.WeatherMiniRow
-import com.example.energymanagementapp.utils.getWeatherDescription
-import com.example.energymanagementapp.utils.getWeatherIcon
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import java.util.Calendar
 
 @Composable
@@ -67,6 +63,8 @@ fun PlanExecutionScreen(
     val background = colors.background
     val textGray = colors.textSecondary
     val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     val nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val in3hHour = (nowHour + 3) % 24
@@ -100,7 +98,7 @@ fun PlanExecutionScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AppText(
-                text = "Your plan",
+                text = strings.yourPlan,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -112,7 +110,7 @@ fun PlanExecutionScreen(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Accessibility,
-                    contentDescription = "Toggle accessibility mode",
+                    contentDescription = strings.toggleAccessibilityMode,
                     tint = if (accessibilityMode)
                         colors.primary
                     else
@@ -124,7 +122,7 @@ fun PlanExecutionScreen(
 
         Spacer(Modifier.height(6.dp))
 
-        AppText("Best of luck in completing your tasks!", color = textGray)
+        AppText(strings.bestOfLuckCompletingTasks, color = textGray)
 
         Spacer(Modifier.height(12.dp))
 
@@ -149,7 +147,7 @@ fun PlanExecutionScreen(
         ) {
 
             item {
-                SectionTitle("To do")
+                SectionTitle(strings.toDo)
             }
 
             items(pending) { activity ->
@@ -169,7 +167,7 @@ fun PlanExecutionScreen(
             if (checkedIds.isNotEmpty()) {
                 item {
                     MainButton(
-                        text = "Confirm completed",
+                        text = strings.confirmCompleted,
                         color = primaryGreen,
                         onClick = {
                             onConfirmComplete(checkedIds.toList())
@@ -181,7 +179,7 @@ fun PlanExecutionScreen(
 
             if (completed.isNotEmpty()) {
                 item {
-                    SectionTitle("Completed")
+                    SectionTitle(strings.completed)
                 }
 
                 items(completed) { activity ->
@@ -192,7 +190,7 @@ fun PlanExecutionScreen(
             item {
                 Spacer(Modifier.height(16.dp))
                 AppText(
-                    "Weather",
+                    strings.weather,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -203,20 +201,20 @@ fun PlanExecutionScreen(
 
                     if (hasAnyWeather) {
                         WeatherMiniRow(
-                            label = "Now",
+                            label = strings.now,
                             weather = weatherNow
                         )
 
                         if (showIn3h) {
                             WeatherMiniRow(
-                                label = "In 3 hours",
+                                label = strings.inThreeHours,
                                 weather = weatherIn3Hours
                             )
                         }
 
                         if (showEvening) {
                             WeatherMiniRow(
-                                label = "Evening",
+                                label = strings.evening,
                                 weather = weatherEvening
                             )
                         }
@@ -234,21 +232,21 @@ fun PlanExecutionScreen(
             Spacer(Modifier.height(12.dp))
 
             SecondaryButton(
-                text = "Cancel plan",
+                text = strings.cancelPlan,
                 onClick = onCancelPlan
             )
 
             Spacer(Modifier.height(6.dp))
 
             AppText(
-                text = "Once you complete any activity, you won't be able to cancel the plan",
+                text = strings.onceCompleteCannotCancel,
                 color = textGray,
                 style = MaterialTheme.typography.bodySmall
             )
         }
 
         SecondaryButton(
-            text = "Go home",
+            text = strings.goHome,
             onClick = onGoHome
         )
     }
@@ -265,6 +263,8 @@ fun ExecutionItem(
 
     val primaryGreen = colors.primary
     val textGray = colors.textSecondary
+
+    val strings = LocalAppStrings.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -291,7 +291,7 @@ fun ExecutionItem(
 
                 if (activity.breakDuration != null) {
                     AppText(
-                        "Break: ${activity.breakDuration} min",
+                        "${strings.breakLabel}: ${activity.breakDuration} min",
                         color = textGray,
                         style = MaterialTheme.typography.bodySmall
                     )

@@ -29,6 +29,7 @@ import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettin
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.localization.AppLanguage
 import com.example.energymanagementapp.ui.localization.AppStringResources
+import com.example.energymanagementapp.ui.localization.LocalAppLanguage
 import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import com.example.energymanagementapp.ui.screens.ActivityBreakListScreen
 import com.example.energymanagementapp.ui.screens.ActivitySelectionScreen
@@ -110,11 +111,12 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalAccessibilitySettings provides accessibilitySettings,
                 LocalAppColors provides appColors,
-                LocalAppStrings provides if (selectedLanguage == AppLanguage.LT) {
-                    AppStringResources.LT
-                } else {
-                    AppStringResources.EN
-                }
+                LocalAppLanguage provides selectedLanguage,
+                LocalAppStrings provides
+                        if (selectedLanguage == AppLanguage.LT)
+                            AppStringResources.LT
+                        else
+                            AppStringResources.EN
             ) {
 
                 // pagrindinė navigacijos struktūra
