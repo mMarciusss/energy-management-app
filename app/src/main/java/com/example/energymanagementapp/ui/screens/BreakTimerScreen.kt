@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
@@ -76,7 +77,13 @@ fun BreakTimerScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(background)
-            .padding(24.dp),
+            .padding(
+                start = 24.dp,
+                end = 24.dp,
+                bottom = 24.dp,
+                top = 0.dp
+            )
+            .statusBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

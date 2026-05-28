@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -61,7 +63,13 @@ fun BreakSetupScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(background)
-            .padding(24.dp),
+            .padding(
+                start = 24.dp,
+                end = 24.dp,
+                bottom = 24.dp,
+                top = 0.dp
+            )
+            .statusBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -163,7 +171,9 @@ fun BreakSetupScreen(
             )
         }
 
-        Column {
+        Column (
+            modifier = Modifier.navigationBarsPadding()
+        ) {
 
             MainButton(
                 text = if (hasBreak) strings.updateBreak else strings.confirmBreak,
