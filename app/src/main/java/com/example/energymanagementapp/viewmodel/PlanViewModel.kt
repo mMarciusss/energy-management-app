@@ -21,30 +21,39 @@ class PlanViewModel (
     private val planActivityRepository: PlanActivityRepository
 ) : ViewModel() {
 
-   private var lastLoadedDate: String? = null
+    // paskutinė užkrauta data, naudojama dienos pasikeitimui aptikti
+    private var lastLoadedDate: String? = null
 
+    // ar planas jau patvirtintas
     var isConfirmed by mutableStateOf(false)
         private set
 
+    // plano pabaigos laikas
     var planEndTime by mutableStateOf("20:00")
         private set
 
+    // ar plano laikas jau pasibaigęs
     var isExpired by mutableStateOf(false)
         private set
 
+    // dabartinė plano būsena
     var planState by mutableStateOf(PlanState.NOT_STARTED)
         private set
 
+    // ar visos plano veiklos atliktos
     var isAllCompleted by mutableStateOf(false)
         private set
 
+    // ar per vėlu pradėti naują planą
     var isTooLateToStart by mutableStateOf(false)
         private set
 
     init {
+        // užkraunamas planas paleidimo metu
         loadPlan()
     }
 
+    // plano užkrovimas
     private fun loadPlan() {
         viewModelScope.launch {
             val today = getToday()
@@ -84,6 +93,7 @@ class PlanViewModel (
         }
     }
 
+    // išvaloma lokali plano būsena
     private fun resetLocalState() {
         isConfirmed = false
         isExpired = false
@@ -92,12 +102,14 @@ class PlanViewModel (
         planState = PlanState.NOT_STARTED
     }
 
+    // pradedamas plano kūrimas
     fun startCreatingPlan() {
         if (planState == PlanState.NOT_STARTED) {
             planState = PlanState.CREATING
         }
     }
 
+    // plano patvirtinimas
     fun confirmPlan(onDone: () -> Unit) {
         viewModelScope.launch {
             val today = getToday()
@@ -108,6 +120,7 @@ class PlanViewModel (
         }
     }
 
+    // plano atšaukimas ir duomenų ištrynimas
     fun resetPlan(onDone: () -> Unit) {
         viewModelScope.launch {
             val today = getToday()
@@ -126,14 +139,17 @@ class PlanViewModel (
         }
     }
 
+    // plano perkrovimas
     fun reloadPlan(){
         loadPlan()
     }
 
+    // šiandienos datos grąžinimas
     fun getToday(): String{
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }
 
+    // plano pabaigos laiko nustatymas
     fun setEndTime(endTime: String) {
         viewModelScope.launch {
             val today = getToday()

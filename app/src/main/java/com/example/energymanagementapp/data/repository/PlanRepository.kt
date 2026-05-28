@@ -10,6 +10,7 @@ import java.util.Locale
 class PlanRepository (
     private val planDao: PlanDao
 ) {
+    // plano įrašymas su nustatyta energija į DB
     suspend fun saveEnergy(date: String, energyLevel: Int){
         val plan = PlanEntity(
             date = date,
@@ -18,14 +19,17 @@ class PlanRepository (
         planDao.insertOrUpdatePlan(plan)
     }
 
+    // plano nuskaitymas iš DB
     suspend fun getPlan(date: String): PlanEntity? {
         return planDao.getPlanByDate(date)
     }
 
+    // plano patvirtinimas
     suspend fun confirmPlan(date: String) {
         planDao.confirmPlan(date)
     }
 
+    // plano ištrynimas iš DB
     suspend fun deletePlan(date: String) {
         val plan = planDao.getPlanByDate(date)
 
@@ -34,6 +38,7 @@ class PlanRepository (
         }
     }
 
+    // plano pabaigos laiko atnaujinimas
     suspend fun updateEndTime(date: String, endTime: String){
         val existing = planDao.getPlanByDate(date)
 

@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import com.example.energymanagementapp.utils.getWeatherDescription
 import com.example.energymanagementapp.utils.getWeatherIcon
 
@@ -23,12 +25,15 @@ fun WeatherMiniRow(
     label: String,
     weather: Pair<Double, Int>?
 ) {
-
     if (weather == null) return
+
+    val colors = LocalAppColors.current
+
+    val strings = LocalAppStrings.current
 
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colors.card),
         elevation = CardDefaults.cardElevation(1.dp)
     ) {
         Row(
@@ -36,24 +41,24 @@ fun WeatherMiniRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text(
+            AppText(
                 text = label,
                 modifier = Modifier.width(60.dp),
-                color = Color(0xFF6B6B6B),
+                color = colors.textSecondary,
                 style = MaterialTheme.typography.bodySmall
             )
 
             Icon(
                 imageVector = getWeatherIcon(weather.second),
                 contentDescription = null,
-                tint = Color(0xFF6982B5)
+                tint = colors.secondary
             )
 
             Spacer(Modifier.width(8.dp))
 
-            Text(
-                "${weather.first}°C · ${getWeatherDescription(weather.second)}",
-                color = Color.Gray
+            AppText(
+                "${weather.first}°C · ${getWeatherDescription(weather.second, strings)}",
+                color = colors.textSecondary
             )
         }
     }

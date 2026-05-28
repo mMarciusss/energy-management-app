@@ -15,18 +15,23 @@ class EnergyViewModel (
     private val repository: PlanRepository
 ) : ViewModel(){
 
+    // minimalus leidžiamas energijos kiekis
     private val MIN_ENERGY = 3
 
+    // dabartinė pasirinkta energija
     var energy by mutableStateOf(5)
         private set
 
+    // ar energija jau išsaugota šiandien
     var isEnergySet by mutableStateOf(false)
         private set
 
     init{
+        // užkraunama šiandienos energija paleidimo metu
         loadTodayEnergy()
     }
 
+    // užkraunama šiandienos energija iš DB
     private fun loadTodayEnergy(){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -43,22 +48,26 @@ class EnergyViewModel (
         }
     }
 
+    // rankinis energijos atnaujinimas
     fun reloadEnergy(){
         loadTodayEnergy()
     }
 
+    // energijos padidinimas
     fun increaseEnergy(){
         if (energy < 20){
            energy++
         }
     }
 
+    // energijos sumažinimas
     fun decreaseEnergy(){
         if (energy > MIN_ENERGY){
             energy--
         }
     }
 
+    // energijos išsaugojimas DB
     fun saveEnergy(onDone: () -> Unit){
         viewModelScope.launch {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

@@ -13,21 +13,27 @@ class WeatherViewModel (
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
+    // dabartinės valandos orų duomenys
     var weatherNow by mutableStateOf<Pair<Double, Int>?>(null)
         private set
 
+    // orų duomenys po 3 valandų
     var weatherIn3Hours by mutableStateOf<Pair<Double, Int>?>(null)
         private set
 
+    // vakaro orų duomenys
     var weatherEvening by mutableStateOf<Pair<Double, Int>?>(null)
         private set
+
+    // orų užkrovimo būsena
     var isLoading by mutableStateOf(false)
         private set
 
+    // klaidos pranešimas, jei nepavyksta gauti orų duomenų
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
-
+    // užkraunami orų duomenys iš Open-Meteo API
     fun loadWeather() {
         viewModelScope.launch {
             try {

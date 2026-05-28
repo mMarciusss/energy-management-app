@@ -1,17 +1,17 @@
 package com.example.energymanagementapp.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 
 @Composable
 fun CircleButton(
@@ -19,31 +19,38 @@ fun CircleButton(
     onClick: () -> Unit,
     enabled: Boolean = true
 ) {
-    val bgColor = if (enabled) {
-        Color(0xFF6C63FF)
+    val accessibility = LocalAccessibilitySettings.current
+    val colors = LocalAppColors.current
+
+    val textColor = if (enabled) {
+        Color.White
     } else {
-        Color(0xFFBDBDBD)
+        colors.disabledText
     }
 
-    val textColor = if (enabled) Color.White else Color.White.copy(alpha = 0.6f)
+    val bgColor = if (enabled) {
+        colors.accent
+    } else {
+        colors.disabledBackground
+    }
 
-    Box(
-        modifier = Modifier
-            .size(48.dp)
-            .background(
-                color = bgColor,
-                shape = RoundedCornerShape(50)
-            )
-            .clickable(
-                enabled = enabled,
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        shape = CircleShape,
+        color = bgColor,
+        shadowElevation = if (enabled) 4.dp else 0.dp,
+        tonalElevation = 0.dp,
+        modifier = Modifier.size(accessibility.buttonHeight.dp)
     ) {
-        Text(
-            text = text,
-            color = textColor,
-            style = MaterialTheme.typography.titleMedium
-        )
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            AppText(
+                text = text,
+                color = textColor,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
     }
 }

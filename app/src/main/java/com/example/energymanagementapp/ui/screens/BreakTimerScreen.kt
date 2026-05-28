@@ -9,9 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,16 +30,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.components.AppText
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 import kotlinx.coroutines.delay
 
 @Composable
 fun BreakTimerScreen(
     endTime: Long,
-    onFinish: () -> Unit
+    accessibilityMode: Boolean,
+    onFinish: () -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val accent = colors.accent
+    val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
 
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
     var isRunning by remember { mutableStateOf(true) }
@@ -67,7 +83,7 @@ fun BreakTimerScreen(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
                 onClick = {
@@ -75,12 +91,26 @@ fun BreakTimerScreen(
                     onFinish()
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF6C63FF).copy(alpha = 0.2f),
-                    contentColor = Color(0xFF6C63FF)
+                    containerColor = accent.copy(alpha = 0.18f),
+                    contentColor = accent
                 ),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Text("Skip")
+                AppText(strings.skip)
+            }
+
+            IconButton(
+                onClick = onToggleAccessibility
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Accessibility,
+                    contentDescription = strings.toggleAccessibilityMode,
+                    tint = if (accessibilityMode)
+                        colors.primary
+                    else
+                        colors.textSecondary,
+                    modifier = Modifier.size(32.dp)
+                )
             }
         }
 
@@ -88,25 +118,26 @@ fun BreakTimerScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
-                text = "Break time",
+            AppText(
+                text = strings.breakTime,
                 color = textGray,
                 style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(16.dp))
 
-            Text(
+            AppText(
                 text = String.format("%02d:%02d", minutes, seconds),
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.Bold
-                )
+                ),
+                color = titleColor
             )
 
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                text = "Relax and recover",
+            AppText(
+                text = strings.relaxAndRecover,
                 color = textGray
             )
         }

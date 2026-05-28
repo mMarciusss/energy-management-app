@@ -9,6 +9,7 @@ import java.util.Locale
 class BreakRepository (
     private val breakDao: BreakDao
 ) {
+    // pertraukos įrašymas arba atnaujinimas DB
     suspend fun saveBreak(planActivityId: Int, durationMinutes: Int, startTime: Long, endTime: Long, isCompleted: Boolean){
         val existing = breakDao.getBreakByPlanActivity(planActivityId)
 
@@ -34,6 +35,7 @@ class BreakRepository (
         }
     }
 
+    // pertraukos ištrynimas iš DB
     suspend fun deleteBreak(planActivityId: Int){
         val existing = breakDao.getBreakByPlanActivity(planActivityId)
 
@@ -42,14 +44,17 @@ class BreakRepository (
         }
     }
 
+    // pertraukų ištryinimas iš DB
     suspend fun deleteBreaksByDate(date: String){
         breakDao.deleteBreaksByDate(date)
     }
 
+    // pertraukų nuskaitymas iš DB
     suspend fun getBreakList(planActivityId: Int): List<BreakEntity>{
         return breakDao.getBreaksByPlanActivity(planActivityId)
     }
 
+    // pertraukos nuskaitymas iš DB
     suspend fun getBreak(planActivityId: Int): BreakEntity?{
         return breakDao.getBreakByPlanActivity(planActivityId)
     }

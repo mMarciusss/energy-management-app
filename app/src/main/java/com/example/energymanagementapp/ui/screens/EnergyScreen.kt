@@ -1,5 +1,8 @@
 package com.example.energymanagementapp.ui.screens
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,10 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,24 +48,40 @@ import java.util.Date
 import java.util.Locale
 
 import com.example.energymanagementapp.R
+import com.example.energymanagementapp.ui.accessibility.LocalAppColors
+import com.example.energymanagementapp.ui.components.AppText
 import com.example.energymanagementapp.ui.components.CircleButton
+import com.example.energymanagementapp.ui.components.MainButton
+import com.example.energymanagementapp.ui.components.SecondaryButton
+import com.example.energymanagementapp.ui.localization.AppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppLanguage
+import com.example.energymanagementapp.ui.localization.LocalAppStrings
 
+@SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun EnergyScreen(
     energy: Int,
     minEnergy: Int,
     endTime: String,
+    accessibilityMode: Boolean,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    onToggleAccessibility: () -> Unit
 ) {
-    val primaryGreen = Color(0xFF6BCB9A)
-    val accentPurple = Color(0xFF6C63FF)
-    val background = Color(0xFFF7F7F7)
-    val textGray = Color(0xFF6B6B6B)
+    val colors = LocalAppColors.current
+
+    val primaryGreen = colors.primary
+    val accentPurple = colors.accent
+    val background = colors.background
+    val textGray = colors.textSecondary
+    val titleColor = colors.textPrimary
+
+    val strings = LocalAppStrings.current
+    val appLanguage = LocalAppLanguage.current
+    val context = LocalContext.current
 
     var selectedTime by remember { mutableStateOf(endTime) }
-    val context = LocalContext.current
 
     val configuration = LocalConfiguration.current
     val locale = if (android.os.Build.VERSION.SDK_INT >= 24) {
@@ -79,17 +102,39 @@ fun EnergyScreen(
     ) {
 
         Column {
-            Text(
-                text = "Set energy",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppText(
+                    text = strings.setEnergy,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = titleColor
                 )
-            )
+
+                IconButton(
+                    onClick = onToggleAccessibility
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Accessibility,
+                        contentDescription = strings.toggleAccessibilityMode,
+                        tint = if (accessibilityMode)
+                            colors.primary
+                        else
+                            colors.textSecondary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
-                text = "How much energy do you have today?",
+            AppText(
+                text = strings.howMuchEnergyToday,
                 color = textGray
             )
 
@@ -109,7 +154,7 @@ fun EnergyScreen(
 
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = colors.card),
                 elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -120,11 +165,12 @@ fun EnergyScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Text(
-                        "Energy",
+                    AppText(
+                        text = strings.energy.replaceFirstChar { it.uppercase() },
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        color = titleColor
                     )
 
                     Spacer(Modifier.height(12.dp))
@@ -149,7 +195,7 @@ fun EnergyScreen(
 
                     Spacer(Modifier.height(12.dp))
 
-                    Text("$energy / 20", color = textGray)
+                    AppText("$energy / 20", color = textGray)
 
                     Spacer(Modifier.height(16.dp))
 
@@ -159,7 +205,7 @@ fun EnergyScreen(
                     ) {
 
                         CircleButton("-", onDecrease, energy > minEnergy)
-                        CircleButton("+", onIncrease)
+                        CircleButton("+", onIncrease, energy < 20)
                     }
                 }
             }
@@ -171,28 +217,50 @@ fun EnergyScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
 
-                Text(
-                    "Ends at $selectedTime",
+                AppText(
+                    strings.endsAt(selectedTime),
                     color = textGray
                 )
 
                 Spacer(Modifier.width(12.dp))
 
                 SecondaryButton(
-                    text = "Set time",
+                    text = strings.setTime,
                     onClick = {
                         val calendar = Calendar.getInstance()
 
-                        android.app.TimePickerDialog(
-                            context,
+                        val locale = when (appLanguage) {
+                            AppLanguage.LT -> Locale("lt")
+                            AppLanguage.EN -> Locale.ENGLISH
+                        }
+
+                        Locale.setDefault(locale)
+
+                        val config = Configuration(context.resources.configuration)
+                        config.setLocale(locale)
+
+                        context.resources.updateConfiguration(
+                            config,
+                            context.resources.displayMetrics
+                        )
+
+                        val dialog = android.app.TimePickerDialog(
+                            android.view.ContextThemeWrapper(
+                                context,
+                                android.R.style.Theme_Material_Light_Dialog_Alert
+                            ),
                             { _, h, m ->
-                                selectedTime =
-                                    String.format(Locale.getDefault(), "%02d:%02d", h, m)
+                                selectedTime = String.format(Locale.getDefault(), "%02d:%02d", h, m)
                             },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),
                             true
-                        ).show()
+                        )
+
+                        dialog.show()
+                        dialog.window?.attributes = dialog.window?.attributes?.apply {
+                            y = -80
+                        }
                     }
                 )
             }
@@ -200,11 +268,11 @@ fun EnergyScreen(
 
         Column {
             MainButton(
-                text = "Confirm",
+                text = strings.confirm,
                 color = primaryGreen,
                 onClick = {
                     if (selectedTime <= currentTime) {
-                        Toast.makeText(context, "Choose future time", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, strings.chooseFutureTime, Toast.LENGTH_SHORT).show()
                         return@MainButton
                     }
                     onConfirm(selectedTime)

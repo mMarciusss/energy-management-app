@@ -6,7 +6,7 @@ import com.example.energymanagementapp.data.remote.weather.WeatherResponse
 class WeatherRepository (
     private val weatherApi: WeatherApi
 ) {
-
+    // orų prognozės gavimas
     suspend fun getCurrentWeather(
         latitude: Double,
         longitude: Double
