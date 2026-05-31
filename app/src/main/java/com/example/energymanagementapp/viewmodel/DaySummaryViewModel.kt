@@ -8,9 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class DaySummaryViewModel (
     private val planActivityRepository: PlanActivityRepository

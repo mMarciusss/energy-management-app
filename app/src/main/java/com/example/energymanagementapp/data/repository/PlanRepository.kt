@@ -1,11 +1,7 @@
 package com.example.energymanagementapp.data.repository
 
-import android.util.Log
 import com.example.energymanagementapp.data.local.dao.PlanDao
 import com.example.energymanagementapp.data.local.entities.PlanEntity
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class PlanRepository (
     private val planDao: PlanDao
