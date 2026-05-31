@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.energymanagementapp.data.local.entities.PlanActivityEntity
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
-import com.example.energymanagementapp.data.model.PlanActivityWithDetails
 
 @Dao
 interface PlanActivityDao {

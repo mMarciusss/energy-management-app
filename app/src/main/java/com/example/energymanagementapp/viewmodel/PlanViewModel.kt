@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.energymanagementapp.core.state.PlanState
-import com.example.energymanagementapp.data.local.entities.PlanEntity
 import com.example.energymanagementapp.data.repository.BreakRepository
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
 import com.example.energymanagementapp.data.repository.PlanRepository

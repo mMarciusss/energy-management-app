@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,7 +23,6 @@ import com.example.energymanagementapp.data.repository.PlanRepository
 import com.example.energymanagementapp.data.repository.WeatherRepository
 import com.example.energymanagementapp.ui.accessibility.AccessibilitySettings
 import com.example.energymanagementapp.ui.accessibility.AppColorPalettes
-import com.example.energymanagementapp.ui.accessibility.AppColors
 import com.example.energymanagementapp.ui.accessibility.LocalAccessibilitySettings
 import com.example.energymanagementapp.ui.accessibility.LocalAppColors
 import com.example.energymanagementapp.ui.localization.AppLanguage
@@ -50,7 +48,6 @@ import com.example.energymanagementapp.viewmodel.EnergyViewModel
 import com.example.energymanagementapp.viewmodel.PastDaysViewModel
 import com.example.energymanagementapp.viewmodel.PlanViewModel
 import com.example.energymanagementapp.viewmodel.WeatherViewModel
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
