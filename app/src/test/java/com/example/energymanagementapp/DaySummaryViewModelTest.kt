@@ -2,6 +2,7 @@ package com.example.energymanagementapp
 
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
+import com.example.energymanagementapp.data.repository.PlanRepository
 import com.example.energymanagementapp.viewmodel.DaySummaryViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -21,7 +22,8 @@ import org.junit.Test
 class DaySummaryViewModelTest {
 
     private lateinit var viewModel: DaySummaryViewModel
-    private val repository: PlanActivityRepository = mockk(relaxed = true)
+    private val planActivityRepository: PlanActivityRepository = mockk(relaxed = true)
+    private val planRepository: PlanRepository = mockk(relaxed = true)
 
     @Before
     fun setup() {
@@ -65,9 +67,9 @@ class DaySummaryViewModelTest {
             )
         )
 
-        coEvery { repository.getPlanActivitiesWithBreaks(any()) } returns list
+        coEvery { planActivityRepository.getPlanActivitiesWithBreaks(any()) } returns list
 
-        viewModel = DaySummaryViewModel(repository)
+        viewModel = DaySummaryViewModel(planActivityRepository, planRepository)
 
         viewModel.loadSummary("2025-01-01")
 
@@ -108,9 +110,9 @@ class DaySummaryViewModelTest {
             )
         )
 
-        coEvery { repository.getPlanActivitiesWithBreaks(any()) } returns list
+        coEvery { planActivityRepository.getPlanActivitiesWithBreaks(any()) } returns list
 
-        viewModel = DaySummaryViewModel(repository)
+        viewModel = DaySummaryViewModel(planActivityRepository, planRepository)
 
         viewModel.loadSummary("2025-01-01")
 
@@ -150,9 +152,9 @@ class DaySummaryViewModelTest {
             )
         )
 
-        coEvery { repository.getPlanActivitiesWithBreaks(any()) } returns list
+        coEvery { planActivityRepository.getPlanActivitiesWithBreaks(any()) } returns list
 
-        viewModel = DaySummaryViewModel(repository)
+        viewModel = DaySummaryViewModel(planActivityRepository, planRepository)
 
         viewModel.loadSummary("2025-01-01")
 
