@@ -7,10 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.energymanagementapp.data.model.PlanActivityWithBreak
 import com.example.energymanagementapp.data.repository.PlanActivityRepository
+import com.example.energymanagementapp.data.repository.PlanRepository
 import kotlinx.coroutines.launch
 
 class DaySummaryViewModel (
-    private val planActivityRepository: PlanActivityRepository
+    private val planActivityRepository: PlanActivityRepository,
+    private val planRepository: PlanRepository
 ) : ViewModel() {
 
     // dienos veiklų sąrašas su papildoma informacija
@@ -19,6 +21,10 @@ class DaySummaryViewModel (
 
     // bendra sunaudota energija
     var totalEnergyUsed by mutableStateOf(0)
+        private set
+
+    // bendras energijos skaičius
+    var totalEnergy by mutableStateOf(0)
         private set
 
     // bendras poilsio laikas minutėmis
@@ -46,6 +52,9 @@ class DaySummaryViewModel (
                     0
                 }
             }
+
+            val plan = planRepository.getPlan(date)
+            totalEnergy = plan?.energyLevel ?: 0
         }
     }
 }

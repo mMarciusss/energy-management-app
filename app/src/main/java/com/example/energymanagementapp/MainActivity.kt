@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
 
         // sukuriami viewmodel objektai pogramėlės būsenai valdyti
         val activitySelectionModel = ActivitySelectionModel(activityRepository, planActivityRepository)
-        val daySummaryViewModel = DaySummaryViewModel(planActivityRepository)
+        val daySummaryViewModel = DaySummaryViewModel(planActivityRepository, planRepository)
         val pastDaysViewModel = PastDaysViewModel(planActivityRepository)
         val activityManagementViewModel = ActivityManagementViewModel(activityRepository)
         val breakViewModel = BreakViewModel(planActivityRepository, breakRepository)
@@ -448,7 +448,7 @@ class MainActivity : ComponentActivity() {
                         // dienos ataskaitos ekrano sukūrimas
                         DaySummaryScreen(
                             activities = daySummaryViewModel.activities,
-                            totalEnergy = energyViewModel.energy,
+                            totalEnergy = daySummaryViewModel.totalEnergy,
                             totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                             totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
                             isFromCalendar = false,
@@ -502,7 +502,7 @@ class MainActivity : ComponentActivity() {
                         // dienos ataskaitos ekrano sukūrimas
                         DaySummaryScreen(
                             activities = daySummaryViewModel.activities,
-                            totalEnergy = energyViewModel.energy,
+                            totalEnergy = daySummaryViewModel.totalEnergy,
                             totalEnergyUsed = daySummaryViewModel.totalEnergyUsed,
                             totalRestTimeMinutes = daySummaryViewModel.totalRestTimeMinutes,
                             isFromCalendar = fromCalendar,
